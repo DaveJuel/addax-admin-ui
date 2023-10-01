@@ -256,7 +256,7 @@ const FirebaseRegister = ({ ...others }) => {
                       checked={checked}
                       onChange={(event) => setChecked(event.target.checked)}
                       name="checked"
-                      color="primary"
+                      color="secondary"
                     />
                   }
                   label={
