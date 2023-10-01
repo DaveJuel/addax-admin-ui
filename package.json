@@ -2,7 +2,7 @@
   "name": "addax-admin-ui",
   "version": "3.3.2",
   "private": true,
-  "homepage": "https://addax.herokuapp.com",
+  "homepage": "https://addax-nca.netlify.app",
   "dependencies": {
     "@emotion/cache": "^11.9.3",
     "@emotion/react": "^11.9.3",
