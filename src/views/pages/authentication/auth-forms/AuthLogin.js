@@ -1,20 +1,17 @@
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 // material-ui
 import { useTheme } from "@mui/material/styles";
 import {
   Box,
   Button,
-  Checkbox,
   FormControl,
-  FormControlLabel,
   FormHelperText,
   IconButton,
   InputAdornment,
   InputLabel,
   OutlinedInput,
   Stack,
-  Typography,
 } from "@mui/material";
 
 // third party
@@ -28,14 +25,15 @@ import AnimateButton from "ui-component/extended/AnimateButton";
 // assets
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { apiUrl } from "utils/httpclient-handler";
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const FirebaseLogin = ({ ...others }) => {
   const theme = useTheme();
   const scriptedRef = useScriptRef();
-  const [checked, setChecked] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -45,30 +43,46 @@ const FirebaseLogin = ({ ...others }) => {
     event.preventDefault();
   };
 
-  const handleSignIn = () => {
-    navigate('/dashboard/default');
-  };
-
   return (
     <>
       <Formik
         initialValues={{
-          email: "",
+          username: "",
           password: "",
-          submit: null,
         }}
         validationSchema={Yup.object().shape({
-          email: Yup.string()
+          username: Yup.string()
             .email("Must be a valid email")
             .max(255)
-            .required("Email is required"),
+            .required("Username is required"),
           password: Yup.string().max(255).required("Password is required"),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            if (scriptedRef.current) {
-              setStatus({ success: true });
-              setSubmitting(false);
+            const url = `${apiUrl}/user/login`;
+            const response = await fetch(url, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(values),
+            });
+            if (response.ok) {
+              const responseData = await response.json();
+              // Save response data to localStorage
+              localStorage.setItem("user", JSON.stringify(responseData.result));
+
+              // Navigate to the dashboard
+              navigate("/auth/select/app");
+            } else {
+              const errorData = await response.json();
+              if (scriptedRef.current) {
+                setStatus({ success: false });
+                setErrors({ submit: "Something went wrong!!" });
+                setSubmitting(false);
+              }
+              console.error(errorData);
+              // Handle error responses here, e.g., formik.setErrors
             }
           } catch (err) {
             console.error(err);
@@ -101,19 +115,19 @@ const FirebaseLogin = ({ ...others }) => {
               <OutlinedInput
                 id="outlined-adornment-email-login"
                 type="email"
-                value={values.email}
-                name="email"
+                value={values.username}
+                name="username"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 label="Email Address / Username"
                 inputProps={{}}
               />
-              {touched.email && errors.email && (
+              {touched.username && errors.username && (
                 <FormHelperText
                   error
                   id="standard-weight-helper-text-email-login"
                 >
-                  {errors.email}
+                  {errors.username}
                 </FormHelperText>
               )}
             </FormControl>
@@ -163,36 +177,15 @@ const FirebaseLogin = ({ ...others }) => {
               alignItems="center"
               justifyContent="space-between"
               spacing={1}
-            >
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={checked}
-                    onChange={(event) => setChecked(event.target.checked)}
-                    name="checked"
-                    color="secondary"
-                  />
-                }
-                label="Remember me"
-              />
-              <Typography
-                variant="subtitle1"
-                color="secondary"
-                sx={{ textDecoration: "none", cursor: "pointer" }}
-              >
-                Forgot Password?
-              </Typography>
-            </Stack>
+            ></Stack>
             {errors.submit && (
               <Box sx={{ mt: 3 }}>
                 <FormHelperText error>{errors.submit}</FormHelperText>
               </Box>
             )}
-
             <Box sx={{ mt: 2 }}>
               <AnimateButton>
                 <Button
-                  onClick={handleSignIn}
                   disableElevation
                   disabled={isSubmitting}
                   fullWidth
