@@ -3,6 +3,7 @@ import { IconDashboard, IconArticle } from "@tabler/icons";
 import dashboard from "./dashboard";
 import createEntity from "./createEntity";
 import { apiUrl } from "utils/httpclient-handler";
+import formatTitle from "utils/title-formatter";
 
 // constant
 const icons = { IconDashboard, IconArticle };
@@ -40,12 +41,7 @@ const fetchData = async () => {
   }
 };
 
-const formatTitle = (title) => {
-  return title
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-};
+
 
 // Generate menu items based on the API response
 const generateMenuItems = async () => {
@@ -57,7 +53,7 @@ const generateMenuItems = async () => {
     title: formatTitle(item.name),
     icon: icons.IconArticle,
     type: "item",
-    url: "#",
+    url: `/entity/view/${item.name}`,
     breadcrumbs: false,
   }));
   const titleText = entityMenuItems.length > 1 ? "Entities" : "Entity";

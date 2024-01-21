@@ -14,7 +14,7 @@ const other = {
       id: 'sample-page',
       title: 'Sample Page',
       type: 'item',
-      url: '/sample-page',
+      url: '/entity/view',
       icon: icons.IconBrandChrome,
       breadcrumbs: false
     },
