@@ -11,7 +11,7 @@ const createEntity = {
   title: 'Create Entity',
   icon: icons.IconPlus,
   type: 'item',
-  url: '#',
+  url: '/entity/create',
   breadcrumbs: false,
 };
 

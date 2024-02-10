@@ -1,94 +1,95 @@
-import { lazy } from 'react';
+import { lazy } from "react";
 
 // project imports
-import MainLayout from 'layout/MainLayout';
-import Loadable from 'ui-component/Loadable';
-import EntityPage from 'views/pages/entity';
+import MainLayout from "layout/MainLayout";
+import Loadable from "ui-component/Loadable";
+import EntityPage from "views/entity";
 
 // dashboard routing
-const DashboardDefault = Loadable(lazy(() => import('views/dashboard')));
+const DashboardDefault = Loadable(lazy(() => import("views/dashboard")));
 
 // utilities routing
-const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
-const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
-const UtilsShadow = Loadable(lazy(() => import('views/utilities/Shadow')));
-const UtilsMaterialIcons = Loadable(lazy(() => import('views/utilities/MaterialIcons')));
-const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons')));
+const UtilsTypography = Loadable(
+  lazy(() => import("views/utilities/Typography"))
+);
+const UtilsColor = Loadable(lazy(() => import("views/utilities/Color")));
+const UtilsShadow = Loadable(lazy(() => import("views/utilities/Shadow")));
+const UtilsMaterialIcons = Loadable(
+  lazy(() => import("views/utilities/MaterialIcons"))
+);
+const UtilsTablerIcons = Loadable(
+  lazy(() => import("views/utilities/TablerIcons"))
+);
 
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
-  path: '/',
+  path: "/",
   element: <MainLayout />,
   children: [
     {
-      path: '/',
-      element: <DashboardDefault />
+      path: "/",
+      element: <DashboardDefault />,
     },
     {
-      path: 'dashboard',
+      path: "dashboard",
       children: [
         {
-          path: 'default',
-          element: <DashboardDefault />
-        }
-      ]
+          path: "default",
+          element: <DashboardDefault />,
+        },
+      ],
     },
     {
-      path: 'entity',
-      children: [
-        {
-          path: 'view/:entityName',
-          element: <EntityPage/>
-        }
-      ]
+      path: "entity/:entityName",
+      element: <EntityPage />,
     },
     {
-      path: 'utils',
+      path: "utils",
       children: [
         {
-          path: 'util-typography',
-          element: <UtilsTypography />
-        }
-      ]
+          path: "util-typography",
+          element: <UtilsTypography />,
+        },
+      ],
     },
     {
-      path: 'utils',
+      path: "utils",
       children: [
         {
-          path: 'util-color',
-          element: <UtilsColor />
-        }
-      ]
+          path: "util-color",
+          element: <UtilsColor />,
+        },
+      ],
     },
     {
-      path: 'utils',
+      path: "utils",
       children: [
         {
-          path: 'util-shadow',
-          element: <UtilsShadow />
-        }
-      ]
+          path: "util-shadow",
+          element: <UtilsShadow />,
+        },
+      ],
     },
     {
-      path: 'icons',
+      path: "icons",
       children: [
         {
-          path: 'tabler-icons',
-          element: <UtilsTablerIcons />
-        }
-      ]
+          path: "tabler-icons",
+          element: <UtilsTablerIcons />,
+        },
+      ],
     },
     {
-      path: 'icons',
+      path: "icons",
       children: [
         {
-          path: 'material-icons',
-          element: <UtilsMaterialIcons />
-        }
-      ]
+          path: "material-icons",
+          element: <UtilsMaterialIcons />,
+        },
+      ],
     },
-  ]
+  ],
 };
 
 export default MainRoutes;

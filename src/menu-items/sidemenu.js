@@ -10,7 +10,7 @@ const icons = { IconDashboard, IconArticle };
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
 // Fetch data from the API
-const fetchData = async () => {
+const fetchEntityList = async () => {
   const userData = JSON.parse(localStorage.getItem("user"));
   const activeAppApiKey = localStorage.getItem("activeApp") || "";
   const url = `${apiUrl}/entity/list`;
@@ -45,7 +45,7 @@ const fetchData = async () => {
 
 // Generate menu items based on the API response
 const generateMenuItems = async () => {
-  const entityData = await fetchData();
+  const entityData = await fetchEntityList();
 
   // Map API response to menu items
   const entityMenuItems = entityData.map((item) => ({
@@ -53,7 +53,7 @@ const generateMenuItems = async () => {
     title: formatTitle(item.name),
     icon: icons.IconArticle,
     type: "item",
-    url: `/entity/view/${item.name}`,
+    url: `/entity/${item.name}`,
     breadcrumbs: false,
   }));
   const titleText = entityMenuItems.length > 1 ? "Entities" : "Entity";
