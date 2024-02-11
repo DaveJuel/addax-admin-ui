@@ -18,6 +18,7 @@ import {
 import MainCard from "ui-component/cards/MainCard";
 import formatTitle from "utils/title-formatter";
 import { apiUrl } from "utils/httpclient-handler";
+import { fetchEntityData, fetchEntityProperties } from "utils/entityApi";
 
 const API_ENDPOINT = `${apiUrl}/entity`;
 
@@ -29,57 +30,28 @@ const EntityPage = () => {
   const [formData, setFormData] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
     const activeAppApiKey = localStorage.getItem("activeApp") || "";
-    const requestData = {
-      entity_name: entityName,
-      username: userData.username,
-      login_token: userData.login_token,
-      api_key: activeAppApiKey,
-    };
-    const fetchEntityProperties = async () => {
-      try {
-        const response = await fetch(`${API_ENDPOINT}/read/properties`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestData),
-        });
+    const fetchData = async () => {
+      const itemDetailsResponse = await fetchEntityProperties(
+        entityName,
+        userData,
+        activeAppApiKey
+      );
+      setItemDetails(itemDetailsResponse);
+      const entityDataResponse = await fetchEntityData(
+        entityName,
+        userData,
+        activeAppApiKey
+      );
+      setEntityData(entityDataResponse);
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await response.json();
-        setItemDetails(data.result);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+      setLoading(false);
     };
 
-    const fetchEntityData = async () => {
-      try {
-        // Fetch entity data from the new URL
-        const response = await fetch(`${API_ENDPOINT}/read/data`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestData),
-        });
-        if (!response.ok) {
-          throw new Error("Failed to fetch entity data");
-        }
-        const data = await response.json();
-        setEntityData(data.result);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching entity data:", error);
-      }
-    };
-    fetchEntityProperties();
-    fetchEntityData();
+    fetchData();
   }, [entityName]);
 
   const handleAddClick = () => {
@@ -123,10 +95,13 @@ const EntityPage = () => {
       if (!response.ok) {
         throw new Error("Failed to save entity");
       }
-
-      // Success handling
-      console.log("Entity saved successfully");
       setShowAddModal(false);
+      const entityDataResponse = await fetchEntityData(
+        entityName,
+        userData,
+        activeAppApiKey
+      );
+      setEntityData(entityDataResponse);
     } catch (error) {
       console.error("Error saving entity:", error);
     } finally {
