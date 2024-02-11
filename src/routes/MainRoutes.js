@@ -4,6 +4,7 @@ import { lazy } from "react";
 import MainLayout from "layout/MainLayout";
 import Loadable from "ui-component/Loadable";
 import EntityPage from "views/entity";
+import EntityConfigPage from "views/entity/create";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("views/dashboard")));
@@ -43,6 +44,10 @@ const MainRoutes = {
     {
       path: "entity/:entityName",
       element: <EntityPage />,
+    },
+    {
+      path: "create/entity",
+      element: <EntityConfigPage />,
     },
     {
       path: "utils",

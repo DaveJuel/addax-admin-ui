@@ -7,11 +7,11 @@ const icons = { IconPlus };
 // ==============================|| Entity MENU ITEMS ||============================== //
 
 const createEntity = {
-  id: 'entity',
+  id: 'create-entity',
   title: 'Create Entity',
   icon: icons.IconPlus,
   type: 'item',
-  url: '/entity/create',
+  url: '/create/entity',
   breadcrumbs: false,
 };
 
