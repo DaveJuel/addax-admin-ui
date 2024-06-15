@@ -138,7 +138,7 @@ const EntityPage = () => {
             <TableHead>
               <TableRow>
                 {attribute_list.map((attribute) => (
-                  <TableCell key={attribute.name}>{attribute.name}</TableCell>
+                  <TableCell key={attribute.name}>{formatTitle(attribute.name)}</TableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -161,7 +161,7 @@ const EntityPage = () => {
         <Paper>
           <Box p={2}>
             <Typography variant="h6" gutterBottom>
-              Add New {name}
+              Add New {formatTitle(name)}
             </Typography>
             <form onSubmit={handleSubmit}>
               <Grid container spacing={2}>
@@ -169,7 +169,7 @@ const EntityPage = () => {
                   <Grid key={attribute.name} item xs={12} md={6}>
                     <TextField
                       fullWidth
-                      label={attribute.name}
+                      label={formatTitle(attribute.name)}
                       variant="outlined"
                       value={formData[attribute.name] || ""}
                       onChange={(e) => handleInputChange(e, attribute.name)}
