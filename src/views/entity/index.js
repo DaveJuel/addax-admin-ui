@@ -12,13 +12,13 @@ import {
   Box,
   Modal,
   Paper,
-  TextField,
   Grid,
 } from "@mui/material";
 import MainCard from "ui-component/cards/MainCard";
 import formatTitle from "utils/title-formatter";
 import { apiUrl } from "utils/httpclient-handler";
 import { fetchEntityData, fetchEntityProperties } from "utils/entityApi";
+import renderInputField from "ui-component/InputField";
 
 const API_ENDPOINT = `${apiUrl}/entity`;
 
@@ -167,13 +167,7 @@ const EntityPage = () => {
               <Grid container spacing={2}>
                 {attribute_list.map((attribute) => (
                   <Grid key={attribute.name} item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      label={formatTitle(attribute.name)}
-                      variant="outlined"
-                      value={formData[attribute.name] || ""}
-                      onChange={(e) => handleInputChange(e, attribute.name)}
-                    />
+                    {renderInputField(attribute, formData, handleInputChange)}
                   </Grid>
                 ))}
               </Grid>
