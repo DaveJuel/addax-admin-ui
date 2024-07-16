@@ -70,8 +70,13 @@ const EntityConfigPage = () => {
       <InputLabel>{label}</InputLabel>
       <Select id={id} value={value} onChange={onChange}>
         <MenuItem value="text">Text</MenuItem>
-        <MenuItem value="number">Number</MenuItem>
+        <MenuItem value="numeric">Number</MenuItem>
         <MenuItem value="date">Date</MenuItem>
+        <MenuItem value="datetime">Datetime</MenuItem>
+        <MenuItem value="file">File</MenuItem>
+        <MenuItem value="password">password</MenuItem>
+        <MenuItem value="long text">Long text</MenuItem>
+        <MenuItem value="embedded">Embedded</MenuItem>
       </Select>
     </FormControl>
   );
