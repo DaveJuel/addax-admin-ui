@@ -31,39 +31,32 @@ const EntityConfigPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const [numAttributes, setNumAttributes] = useState(2);
-  const [attributes, setAttributes] = useState([
-    {
+  const [attributeNumber, setAttributeNumber] = useState(0);
+  const [name, setName] = useState("");
+  const [privacy, setPrivacy] = useState("private");
+  let [attributeList, setAttributeList] = useState([]);
+  
+  const handleAddAttribute = () => {
+    setAttributeNumber(attributeNumber);
+    setAttributeList(Array.from({ length: attributeNumber }, () => ({
       attribute_name: "",
       data_type: "text",
       is_null: false,
       is_unique: false,
-    },
-  ]);
-  const [name, setName] = useState("");
-  const [privacy, setPrivacy] = useState("private");
-
-  const handleAttributeChange = (index, field, value) => {
-    const updatedAttributes = [...attributes];
-    updatedAttributes[index][field] = value;
-    setAttributes(updatedAttributes);
+    })));
   };
 
-  const handleAddAttribute = () => {
-    setNumAttributes(numAttributes + 1);
-    setAttributes([
-      ...attributes,
-      {
-        attribute_name: "",
-        data_type: "text",
-        is_null: false,
-        is_unique: false,
-      },
-    ]);
-  };
+  const onAttributeChange = (index, field, value) => {
+    if(field === 'is_null' || field === 'is_unique'){
+      attributeList[index][field] = !attributeList[index][field];
+    }else{
+      attributeList[index][field] = value;
+    }
+  }
 
-  const AttributeField = ({ label, value, onChange }) => (
+  const AttributeField = ({ id, label, value, onChange }) => (
     <TextField
+      id={id}
       label={label}
       value={value}
       onChange={onChange}
@@ -72,10 +65,10 @@ const EntityConfigPage = () => {
     />
   );
 
-  const AttributeFieldSelect = ({ label, value, onChange }) => (
+  const AttributeFieldSelect = ({ id, label, value, onChange }) => (
     <FormControl fullWidth margin="normal">
       <InputLabel>{label}</InputLabel>
-      <Select value={value} onChange={onChange}>
+      <Select id={id} value={value} onChange={onChange}>
         <MenuItem value="text">Text</MenuItem>
         <MenuItem value="number">Number</MenuItem>
         <MenuItem value="date">Date</MenuItem>
@@ -83,16 +76,16 @@ const EntityConfigPage = () => {
     </FormControl>
   );
 
-  const AttributeCheckbox = ({ label, checked, onChange }) => (
+  const AttributeCheckbox = ({ id, label, checked, onChange }) => (
     <FormControlLabel
-      control={<Checkbox checked={checked} onChange={onChange} />}
+      control={<Checkbox id={id} checked={checked} onChange={onChange} />}
       label={label}
     />
   );
 
   const API_ENDPOINT = `${apiUrl}/entity`;
 
-  useEffect(() => {
+  async function fetchEntityList(){
     const userData = JSON.parse(localStorage.getItem("user"));
     const activeAppApiKey = localStorage.getItem("activeApp") || "";
     const requestData = {
@@ -100,28 +93,60 @@ const EntityConfigPage = () => {
       login_token: userData.login_token,
       api_key: activeAppApiKey,
     };
-    const fetchEntityList = async () => {
-      try {
-        const response = await fetch(`${API_ENDPOINT}/list`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestData),
-        });
+    try {
+      const response = await fetch(`${API_ENDPOINT}/list`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await response.json();
-        setEntityList(data.result);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching entity data:", error);
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
       }
-    };
+      const data = await response.json();
+      setEntityList(data.result);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching entity data:", error);
+    }
+  }
+
+  useEffect(() => {
     fetchEntityList();
-  }, [API_ENDPOINT]);
+  }, []);
+
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      const userData = JSON.parse(localStorage.getItem("user"));
+      const activeAppApiKey = localStorage.getItem("activeApp") || "";
+      const requestData = {
+        username: userData.username,
+        login_token: userData.login_token,
+        api_key: activeAppApiKey,
+        entity_name: name,
+        icon: "fa fa-graduation-cap",
+        number_of_attribute: attributeNumber,
+        privacy: privacy,
+        attribute_list: attributeList
+      };
+      const response = await fetch(`${API_ENDPOINT}/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error('Error saving attributes:', error);
+    }
+  };
 
   const handleAddClick = () => {
     setShowAddModal(true);
@@ -207,6 +232,14 @@ const EntityConfigPage = () => {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12} sm={12}>
+                  <TextField
+                    label="Number of Attributes"
+                    type="number"
+                    value={attributeNumber}
+                    onChange={(e)=>setAttributeNumber(e.target.value)}
+                    xs={12}
+                    sm={2}
+                  />
                   <Button
                     xs={12}
                     sm={2}
@@ -217,58 +250,34 @@ const EntityConfigPage = () => {
                     Add Attribute
                   </Button>
                 </Grid>
-                {attributes.map((attribute, index) => (
-                  <React.Fragment key={index}>
+                {attributeList && attributeList.map((attribute, index) => (
+                  <React.Fragment key={'attribute-'+index}>
                     <Grid item xs={12} sm={4}>
-                      <AttributeField
-                        label="Attribute Name"
-                        value={attribute.attribute_name}
-                        onChange={(e) =>
-                          handleAttributeChange(
-                            index,
-                            "attribute_name",
-                            e.target.value
-                          )
-                        }
+                    <AttributeField
+                        id={`attribute_name-${index}`}
+                        label={`Attribute Name ${index + 1}`}
+                        onChange={(e)=>onAttributeChange(index, 'attribute_name', e.target.value)}
                       />
                     </Grid>
                     <Grid item xs={12} sm={2}>
                       <AttributeFieldSelect
-                        label="Data Type"
-                        value={attribute.data_type}
-                        onChange={(e) =>
-                          handleAttributeChange(
-                            index,
-                            "data_type",
-                            e.target.value
-                          )
-                        }
+                        id={`data_type-${index}`}
+                        label= {`Data Type ${index + 1}`}
+                        onChange={(e)=>onAttributeChange(index, 'data_type', e.target.value)}
                       />
                     </Grid>
                     <Grid item xs={12} sm={2}>
                       <AttributeCheckbox
-                        label="Nullable"
-                        checked={attribute.is_null}
-                        onChange={(e) =>
-                          handleAttributeChange(
-                            index,
-                            "is_null",
-                            e.target.checked
-                          )
-                        }
+                        id={`is_null-${index}`}
+                        label= {`Nullable ${index + 1}`}
+                        onChange={(e)=>onAttributeChange(index, 'is_null', e.target.value)}
                       />
                     </Grid>
                     <Grid item xs={12} sm={2}>
                       <AttributeCheckbox
-                        label="Unique"
-                        checked={attribute.is_unique}
-                        onChange={(e) =>
-                          handleAttributeChange(
-                            index,
-                            "is_unique",
-                            e.target.checked
-                          )
-                        }
+                        id={`is_unique-${index}`}
+                        label= {`Unique ${index + 1}`}
+                        onChange={(e)=>onAttributeChange(index, 'is_unique', e.target.value)}
                       />
                     </Grid>
                   </React.Fragment>
@@ -279,6 +288,7 @@ const EntityConfigPage = () => {
                   variant="contained"
                   color="primary"
                   type="submit"
+                  onClick={handleSave}
                 >
                   Save
                 </Button>
