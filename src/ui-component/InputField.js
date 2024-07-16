@@ -39,7 +39,19 @@ const renderInputField = (attribute, formData, handleInputChange) => {
 
   switch (attribute.data_type) {
     case "text":
+      return (
+        <TextField
+          {...commonProps}
+          type="text"
+        />
+      );
     case "long text":
+      return (<TextField
+          {...commonProps}
+          multiline={true}
+          rows={4}
+          variant="outlined"
+        />);
     case "password":
       return (
         <TextField
@@ -48,7 +60,6 @@ const renderInputField = (attribute, formData, handleInputChange) => {
           multiline={attribute.data_type === "long text"}
         />
       );
-
     case "numeric":
       return (
         <TextField
@@ -56,7 +67,6 @@ const renderInputField = (attribute, formData, handleInputChange) => {
           type="number"
         />
       );
-
     case "date":
       return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -81,8 +91,7 @@ const renderInputField = (attribute, formData, handleInputChange) => {
         </LocalizationProvider>
       );
 
-    case "cloud":
-      // Custom logic for cloud data type
+    case "file":
       return (
         <FormControl fullWidth variant="outlined">
           <InputLabel shrink>{formatTitle(attribute.name)}</InputLabel>
@@ -94,14 +103,12 @@ const renderInputField = (attribute, formData, handleInputChange) => {
       );
 
     case "embedded":
-      // Custom logic for embedded data type
       return (
         <TextField
           {...commonProps}
           type="text"
         />
       );
-
     default:
       return (
         <TextField
