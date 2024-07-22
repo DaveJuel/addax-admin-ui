@@ -177,7 +177,13 @@ const EntityPage = () => {
                 <TableRow key={index}>
                   {attribute_list.map((attribute) => (
                     <TableCell key={attribute.name}>
-                      {dataItem[attribute.name]}
+                      {attribute.data_type === 'file' ? (
+                        <a href={dataItem[attribute.name]} target="_blank" rel="noopener noreferrer">
+                          click here
+                        </a>
+                      ) : (
+                        dataItem[attribute.name]
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
