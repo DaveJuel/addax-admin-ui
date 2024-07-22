@@ -62,12 +62,42 @@ const EntityPage = () => {
     setShowAddModal(false);
   };
 
-  const handleInputChange = (e, attributeName) => {
-    const { value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [attributeName]: value,
-    }));
+  const handleInputChange = async (e, attribute) => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const activeAppApiKey = localStorage.getItem("activeApp") || "";
+    const { value, files } = e.target;
+  
+    if (attribute.data_type === 'file' && files && files[0]) {
+      const formData = new FormData();
+      formData.append('username', userData.username);
+      formData.append('login_token', userData.login_token);
+      formData.append('api_key', activeAppApiKey);
+      formData.append('file', files[0]);
+      try {
+        const response = await fetch(`${apiUrl}/upload`, {
+          method: 'POST',
+          body: formData,
+        });
+  
+        if (!response.ok) {
+          throw new Error('File upload failed');
+        }
+  
+        const result = await response.json();
+        const fileUrl = result.url;
+        setFormData((prevData) => ({
+          ...prevData,
+          [attribute.name]: fileUrl,
+        }));
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [attribute.name]: value,
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {

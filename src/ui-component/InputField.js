@@ -15,7 +15,7 @@ const renderInputField = (attribute, formData, handleInputChange) => {
     label: formatTitle(attribute.name),
     variant: "outlined",
     value: formData[attribute.name] || "",
-    onChange: (e) => handleInputChange(e, attribute.name),
+    onChange: (e) => handleInputChange(e, attribute),
   };
 
   if (attribute.has_reference) {
@@ -25,7 +25,7 @@ const renderInputField = (attribute, formData, handleInputChange) => {
         <Select
           label={formatTitle(attribute.name)}
           value={formData[attribute.name] || ""}
-          onChange={(e) => handleInputChange(e, attribute.name)}
+          onChange={(e) => handleInputChange(e, attribute)}
         >
           {attribute.options.map((item) => (
             <MenuItem key={item.id} value={item.id}>
@@ -43,6 +43,7 @@ const renderInputField = (attribute, formData, handleInputChange) => {
         <TextField
           {...commonProps}
           type="text"
+          onChange={(e) => handleInputChange(e, attribute)}
         />
       );
     case "long text":
@@ -51,13 +52,14 @@ const renderInputField = (attribute, formData, handleInputChange) => {
           multiline={true}
           rows={4}
           variant="outlined"
+          onChange={(e) => handleInputChange(e, attribute)}
         />);
     case "password":
       return (
         <TextField
           {...commonProps}
-          type={attribute.data_type === "password" ? "password" : "text"}
-          multiline={attribute.data_type === "long text"}
+          type="password"
+          onChange={(e) => handleInputChange(e, attribute)}
         />
       );
     case "numeric":
@@ -65,6 +67,7 @@ const renderInputField = (attribute, formData, handleInputChange) => {
         <TextField
           {...commonProps}
           type="number"
+          onChange={(e) => handleInputChange(e, attribute)}
         />
       );
     case "date":
@@ -73,7 +76,7 @@ const renderInputField = (attribute, formData, handleInputChange) => {
           <DatePicker
             label={formatTitle(attribute.name)}
             value={formData[attribute.name] || null}
-            onChange={(date) => handleInputChange({ target: { value: date } }, attribute.name)}
+            onChange={(date) => handleInputChange({ target: { value: date } }, attribute)}
             renderInput={(params) => <TextField {...params} {...commonProps} />}
           />
         </LocalizationProvider>
@@ -85,7 +88,7 @@ const renderInputField = (attribute, formData, handleInputChange) => {
           <DateTimePicker
             label={formatTitle(attribute.name)}
             value={formData[attribute.name] || null}
-            onChange={(date) => handleInputChange({ target: { value: date } }, attribute.name)}
+            onChange={(date) => handleInputChange({ target: { value: date } }, attribute)}
             renderInput={(params) => <TextField {...params} {...commonProps} />}
           />
         </LocalizationProvider>
@@ -97,7 +100,7 @@ const renderInputField = (attribute, formData, handleInputChange) => {
           <InputLabel shrink>{formatTitle(attribute.name)}</InputLabel>
           <Input
             type="file"
-            onChange={(e) => handleInputChange(e, attribute.name)}
+            onChange={(e) => handleInputChange(e, attribute)}
           />
         </FormControl>
       );
