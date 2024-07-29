@@ -43,10 +43,14 @@ const EntityConfigPage = () => {
       data_type: "text",
       is_null: false,
       is_unique: false,
+      has_reference: false,
     })));
   };
 
   const onAttributeChange = (index, field, value) => {
+    if(field === 'data_type' && value === 'entity'){
+      attributeList[index]['has_reference'] = true;
+    }
     if(field === 'is_null' || field === 'is_unique'){
       attributeList[index][field] = !attributeList[index][field];
     }else{
@@ -76,7 +80,7 @@ const EntityConfigPage = () => {
         <MenuItem value="file">File</MenuItem>
         <MenuItem value="password">password</MenuItem>
         <MenuItem value="long text">Long text</MenuItem>
-        <MenuItem value="embedded">Embedded</MenuItem>
+        <MenuItem value="entity">Entity</MenuItem>
       </Select>
     </FormControl>
   );
