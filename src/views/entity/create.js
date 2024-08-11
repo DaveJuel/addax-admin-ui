@@ -25,16 +25,23 @@ import {
 
 import { apiUrl } from "utils/httpclient-handler";
 import formatTitle from "utils/title-formatter";
+import { fetchEntityList, fetchEntityProperties } from "utils/entityApi";
+
+const API_ENDPOINT = `${apiUrl}/entity`;
 
 const EntityConfigPage = () => {
   const [entityList, setEntityList] = useState([]);
+  const [entityAttributes , setEntityAttributes ] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const [attributeNumber, setAttributeNumber] = useState(0);
   const [name, setName] = useState("");
   const [privacy, setPrivacy] = useState("private");
-  let [attributeList, setAttributeList] = useState([]);
+  const [attributeList, setAttributeList] = useState([]);
+
+  const userData = JSON.parse(localStorage.getItem("user"));
+  const activeAppApiKey = localStorage.getItem("activeApp") || "";
   
   const handleAddAttribute = () => {
     setAttributeNumber(attributeNumber);
@@ -47,17 +54,58 @@ const EntityConfigPage = () => {
     })));
   };
 
-  const onAttributeChange = (index, field, value) => {
-    if(field === 'data_type' && value === 'entity'){
-      attributeList[index]['has_reference'] = true;
-    }
-    if(field === 'is_null' || field === 'is_unique'){
-      attributeList[index][field] = !attributeList[index][field];
-    }else{
-      attributeList[index][field] = value;
-    }
-  }
+  const defaultDataTypes = [
+    { value: 'text', label: 'Text' },
+    { value: 'numeric', label: 'Number' },
+    { value: 'date', label: 'Date' },
+    { value: 'datetime', label: 'Datetime' },
+    { value: 'file', label: 'File' },
+    { value: 'password', label: 'Password' },
+    { value: 'long text', label: 'Long text' },
+    { value: 'entity', label: 'Entity' },
+  ];
 
+  const mapEntityListToDataTypes = (list) =>{
+    return list.map((item) => ({
+      value: item.name, label: formatTitle(item.name)
+    }));
+  };
+
+  const onAttributeChange = async (index, field, value) => {
+    const updatedAttributeList = [...attributeList];
+    updatedAttributeList[index]['has_reference'] = false;
+    if (field === 'data_type') {
+      updatedAttributeList[index][field] = value;
+      if (!defaultDataTypes.some(dataType => dataType.value === value)) {
+        // If the selected data type is not a default one, fetch entity properties
+        updatedAttributeList[index]['has_reference'] = true;
+        try {
+          const itemDetailsResponse = await fetchEntityProperties(value, userData, activeAppApiKey);
+          if (itemDetailsResponse && itemDetailsResponse.attribute_list) {
+            setEntityAttributes(mapEntityListToDataTypes(itemDetailsResponse.attribute_list));
+          }
+        } catch (error) {
+          console.error('Error fetching entity properties:', error);
+        }
+      }
+      setAttributeList(updatedAttributeList);
+    } else if (field === 'display_column') {
+      updatedAttributeList[index]['has_reference'] = true;
+      updatedAttributeList[index]['display_column'] = value;
+      setAttributeList(updatedAttributeList);
+    } else if (field === 'is_null' || field === 'is_unique') {
+      updatedAttributeList[index][field] = !updatedAttributeList[index][field];
+    } else {
+      updatedAttributeList[index][field] = value;
+    }
+  };
+
+  const formatCreateEntityRequest = (data) =>{
+    return data.map((row)=>{
+      return !defaultDataTypes.some(dataType => dataType.value === row.data_type)? {...row, has_reference: true}:row;
+      });
+  };
+  
   const AttributeField = ({ id, label, value, onChange }) => (
     <TextField
       id={id}
@@ -69,18 +117,15 @@ const EntityConfigPage = () => {
     />
   );
 
-  const AttributeFieldSelect = ({ id, label, value, onChange }) => (
+  const AttributeFieldSelect = ({ id, label, value, onChange, options = [] }) => (
     <FormControl fullWidth margin="normal">
       <InputLabel>{label}</InputLabel>
       <Select id={id} value={value} onChange={onChange}>
-        <MenuItem value="text">Text</MenuItem>
-        <MenuItem value="numeric">Number</MenuItem>
-        <MenuItem value="date">Date</MenuItem>
-        <MenuItem value="datetime">Datetime</MenuItem>
-        <MenuItem value="file">File</MenuItem>
-        <MenuItem value="password">password</MenuItem>
-        <MenuItem value="long text">Long text</MenuItem>
-        <MenuItem value="entity">Entity</MenuItem>
+        {options.map((option, idx) => (
+          <MenuItem key={idx} value={option.value}>
+            {option.label}
+          </MenuItem>
+        ))}
       </Select>
     </FormControl>
   );
@@ -92,38 +137,16 @@ const EntityConfigPage = () => {
     />
   );
 
-  const API_ENDPOINT = `${apiUrl}/entity`;
-
-  async function fetchEntityList(){
+  async function fetchEntities(){
     const userData = JSON.parse(localStorage.getItem("user"));
     const activeAppApiKey = localStorage.getItem("activeApp") || "";
-    const requestData = {
-      username: userData.username,
-      login_token: userData.login_token,
-      api_key: activeAppApiKey,
-    };
-    try {
-      const response = await fetch(`${API_ENDPOINT}/list`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
-      const data = await response.json();
-      setEntityList(data.result);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching entity data:", error);
-    }
+    const entityList = await fetchEntityList(userData, activeAppApiKey);
+    setEntityList(entityList);
+    setLoading(false);
   }
 
   useEffect(() => {
-    fetchEntityList();
+    fetchEntities();
   }, []);
 
   const handleSave = async () => {
@@ -139,14 +162,18 @@ const EntityConfigPage = () => {
         icon: "fa fa-graduation-cap",
         number_of_attribute: attributeNumber,
         privacy: privacy,
-        attribute_list: attributeList
+        attribute_list: formatCreateEntityRequest(attributeList)
       };
+      console.log(`===== <handleSave> REQUESTDATA`);
+      console.log(requestData);
+      const jsonBody = JSON.stringify(requestData);
+      debugger
       const response = await fetch(`${API_ENDPOINT}/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(requestData),
+        body: jsonBody,
       });
       if (!response.ok) {
         throw new Error("Failed to fetch data");
@@ -265,15 +292,30 @@ const EntityConfigPage = () => {
                     <AttributeField
                         id={`attribute_name-${index}`}
                         label={`Attribute Name ${index + 1}`}
+                        value={attribute.name}
                         onChange={(e)=>onAttributeChange(index, 'attribute_name', e.target.value)}
                       />
                     </Grid>
                     <Grid item xs={12} sm={2}>
-                      <AttributeFieldSelect
-                        id={`data_type-${index}`}
-                        label= {`Data Type ${index + 1}`}
-                        onChange={(e)=>onAttributeChange(index, 'data_type', e.target.value)}
-                      />
+                    <AttributeFieldSelect
+                                id={`data_type-${index}`}
+                                label={`Data Type ${index + 1}`}
+                                value={attribute.data_type}
+                                onChange={(e) => onAttributeChange(index, 'data_type', e.target.value)}
+                                options={[
+                                  ...defaultDataTypes,
+                                  ...mapEntityListToDataTypes(entityList)
+                                ]}
+                              />
+                              {attribute.has_reference && (
+                                <AttributeFieldSelect
+                                  id={`display_column-${index}`}
+                                  label={`Display Column ${index + 1}`}
+                                  value={attribute.display_column}
+                                  onChange={(e) => onAttributeChange(index, 'display_column', e.target.value)}
+                                  options={entityAttributes}
+                                />
+                              )}
                     </Grid>
                     <Grid item xs={12} sm={2}>
                       <AttributeCheckbox
