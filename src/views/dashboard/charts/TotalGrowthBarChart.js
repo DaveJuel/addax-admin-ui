@@ -62,7 +62,7 @@ const TotalGrowthBarChart = ({ isLoading }) => {
             options={chartOptions}
             series={chartSeries}
             type="bar"
-            height={560}
+            height={460}
           />
         )}
       </CardContent>
