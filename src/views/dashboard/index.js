@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 
 // project imports
-import PopularCard from './PopularCard';
+import TimeCard from './TimeCard';
 import { gridSpacing } from 'store/constant';
 import EntitiesCard from './cards/EntitiesCard';
 import UsersCard from './cards/UsersCard';
@@ -44,7 +44,7 @@ const Dashboard = () => {
             <TotalGrowthBarChart isLoading={isLoading} />
           </Grid>
           <Grid item xs={12} md={4}>
-            <PopularCard isLoading={isLoading} />
+            <TimeCard isLoading={isLoading} />
           </Grid>
         </Grid>
       </Grid>
