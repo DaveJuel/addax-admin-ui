@@ -19,6 +19,7 @@ import formatTitle from "utils/title-formatter";
 import { apiUrl } from "utils/httpclient-handler";
 import { fetchEntityData, fetchEntityProperties } from "utils/entityApi";
 import renderInputField from "ui-component/InputField";
+import TableEmptyState from "views/utilities/TableEmptyState";
 
 const API_ENDPOINT = `${apiUrl}/entity`;
 
@@ -161,7 +162,7 @@ const EntityPage = () => {
       {loading ? (
         <Typography variant="body2">Loading entity data...</Typography>
       ) : entityData.length === 0 ? (
-        <Typography variant="body2">No content available</Typography>
+        <TableEmptyState p={2} />
       ) : (
         <TableContainer>
           <Table>
