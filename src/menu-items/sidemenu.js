@@ -4,6 +4,7 @@ import dashboard from "./dashboard";
 import createEntity from "./createEntity";
 import formatTitle from "utils/title-formatter";
 import { fetchEntityList } from "utils/entityApi";
+import utilities from "./utilities";
 
 // constant
 const icons = { IconDashboard, IconArticle };
@@ -37,7 +38,7 @@ const generateMenuItems = async () => {
 
   // Construct the final menu items
   const menuItems = {
-    items: [dashboard, entityGroup], // Include the 'dashboard' menu item
+    items: [dashboard, entityGroup, utilities], // Include the 'dashboard' menu item
   };
 
   return menuItems;
