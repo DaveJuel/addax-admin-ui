@@ -23,19 +23,19 @@ const Dashboard = () => {
   return (
     <Grid container spacing={gridSpacing}>
       <Grid item xs={12}>
-        <Grid container spacing={gridSpacing}>
-          <Grid item lg={3} md={6} sm={6} xs={12}>
-            <UsersCard isLoading={isLoading} />
-          </Grid>
-          <Grid item lg={3} md={6} sm={6} xs={12}>
-            <EntitiesCard isLoading={isLoading} />
-          </Grid>
-          <Grid item lg={3} md={6} sm={6} xs={12}>
-            <FileStorageCard isLoading={isLoading} />
-          </Grid>
-          <Grid item lg={3} md={6} sm={6} xs={12}>
-            <WeatherCard isLoading={isLoading} />
-          </Grid>
+      <Grid container spacing={gridSpacing}>
+            <Grid item lg={3} md={6} sm={6} xs={12}>
+                <UsersCard isLoading={isLoading} />
+            </Grid>
+            <Grid item lg={3} md={6} sm={6} xs={12}>
+                <EntitiesCard isLoading={isLoading} />
+            </Grid>
+            <Grid item lg={3} md={6} sm={6} xs={12}>
+                <FileStorageCard isLoading={isLoading} />
+            </Grid>
+            <Grid item lg={3} md={6} sm={6} xs={12}>
+                <WeatherCard isLoading={isLoading} />
+            </Grid>
         </Grid>
       </Grid> 
       <Grid item xs={12}>
