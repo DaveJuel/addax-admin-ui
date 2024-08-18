@@ -1,9 +1,14 @@
 import PropTypes from 'prop-types';
 import DefaultCard from 'views/dashboard/cards/DefaultCard';
 import { useTheme, styled } from '@mui/material/styles';
-import { Avatar, Box, Grid, Typography } from '@mui/material';
-import CardActionGrid from 'ui-component/cards/CardActionGrid';
+import { Avatar, Box, Grid, Typography, Menu, MenuItem } from '@mui/material';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import PeopleIcon from '@mui/icons-material/People';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import LockPersonIcon from '@mui/icons-material/LockPerson';
 import CommonCardWrapper from 'views/utilities/CommonCardWrapper';
+import { useState } from 'react';
 
 // ==============================|| DASHBOARD - USERS CARD ||============================== //
 
@@ -16,6 +21,17 @@ const UsersCardWrapper = styled(CommonCardWrapper)(({ theme }) => ({
 
 const UsersCard = ({ isLoading }) => {
   const theme = useTheme();
+
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
 
   return (
     <>
@@ -38,7 +54,52 @@ const UsersCard = ({ isLoading }) => {
                       {/* Add an appropriate icon inside the Avatar */}
                     </Avatar>
                   </Grid>
-                  <CardActionGrid />
+                  <Grid item>
+                        <Avatar
+                          variant="rounded"
+                          sx={{
+                              ...theme.typography.commonAvatar,
+                              ...theme.typography.mediumAvatar,
+                              backgroundColor: theme.palette.secondary.dark,
+                              color: theme.palette.secondary[200],
+                              zIndex: 1
+                          }}
+                          aria-controls="menu-users-card"
+                          aria-haspopup="true"
+                          onClick={handleClick}
+                          >
+                              <MoreHorizIcon fontSize="inherit" />
+                        </Avatar>
+                      <Menu
+                          id="menu-users-card"
+                          anchorEl={anchorEl}
+                          keepMounted
+                          open={Boolean(anchorEl)}
+                          onClose={handleClose}
+                          variant="selectedMenu"
+                          anchorOrigin={{
+                              vertical: 'bottom',
+                              horizontal: 'right'
+                          }}
+                          transformOrigin={{
+                              vertical: 'top',
+                              horizontal: 'right'
+                          }}
+                          >
+                          <MenuItem onClick={handleClose}>
+                              <PeopleIcon sx={{ mr: 1.75 }} /> View list
+                          </MenuItem>
+                          <MenuItem onClick={handleClose}>
+                              <PersonAddIcon sx={{ mr: 1.75 }} /> Add user
+                          </MenuItem>
+                          <MenuItem onClick={handleClose}>
+                              <AssignmentIndIcon sx={{ mr: 1.75 }} /> View roles
+                          </MenuItem>
+                          <MenuItem onClick={handleClose}>
+                              <LockPersonIcon sx={{ mr: 1.75 }} /> View privileges
+                          </MenuItem>
+                      </Menu>
+                  </Grid>
                 </Grid>
               </Grid>
               <Grid item sx={{ mt: 2 }}>

@@ -1,9 +1,13 @@
 import PropTypes from 'prop-types';
 import DefaultCard from 'views/dashboard/cards/DefaultCard';
 import { styled, useTheme } from '@mui/material/styles';
-import { Box, Grid, Typography, Avatar } from '@mui/material';
 import StorageIcon from '@mui/icons-material/Storage';
 import CommonCardWrapper from 'views/utilities/CommonCardWrapper';
+import { Avatar, Box, Grid, Typography, Menu, MenuItem } from '@mui/material';
+import ViewListIcon from '@mui/icons-material/ViewList';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { useState } from 'react';
 
 // ==============================|| DASHBOARD - FILE STORAGE CARD ||============================== //
 
@@ -16,6 +20,16 @@ const FileStorageCardWrapper = styled(CommonCardWrapper)(({ theme }) => ({
 
 const FileStorageCard = ({ isLoading }) => {
   const theme = useTheme();
+
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <>
@@ -37,6 +51,46 @@ const FileStorageCard = ({ isLoading }) => {
                     >
                       <StorageIcon fontSize="large" />
                     </Avatar>
+                  </Grid>
+                  <Grid item>
+                        <Avatar
+                          variant="rounded"
+                          sx={{
+                              ...theme.typography.commonAvatar,
+                              ...theme.typography.mediumAvatar,
+                              backgroundColor: theme.palette.secondary.dark,
+                              color: theme.palette.secondary[200],
+                              zIndex: 1
+                          }}
+                          aria-controls="menu-users-card"
+                          aria-haspopup="true"
+                          onClick={handleClick}
+                          >
+                              <MoreHorizIcon fontSize="inherit" />
+                        </Avatar>
+                      <Menu
+                          id="menu-users-card"
+                          anchorEl={anchorEl}
+                          keepMounted
+                          open={Boolean(anchorEl)}
+                          onClose={handleClose}
+                          variant="selectedMenu"
+                          anchorOrigin={{
+                              vertical: 'bottom',
+                              horizontal: 'right'
+                          }}
+                          transformOrigin={{
+                              vertical: 'top',
+                              horizontal: 'right'
+                          }}
+                          >
+                          <MenuItem onClick={handleClose}>
+                              <ViewListIcon sx={{ mr: 1.75 }} /> View list
+                          </MenuItem>
+                          <MenuItem onClick={handleClose}>
+                              <FileUploadIcon sx={{ mr: 1.75 }} /> Upload File
+                          </MenuItem>
+                      </Menu>
                   </Grid>
                 </Grid>
               </Grid>
