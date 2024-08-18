@@ -1,7 +1,10 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, } from 'react';
 import { useTheme } from '@mui/material/styles';
+import { addHours } from 'date-fns';
 
-const AnalogClock = () => {
+const AnalogClock = ({ timezoneOffset }) => {
+    timezoneOffset = 0;
+    // const [timezoneOffset, setTimezoneOffset] = useState(timezoneOffset);
     const canvasRef = useRef(null);
     const theme = useTheme();
 
@@ -12,7 +15,7 @@ const AnalogClock = () => {
         ctx.translate(radius, radius);
         setInterval(() => drawClock(ctx, radius), 1000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [timezoneOffset]);
 
     const drawClock = (ctx, radius) => {
         drawFace(ctx, radius);
@@ -24,14 +27,21 @@ const AnalogClock = () => {
         ctx.arc(0, 0, radius, 0, 2 * Math.PI);
         ctx.fillStyle = theme.palette.background.paper;
         ctx.fill();
-        // Removed the outer border and numbers
     };
 
     const drawTime = (ctx, radius) => {
-        const now = new Date();
-        const hour = now.getHours() % 12;
-        const minute = now.getMinutes();
-        const second = now.getSeconds();
+        const now = new Date(Date.UTC(
+            new Date().getUTCFullYear(),
+            new Date().getUTCMonth(),
+            new Date().getUTCDate(),
+            new Date().getUTCHours(),
+            new Date().getUTCMinutes(),
+            new Date().getUTCSeconds()
+        ));
+        const adjustedTime = addHours(now, timezoneOffset);
+        const hour = adjustedTime.getHours() % 12;
+        const minute = adjustedTime.getMinutes();
+        const second = adjustedTime.getSeconds();
         drawHand(ctx, ((hour + minute / 60) * Math.PI) / 6, radius * 0.5, radius * 0.07, theme.palette.secondary.dark);
         drawHand(ctx, ((minute + second / 60) * Math.PI) / 30, radius * 0.8, radius * 0.05, theme.palette.primary.main);
         drawHand(ctx, (second * Math.PI) / 30, radius * 0.9, radius * 0.02, theme.palette.success.main);

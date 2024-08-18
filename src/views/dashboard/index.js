@@ -18,29 +18,28 @@ const Dashboard = () => {
   const [isLoading, setLoading] = useState(true);
   const [weatherData, setWeatherData] = useState(null);
 
+  const fetchWeatherData = async (location = 'Kigali') => {
+    try {
+      const url = location.includes(',')
+        ? `https://api.openweathermap.org/data/2.5/weather?lat=${location.split(',')[0]}&lon=${location.split(',')[1]}&appid=03f5e7ede41608a45eacfebc3a016cd3&units=metric`
+        : `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=03f5e7ede41608a45eacfebc3a016cd3&units=metric`;
+
+      const response = await fetch(url);
+      const data = await response.json();
+      setWeatherData(data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching weather data:', error);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchWeatherData = async (latitude, longitude) => {
-      try {
-        const location = latitude && longitude 
-          ? `lat=${latitude}&lon=${longitude}`
-          : 'q=Kigali';
-  
-        const url = `https://api.openweathermap.org/data/2.5/weather?${location}&appid=03f5e7ede41608a45eacfebc3a016cd3&units=metric`;
-        const response = await fetch(url);
-        const data = await response.json();
-        setWeatherData(data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching weather data:', error);
-        setLoading(false);
-      }
-    };
-  
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          fetchWeatherData(latitude, longitude);
+          fetchWeatherData(`${latitude},${longitude}`);
         },
         () => {
           fetchWeatherData();
@@ -50,6 +49,11 @@ const Dashboard = () => {
       fetchWeatherData();
     }
   }, []);
+
+  const handleFetchWeather = (location) => {
+    setLoading(true);
+    fetchWeatherData(location);
+  };
 
   return (
     <Grid container spacing={gridSpacing}>
@@ -65,7 +69,11 @@ const Dashboard = () => {
                 <FileStorageCard isLoading={isLoading} />
             </Grid>
             <Grid item lg={3} md={6} sm={6} xs={12}>
-                <WeatherCard isLoading={isLoading} weatherData={weatherData}/>
+            <WeatherCard
+                isLoading={isLoading}
+                weatherData={weatherData}
+                onFetchWeather={handleFetchWeather}
+              />
             </Grid>
         </Grid>
       </Grid> 
@@ -75,7 +83,7 @@ const Dashboard = () => {
             <TotalGrowthBarChart isLoading={isLoading} />
           </Grid>
           <Grid item xs={12} md={4}>
-            <TimeCard isLoading={isLoading} />
+            <TimeCard isLoading={isLoading} weatherData={weatherData}/>
           </Grid>
         </Grid>
       </Grid>
