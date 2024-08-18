@@ -6,20 +6,12 @@ import SkeletonPopularCard from 'ui-component/cards/Skeleton/PopularCard';
 import { format, addHours } from 'date-fns';
 
 // Custom analog clock component
-import AnalogClock from 'ui-component/AnalogClock';
+import AnalogClock, { getUTCTime } from 'ui-component/AnalogClock';
 
 // ==============================|| DASHBOARD - TIME CARD ||============================== //
 
 function convertOffsetToHours(offsetInSeconds) {
     return offsetInSeconds / 3600;
-}
-
-function getUTCTime(){
-    const now = new Date();
-    const timezoneOffsetInMinutes = now.getTimezoneOffset();
-    const timezoneOffsetInMilliseconds = timezoneOffsetInMinutes * 60 * 1000;
-    const utcTime = new Date(now.getTime() + timezoneOffsetInMilliseconds);
-    return utcTime;
 }
 
 const TimeCard = ({ isLoading, weatherData }) => {
@@ -50,10 +42,9 @@ const TimeCard = ({ isLoading, weatherData }) => {
     const handleTimezoneChange = (event) => {
         setTimezoneOffset(event.target.value);
     };
-
     return (
         <>
-            {isLoading ? (
+            {isLoading || !weatherData ? (
                 <SkeletonPopularCard />
             ) : (
                 <MainCard content={false}>
@@ -101,7 +92,7 @@ const TimeCard = ({ isLoading, weatherData }) => {
                         </Grid>
                         <Divider sx={{ my: 2 }} />
                         <Grid item xs={12} container justifyContent="center">
-                            <AnalogClock timezoneOffset={timezoneOffset} />
+                            <AnalogClock timeOffset={timezoneOffset} />
                         </Grid>
                     </Grid>
                 </CardContent>

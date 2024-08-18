@@ -1,10 +1,18 @@
-import { useRef, useEffect, } from 'react';
+import { useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
 import { addHours } from 'date-fns';
 
-const AnalogClock = ({ timezoneOffset }) => {
-    timezoneOffset = 0;
-    // const [timezoneOffset, setTimezoneOffset] = useState(timezoneOffset);
+export function getUTCTime(){
+    const now = new Date();
+    const timezoneOffsetInMinutes = now.getTimezoneOffset();
+    const timezoneOffsetInMilliseconds = timezoneOffsetInMinutes * 60 * 1000;
+    const utcTime = new Date(now.getTime() + timezoneOffsetInMilliseconds);
+    return utcTime;
+}
+
+const AnalogClock = ({ timeOffset }) => {
+    console.log(`Incoming Offset Time = ${timeOffset}`);
     const canvasRef = useRef(null);
     const theme = useTheme();
 
@@ -15,7 +23,7 @@ const AnalogClock = ({ timezoneOffset }) => {
         ctx.translate(radius, radius);
         setInterval(() => drawClock(ctx, radius), 1000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [timezoneOffset]);
+    }, []);
 
     const drawClock = (ctx, radius) => {
         drawFace(ctx, radius);
@@ -30,15 +38,12 @@ const AnalogClock = ({ timezoneOffset }) => {
     };
 
     const drawTime = (ctx, radius) => {
-        const now = new Date(Date.UTC(
-            new Date().getUTCFullYear(),
-            new Date().getUTCMonth(),
-            new Date().getUTCDate(),
-            new Date().getUTCHours(),
-            new Date().getUTCMinutes(),
-            new Date().getUTCSeconds()
-        ));
-        const adjustedTime = addHours(now, timezoneOffset);
+        const now = getUTCTime();
+        console.log(`UTC Time = ${now}`);
+        console.log(`Offset Time = ${timeOffset ?? 0}`);
+        const adjustedTime = addHours(now, timeOffset ?? 0);
+        console.log(`ADJUSTED Time = ${adjustedTime}`);
+
         const hour = adjustedTime.getHours() % 12;
         const minute = adjustedTime.getMinutes();
         const second = adjustedTime.getSeconds();
@@ -67,6 +72,10 @@ const AnalogClock = ({ timezoneOffset }) => {
             style={{ display: 'block', margin: 'auto' }}
         ></canvas>
     );
+};
+
+AnalogClock.propTypes = {
+    timeOffset: PropTypes.number,
 };
 
 export default AnalogClock;
