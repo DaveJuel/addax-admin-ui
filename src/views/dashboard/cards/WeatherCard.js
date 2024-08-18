@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import { Box, Grid, Typography, Avatar } from '@mui/material';
 import DefaultCard from 'views/dashboard/cards/DefaultCard';
@@ -11,47 +10,11 @@ const WeatherCardWrapper = styled(CommonCardWrapper)(({ theme }) => ({
   backgroundColor: theme.palette.info.dark, // Change color for this card
 }));
 
-const WeatherCard = ({ isLoading }) => {
+const WeatherCard = ({ isLoading, weatherData }) => {
   const theme = useTheme();
-  const [weatherData, setWeatherData] = useState(null);
-  const [loading, setLoading] = useState(isLoading);
-  useEffect(() => {
-    const fetchWeatherData = async (latitude, longitude) => {
-      try {
-        const location = latitude && longitude 
-          ? `lat=${latitude}&lon=${longitude}`
-          : 'q=Kigali';
-  
-        const url = `https://api.openweathermap.org/data/2.5/weather?${location}&appid=03f5e7ede41608a45eacfebc3a016cd3&units=metric`;
-        const response = await fetch(url);
-        const data = await response.json();
-        setWeatherData(data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching weather data:', error);
-        setLoading(false);
-      }
-    };
-  
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          fetchWeatherData(latitude, longitude);
-        },
-        () => {
-          fetchWeatherData();
-        }
-      );
-    } else {
-      fetchWeatherData();
-    }
-  }, []);
-  
-
   return (
     <>
-      {loading || !weatherData ? (
+      {isLoading || !weatherData ? (
         <DefaultCard />
       ) : (
         <WeatherCardWrapper>
@@ -98,6 +61,7 @@ const WeatherCard = ({ isLoading }) => {
 
 WeatherCard.propTypes = {
   isLoading: PropTypes.bool,
+  weatherData: PropTypes.object,
 };
 
 export default WeatherCard;

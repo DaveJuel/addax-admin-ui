@@ -16,8 +16,39 @@ import TotalGrowthBarChart from './charts/TotalGrowthBarChart';
 
 const Dashboard = () => {
   const [isLoading, setLoading] = useState(true);
+  const [weatherData, setWeatherData] = useState(null);
+
   useEffect(() => {
-    setLoading(false);
+    const fetchWeatherData = async (latitude, longitude) => {
+      try {
+        const location = latitude && longitude 
+          ? `lat=${latitude}&lon=${longitude}`
+          : 'q=Kigali';
+  
+        const url = `https://api.openweathermap.org/data/2.5/weather?${location}&appid=03f5e7ede41608a45eacfebc3a016cd3&units=metric`;
+        const response = await fetch(url);
+        const data = await response.json();
+        setWeatherData(data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching weather data:', error);
+        setLoading(false);
+      }
+    };
+  
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          fetchWeatherData(latitude, longitude);
+        },
+        () => {
+          fetchWeatherData();
+        }
+      );
+    } else {
+      fetchWeatherData();
+    }
   }, []);
 
   return (
@@ -34,7 +65,7 @@ const Dashboard = () => {
                 <FileStorageCard isLoading={isLoading} />
             </Grid>
             <Grid item lg={3} md={6} sm={6} xs={12}>
-                <WeatherCard isLoading={isLoading} />
+                <WeatherCard isLoading={isLoading} weatherData={weatherData}/>
             </Grid>
         </Grid>
       </Grid> 
