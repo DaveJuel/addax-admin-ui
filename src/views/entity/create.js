@@ -26,6 +26,7 @@ import {
 import { apiUrl } from "utils/httpclient-handler";
 import formatTitle from "utils/title-formatter";
 import { fetchEntityList, fetchEntityProperties } from "utils/entityApi";
+import IconInputField from "ui-component/IconInputField";
 
 const API_ENDPOINT = `${apiUrl}/entity`;
 
@@ -37,6 +38,7 @@ const EntityConfigPage = () => {
 
   const [attributeNumber, setAttributeNumber] = useState(0);
   const [name, setName] = useState("");
+  const [icon, setIcon] = useState("");
   const [privacy, setPrivacy] = useState("private");
   const [attributeList, setAttributeList] = useState([]);
 
@@ -159,7 +161,7 @@ const EntityConfigPage = () => {
         login_token: userData.login_token,
         api_key: activeAppApiKey,
         entity_name: name,
-        icon: "fa fa-graduation-cap",
+        icon: icon,
         number_of_attribute: attributeNumber,
         privacy: privacy,
         attribute_list: formatCreateEntityRequest(attributeList)
@@ -167,7 +169,6 @@ const EntityConfigPage = () => {
       console.log(`===== <handleSave> REQUESTDATA`);
       console.log(requestData);
       const jsonBody = JSON.stringify(requestData);
-      debugger
       const response = await fetch(`${API_ENDPOINT}/create`, {
         method: "POST",
         headers: {
@@ -254,6 +255,9 @@ const EntityConfigPage = () => {
                     InputLabelProps={{ shrink: true }}
                     margin="normal"
                   />
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  <IconInputField icon={icon} setIcon={setIcon} />
                 </Grid>
                 <Grid item xs={12} sm={12}>
                   <FormControl fullWidth margin="normal">

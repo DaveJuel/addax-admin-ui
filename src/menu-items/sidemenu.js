@@ -5,6 +5,7 @@ import createEntity from "./createEntity";
 import formatTitle from "utils/title-formatter";
 import { fetchEntityList } from "utils/entityApi";
 import utilities from "./utilities";
+import { iconMapping } from "ui-component/IconInputField";
 
 // constant
 const icons = { IconDashboard, IconArticle };
@@ -17,14 +18,19 @@ const generateMenuItems = async () => {
   const entityData = await fetchEntityList(userData, activeAppApiKey);
 
   // Map API response to menu items
-  const entityMenuItems = entityData.map((item) => ({
-    id: `entity-${item.uuid}`,
-    title: formatTitle(item.name),
-    icon: icons.IconArticle,
-    type: "item",
-    url: `/entity/${item.name}`,
-    breadcrumbs: false,
-  }));
+  const entityMenuItems = entityData.map((item) => {
+    // Get the corresponding icon component based on the item.icon name
+    const SelectedIcon = iconMapping[item.icon];
+  
+    return {
+      id: `entity-${item.uuid}`,
+      title: formatTitle(item.name),
+      icon: SelectedIcon || icons.IconArticle, // Fallback to a default icon if not found
+      type: "item",
+      url: `/entity/${item.name}`,
+      breadcrumbs: false,
+    };
+  });
   const titleText = entityMenuItems.length > 1 ? "Entities" : "Entity";
   // Construct the 'entity' group with its children
   entityMenuItems.push(createEntity);
