@@ -40,7 +40,7 @@ const EntityTable = ({ entityList, handleDelete }) => {
               ) : null
             )}
             <TableCell>
-              <IconButton onClick={() => handleDelete(dataItem.uuid)} size="small" aria-label="delete">
+              <IconButton onClick={() => handleDelete(dataItem.name)} size="small" aria-label="delete">
                 <DeleteIcon />
               </IconButton>
             </TableCell>

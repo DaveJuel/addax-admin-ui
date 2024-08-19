@@ -20,7 +20,7 @@ import {
 
 import { apiUrl } from "utils/httpclient-handler";
 import formatTitle from "utils/title-formatter";
-import { fetchEntityList, fetchEntityProperties } from "utils/entityApi";
+import { destroyEntity, fetchEntityList, fetchEntityProperties } from "utils/entityApi";
 import IconInputField from "ui-component/IconInputField";
 import EntityTable from "ui-component/EntityTable";
 
@@ -147,6 +147,22 @@ const EntityConfigPage = () => {
     fetchEntities();
   }, []);
 
+  const handleDelete = async (entityName) => {
+    setLoading(true);
+    try {
+      const userData = JSON.parse(localStorage.getItem("user"));
+      const activeAppApiKey = localStorage.getItem("activeApp") || "";
+      const response = await destroyEntity(entityName, userData, activeAppApiKey);
+      if (response.success) {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Error deleting entity:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSave = async () => {
     setLoading(true);
     try {
@@ -206,7 +222,7 @@ const EntityConfigPage = () => {
         <Typography variant="body2">No content available</Typography>
       ) : (
         <TableContainer>
-            <EntityTable entityList={entityList} handleDelete={()=>{console.log('To be implemented soon.')}}/>
+            <EntityTable entityList={entityList} handleDelete={handleDelete}/>
         </TableContainer>
       )}
       {/* Add New Entity Modal */}
