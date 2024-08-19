@@ -3,12 +3,7 @@ import React, { useEffect, useState } from "react";
 import MainCard from "ui-component/cards/MainCard";
 import {
   Typography,
-  Table,
   TableContainer,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
   Button,
   Box,
   Modal,
@@ -27,6 +22,7 @@ import { apiUrl } from "utils/httpclient-handler";
 import formatTitle from "utils/title-formatter";
 import { fetchEntityList, fetchEntityProperties } from "utils/entityApi";
 import IconInputField from "ui-component/IconInputField";
+import EntityTable from "ui-component/EntityTable";
 
 const API_ENDPOINT = `${apiUrl}/entity`;
 
@@ -210,31 +206,7 @@ const EntityConfigPage = () => {
         <Typography variant="body2">No content available</Typography>
       ) : (
         <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                {entityList.length > 0 &&
-                  Object.keys(entityList[0]).map(
-                    (key) =>
-                      key !== "uuid" && (
-                        <TableCell key={key}>{formatTitle(key)}</TableCell>
-                      )
-                  )}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {entityList.map((dataItem, index) => (
-                <TableRow key={index}>
-                  {Object.keys(dataItem).map(
-                    (key) =>
-                      key !== "uuid" && (
-                        <TableCell key={key}>{dataItem[key]}</TableCell>
-                      )
-                  )}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+            <EntityTable entityList={entityList} handleDelete={()=>{console.log('To be implemented soon.')}}/>
         </TableContainer>
       )}
       {/* Add New Entity Modal */}
