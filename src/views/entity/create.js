@@ -23,6 +23,7 @@ import formatTitle from "utils/title-formatter";
 import { fetchEntityList, fetchEntityProperties } from "utils/entityApi";
 import IconInputField from "ui-component/IconInputField";
 import EntityTable from "ui-component/EntityTable";
+import { Add, Remove } from "@mui/icons-material";
 
 const API_ENDPOINT = `${apiUrl}/entity`;
 
@@ -32,24 +33,41 @@ const EntityConfigPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const [attributeNumber, setAttributeNumber] = useState(0);
+  const [attributeNumber, setAttributeNumber] = useState(1);
   const [name, setName] = useState("");
   const [icon, setIcon] = useState("");
   const [privacy, setPrivacy] = useState("private");
-  const [attributeList, setAttributeList] = useState([]);
+  const [attributeList, setAttributeList] = useState([{
+    attribute_name: "",
+    data_type: "text",
+    is_null: false,
+    is_unique: false,
+    has_reference: false,
+  }]);
 
   const userData = JSON.parse(localStorage.getItem("user"));
   const activeAppApiKey = localStorage.getItem("activeApp") || "";
   
   const handleAddAttribute = () => {
-    setAttributeNumber(attributeNumber);
-    setAttributeList(Array.from({ length: attributeNumber }, () => ({
-      attribute_name: "",
-      data_type: "text",
-      is_null: false,
-      is_unique: false,
-      has_reference: false,
-    })));
+    const newAttributeNumber = attributeNumber + 1;
+    setAttributeNumber(newAttributeNumber);
+    setAttributeList(prevAttributeList => [
+      ...prevAttributeList,
+      {
+        attribute_name: "",
+        data_type: "text",
+        is_null: false,
+        is_unique: false,
+        has_reference: false,
+      },
+    ]);
+  };
+
+  const handleRemoveAttribute = () => {
+    if (attributeNumber > 1) {
+      setAttributeNumber(attributeNumber - 1);
+      setAttributeList(attributeList.slice(0, -1));
+    }
   };
 
   const defaultDataTypes = [
@@ -243,25 +261,6 @@ const EntityConfigPage = () => {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid item xs={12} sm={12}>
-                  <TextField
-                    label="Number of Attributes"
-                    type="number"
-                    value={attributeNumber}
-                    onChange={(e)=>setAttributeNumber(e.target.value)}
-                    xs={12}
-                    sm={2}
-                  />
-                  <Button
-                    xs={12}
-                    sm={2}
-                    variant="outlined"
-                    color="primary"
-                    onClick={handleAddAttribute}
-                  >
-                    Add Attribute
-                  </Button>
-                </Grid>
                 {attributeList && attributeList.map((attribute, index) => (
                   <React.Fragment key={'attribute-'+index}>
                     <Grid item xs={12} sm={4}>
@@ -309,6 +308,33 @@ const EntityConfigPage = () => {
                     </Grid>
                   </React.Fragment>
                 ))}
+               <Grid item xs={12} sm={12}>
+                <Box display="flex" alignItems="center">
+                  <Button
+                    xs={12}
+                    sm={2}
+                    variant="outlined"
+                    color="primary"
+                    onClick={handleAddAttribute}
+                    startIcon={<Add />}
+                  >
+                    Add Attribute
+                  </Button>
+                  <Box ml={2}>
+                    <Button
+                      xs={12}
+                      sm={2}
+                      variant="outlined"
+                      color="secondary"
+                      onClick={handleRemoveAttribute}
+                      disabled={attributeNumber <= 1}
+                      startIcon={<Remove />}
+                    >
+                      Remove Attribute
+                    </Button>
+                  </Box>
+                </Box>
+              </Grid>
               </Grid>
               <Box mt={2}>
                 <Button
