@@ -12,7 +12,6 @@ export function getUTCTime(){
 }
 
 const AnalogClock = ({ timeOffset }) => {
-    console.log(`Incoming Offset Time = ${timeOffset}`);
     const canvasRef = useRef(null);
     const theme = useTheme();
 
@@ -39,11 +38,7 @@ const AnalogClock = ({ timeOffset }) => {
 
     const drawTime = (ctx, radius) => {
         const now = getUTCTime();
-        console.log(`UTC Time = ${now}`);
-        console.log(`Offset Time = ${timeOffset ?? 0}`);
         const adjustedTime = addHours(now, timeOffset ?? 0);
-        console.log(`ADJUSTED Time = ${adjustedTime}`);
-
         const hour = adjustedTime.getHours() % 12;
         const minute = adjustedTime.getMinutes();
         const second = adjustedTime.getSeconds();

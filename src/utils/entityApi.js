@@ -27,7 +27,7 @@ export const fetchEntityList = async (userData,
       return data.result;
     } catch (error) {
       console.error("Error fetching entity data:", error);
-      return null;
+      return [];
     }
 };
 
@@ -84,7 +84,7 @@ export const destroyEntity = async (entityName, userData, activeAppApiKey) => {
       throw new Error("Failed to fetch data");
     }
     const data = await response.json();
-    return data.result;
+    return data;
   } catch (error) {
     console.error(`Error deleting entity ${entityName}:`, error);
     return null;
