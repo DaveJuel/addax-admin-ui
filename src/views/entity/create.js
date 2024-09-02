@@ -24,6 +24,7 @@ import { fetchEntityList, fetchEntityProperties } from "utils/entityApi";
 import IconInputField from "ui-component/IconInputField";
 import EntityTable from "ui-component/EntityTable";
 import { Add, Remove } from "@mui/icons-material";
+import TableEmptyState from "views/utilities/TableEmptyState";
 
 const API_ENDPOINT = `${apiUrl}/entity`;
 
@@ -217,9 +218,7 @@ const EntityConfigPage = () => {
     <MainCard tit>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography variant="body2">
-          {/* Add your dynamic content here based on the entityName */}
-          {/* You can fetch data or render specific details */}
-          Entity list.
+          Entities
         </Typography>
         <Button variant="contained" color="primary" onClick={handleAddClick}>
           Add New
@@ -228,7 +227,7 @@ const EntityConfigPage = () => {
       {loading ? (
         <Typography variant="body2">Loading entity data...</Typography>
       ) : entityList.length === 0 ? (
-        <Typography variant="body2">No content available</Typography>
+        <TableEmptyState p={2} />
       ) : (
         <TableContainer>
             <EntityTable entityList={entityList}/>
