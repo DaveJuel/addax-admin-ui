@@ -32,7 +32,6 @@ const EntityConfigPage = () => {
   const [entityAttributes , setEntityAttributes ] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [loading, setLoading] = useState(true);
-
   const [attributeNumber, setAttributeNumber] = useState(1);
   const [name, setName] = useState("");
   const [icon, setIcon] = useState("");
@@ -51,8 +50,8 @@ const EntityConfigPage = () => {
   const handleAddAttribute = () => {
     const newAttributeNumber = attributeNumber + 1;
     setAttributeNumber(newAttributeNumber);
-    setAttributeList(prevAttributeList => [
-      ...prevAttributeList,
+    setAttributeList(() => [
+      ...attributeList,
       {
         attribute_name: "",
         data_type: "text",
@@ -78,7 +77,6 @@ const EntityConfigPage = () => {
     { value: 'file', label: 'File' },
     { value: 'password', label: 'Password' },
     { value: 'long text', label: 'Long text' },
-    { value: 'entity', label: 'Entity' },
   ];
 
   const mapEntityListToDataTypes = (list) =>{
@@ -89,11 +87,9 @@ const EntityConfigPage = () => {
 
   const onAttributeChange = async (index, field, value) => {
     const updatedAttributeList = [...attributeList];
-    updatedAttributeList[index]['has_reference'] = false;
     if (field === 'data_type') {
       updatedAttributeList[index][field] = value;
       if (!defaultDataTypes.some(dataType => dataType.value === value)) {
-        // If the selected data type is not a default one, fetch entity properties
         updatedAttributeList[index]['has_reference'] = true;
         try {
           const itemDetailsResponse = await fetchEntityProperties(value, userData, activeAppApiKey);
@@ -103,17 +99,19 @@ const EntityConfigPage = () => {
         } catch (error) {
           console.error('Error fetching entity properties:', error);
         }
+      }else{
+        updatedAttributeList[index]['has_reference'] = false;
+        delete updatedAttributeList[index]['display_column'];
       }
-      setAttributeList(updatedAttributeList);
     } else if (field === 'display_column') {
       updatedAttributeList[index]['has_reference'] = true;
       updatedAttributeList[index]['display_column'] = value;
-      setAttributeList(updatedAttributeList);
     } else if (field === 'is_null' || field === 'is_unique') {
       updatedAttributeList[index][field] = !updatedAttributeList[index][field];
     } else {
       updatedAttributeList[index][field] = value;
     }
+    setAttributeList(updatedAttributeList);
   };
 
   const formatCreateEntityRequest = (data) =>{
@@ -122,12 +120,12 @@ const EntityConfigPage = () => {
       });
   };
   
-  const AttributeField = ({ id, label, value, onChange }) => (
+  const AttributeField = ({ id, label, value, onBlur }) => (
     <TextField
       id={id}
       label={label}
       value={value}
-      onChange={onChange}
+      onBlur={onBlur}
       fullWidth
       margin="normal"
     />
@@ -160,6 +158,15 @@ const EntityConfigPage = () => {
     setEntityList(entityList);
     setLoading(false);
   }
+
+  useEffect(() => {
+    for(let index = 0;index < attributeList.length; index++){
+      const element = document.getElementById(`attribute_name-${index}`);
+      if(element){
+        element.value = attributeList[index]['attribute_name'];
+      }
+    }
+  }, [attributeList, name, icon, privacy]);
 
   useEffect(() => {
     fetchEntities();
@@ -267,8 +274,7 @@ const EntityConfigPage = () => {
                     <AttributeField
                         id={`attribute_name-${index}`}
                         label={`Attribute Name ${index + 1}`}
-                        value={attribute.name}
-                        onChange={(e)=>onAttributeChange(index, 'attribute_name', e.target.value)}
+                        onBlur={(e) => onAttributeChange(index, 'attribute_name', e.target.value)}
                       />
                     </Grid>
                     <Grid item xs={12} sm={2}>
@@ -296,6 +302,7 @@ const EntityConfigPage = () => {
                       <AttributeCheckbox
                         id={`is_null-${index}`}
                         label= {`Nullable ${index + 1}`}
+                        checked={attribute.is_null || false}
                         onChange={(e)=>onAttributeChange(index, 'is_null', e.target.value)}
                       />
                     </Grid>
@@ -303,6 +310,7 @@ const EntityConfigPage = () => {
                       <AttributeCheckbox
                         id={`is_unique-${index}`}
                         label= {`Unique ${index + 1}`}
+                        checked={attribute.is_unique || false}
                         onChange={(e)=>onAttributeChange(index, 'is_unique', e.target.value)}
                       />
                     </Grid>
