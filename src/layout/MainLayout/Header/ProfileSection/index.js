@@ -61,6 +61,7 @@ const ProfileSection = () => {
       navigate(route);
     }
   };
+  
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
