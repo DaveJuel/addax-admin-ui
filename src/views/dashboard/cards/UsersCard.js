@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import DefaultCard from 'views/dashboard/cards/DefaultCard';
 import { useTheme, styled } from '@mui/material/styles';
 import { Avatar, Box, Grid, Typography, Menu, MenuItem } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import PeopleIcon from '@mui/icons-material/People';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import LockPersonIcon from '@mui/icons-material/LockPerson';
 import CommonCardWrapper from 'views/utilities/CommonCardWrapper';
@@ -31,6 +31,8 @@ const UsersCard = ({ isLoading }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const navigate = useNavigate();
 
 
   return (
@@ -86,16 +88,13 @@ const UsersCard = ({ isLoading }) => {
                               horizontal: 'right'
                           }}
                           >
-                          <MenuItem onClick={handleClose}>
+                          <MenuItem onClick={() => { handleClose(); navigate('/user/list'); }}>
                               <PeopleIcon sx={{ mr: 1.75 }} /> View list
                           </MenuItem>
-                          <MenuItem onClick={handleClose}>
-                              <PersonAddIcon sx={{ mr: 1.75 }} /> Add user
-                          </MenuItem>
-                          <MenuItem onClick={handleClose}>
+                          <MenuItem onClick={() => { handleClose(); navigate('/user/roles'); }}>
                               <AssignmentIndIcon sx={{ mr: 1.75 }} /> View roles
                           </MenuItem>
-                          <MenuItem onClick={handleClose}>
+                          <MenuItem onClick={() => { handleClose(); navigate('/user/privileges'); }}>
                               <LockPersonIcon sx={{ mr: 1.75 }} /> View privileges
                           </MenuItem>
                       </Menu>

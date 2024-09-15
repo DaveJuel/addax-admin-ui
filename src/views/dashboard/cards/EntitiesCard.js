@@ -5,9 +5,10 @@ import TableChartIcon from '@mui/icons-material/TableChart';
 import CommonCardWrapper from 'views/utilities/CommonCardWrapper';
 import { Avatar, Box, Grid, Typography, Menu, MenuItem } from '@mui/material';
 import ViewListIcon from '@mui/icons-material/ViewList';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 // ==============================|| DASHBOARD - ENTITIES CARD ||============================== //
 
@@ -30,6 +31,8 @@ const EntitiesCard = ({ isLoading }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const navigate = useNavigate();
 
   return (
     <>
@@ -84,11 +87,8 @@ const EntitiesCard = ({ isLoading }) => {
                               horizontal: 'right'
                           }}
                           >
-                          <MenuItem onClick={handleClose}>
+                          <MenuItem onClick={() => { handleClose(); navigate('/create/entity'); }}>
                               <ViewListIcon sx={{ mr: 1.75 }} /> View list
-                          </MenuItem>
-                          <MenuItem onClick={handleClose}>
-                              <AddCircleIcon sx={{ mr: 1.75 }} /> Add new
                           </MenuItem>
                       </Menu>
                   </Grid>
