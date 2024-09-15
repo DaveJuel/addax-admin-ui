@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import DefaultCard from 'views/dashboard/cards/DefaultCard';
+import { useNavigate } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
 import StorageIcon from '@mui/icons-material/Storage';
 import CommonCardWrapper from 'views/utilities/CommonCardWrapper';
 import { Avatar, Box, Grid, Typography, Menu, MenuItem } from '@mui/material';
 import ViewListIcon from '@mui/icons-material/ViewList';
-import FileUploadIcon from '@mui/icons-material/FileUpload';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { useState } from 'react';
 
@@ -30,6 +30,8 @@ const FileStorageCard = ({ isLoading }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const navigate = useNavigate();
 
   return (
     <>
@@ -84,11 +86,8 @@ const FileStorageCard = ({ isLoading }) => {
                               horizontal: 'right'
                           }}
                           >
-                          <MenuItem onClick={handleClose}>
+                          <MenuItem onClick={() => { handleClose(); navigate('/files'); }}>
                               <ViewListIcon sx={{ mr: 1.75 }} /> View list
-                          </MenuItem>
-                          <MenuItem onClick={handleClose}>
-                              <FileUploadIcon sx={{ mr: 1.75 }} /> Upload File
                           </MenuItem>
                       </Menu>
                   </Grid>

@@ -8,6 +8,7 @@ import EntityConfigPage from "views/entity/Config";
 import UserListPage from "views/user/List";
 import UserPrivilegesPage from "views/user/Privileges";
 import UserRolesPage from "views/user/Roles";
+import FileViewPage from "views/files/View";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("views/dashboard")));
@@ -63,6 +64,10 @@ const MainRoutes = {
     {
       path: "user/roles",
       element: <UserRolesPage />,
+    },
+    {
+      path: "files",
+      element: <FileViewPage />,
     },
     {
       path: "utils",
