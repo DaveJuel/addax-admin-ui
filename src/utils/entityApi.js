@@ -4,6 +4,8 @@ import { apiUrl } from "utils/httpclient-handler";
 
 const API_ENDPOINT = `${apiUrl}/entity`;
 
+export const CONFIG_ENTITIES = ['user_role', 'privilege', 'file_upload'];
+
 export const fetchEntityList = async (userData,
   activeAppApiKey)=>{
     const requestData = {
