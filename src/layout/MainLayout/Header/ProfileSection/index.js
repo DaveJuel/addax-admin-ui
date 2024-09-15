@@ -10,14 +10,12 @@ import {
   Box,
   Chip,
   ClickAwayListener,
-  Divider,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
   Paper,
   Popper,
-  Stack,
   Typography
 } from '@mui/material';
 
@@ -143,18 +141,6 @@ const ProfileSection = () => {
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
                 <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
-                  <Box sx={{ p: 2 }}>
-                    <Stack>
-                      <Stack direction="row" spacing={0.5} alignItems="center">
-                        <Typography variant="h4">Good Morning,</Typography>
-                        <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
-                          Johne Doe
-                        </Typography>
-                      </Stack>
-                      <Typography variant="subtitle2">Project Admin</Typography>
-                    </Stack>
-                    <Divider />
-                  </Box>
                   <PerfectScrollbar style={{ height: '100%', maxHeight: 'calc(100vh - 250px)', overflowX: 'hidden' }}>
                     <Box sx={{ p: 2 }}>
                       <List
@@ -176,7 +162,7 @@ const ProfileSection = () => {
                         <ListItemButton
                           sx={{ borderRadius: `${customization.borderRadius}px` }}
                           selected={selectedIndex === 0}
-                          onClick={(event) => handleListItemClick(event, 0, '#')}
+                          onClick={(event) => handleListItemClick(event, 0, '/user/profile')}
                         >
                           <ListItemIcon>
                             <IconSettings stroke={1.5} size="1.3rem" />

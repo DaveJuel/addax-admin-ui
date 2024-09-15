@@ -9,14 +9,27 @@ import {
   TableBody,
   Button,
   Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import MainCard from "ui-component/cards/MainCard";
 import TableEmptyState from "views/utilities/TableEmptyState";
 import { fetchUserProfiles } from "utils/userApi";
 
 const UserListPage = () => {
+  const [open, setOpen] = useState(false);
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
@@ -34,7 +47,7 @@ const UserListPage = () => {
   }, []);
 
   const handleAddClick = () => {
-    
+    handleClickOpen();
   };
 
 
@@ -83,6 +96,17 @@ const UserListPage = () => {
           </Table>
         </TableContainer>
       )}
+      <Dialog open={open} onClose={handleClose}>
+                <DialogTitle >Coming Soon</DialogTitle>
+                <DialogContent  >
+                This feature is under development and will be available soon.
+                </DialogContent>
+                <DialogActions >
+                <Button onClick={handleClose} color="primary">
+                    Close
+                </Button>
+                </DialogActions>
+        </Dialog>
     </MainCard>
   );
 };

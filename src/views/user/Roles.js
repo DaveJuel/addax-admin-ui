@@ -9,6 +9,10 @@ import {
   TableBody,
   Button,
   Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import MainCard from "ui-component/cards/MainCard";
 import TableEmptyState from "views/utilities/TableEmptyState";
@@ -16,9 +20,18 @@ import { fetchEntityData, fetchEntityProperties } from "utils/entityApi";
 import formatTitle from "utils/title-formatter";
 
 const UserRolesPage = () => {
+  const [open, setOpen] = useState(false);
   const [rolesData, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [roleProperties, setRoleProperties] = useState(null);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
@@ -43,7 +56,7 @@ const UserRolesPage = () => {
   }, []);
 
   const handleAddClick = () => {
-    
+    handleClickOpen();
   };
 
   if (!roleProperties) {
@@ -99,6 +112,17 @@ const UserRolesPage = () => {
           </Table>
         </TableContainer>
       )}
+        <Dialog open={open} onClose={handleClose}>
+                <DialogTitle >Coming Soon</DialogTitle>
+                <DialogContent >
+                This feature is under development and will be available soon.
+                </DialogContent>
+                <DialogActions >
+                <Button onClick={handleClose} color="primary">
+                    Close
+                </Button>
+                </DialogActions>
+        </Dialog>
     </MainCard>
   );
 };

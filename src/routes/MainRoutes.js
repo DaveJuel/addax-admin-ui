@@ -9,6 +9,7 @@ import UserListPage from "views/user/List";
 import UserPrivilegesPage from "views/user/Privileges";
 import UserRolesPage from "views/user/Roles";
 import FileViewPage from "views/files/View";
+import UserProfilePage from "views/user/Profile";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("views/dashboard")));
@@ -64,6 +65,10 @@ const MainRoutes = {
     {
       path: "user/roles",
       element: <UserRolesPage />,
+    },
+    {
+      path: "user/profile",
+      element: <UserProfilePage />,
     },
     {
       path: "files",

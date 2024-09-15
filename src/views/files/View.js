@@ -6,6 +6,10 @@ import {
   Grid,
   Card,
   CardContent,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import MainCard from "ui-component/cards/MainCard";
 import TableEmptyState from "views/utilities/TableEmptyState";
@@ -39,9 +43,18 @@ const acceptedFileTypes = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', '
 
 
 const FileViewPage = () => {
+  const [open, setOpen] = useState(false);
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fileProperties, setFileProperties] = useState([]);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
@@ -59,7 +72,7 @@ const FileViewPage = () => {
   }, []);
 
   const handleAddClick = () => {
-    
+    handleClickOpen()
   };
 
 
@@ -134,12 +147,26 @@ const FileViewPage = () => {
                   </CardContent>
                 </Card>
               </Grid>
-              
+  
             );
           })}
         </Grid>
+        
       )}
+
+        <Dialog open={open} onClose={handleClose}>
+                <DialogTitle >Coming Soon</DialogTitle>
+                <DialogContent >
+                This feature is under development and will be available soon.
+                </DialogContent>
+                <DialogActions >
+                <Button onClick={handleClose} color="primary">
+                    Close
+                </Button>
+                </DialogActions>
+        </Dialog>
     </MainCard>
+    
   );
 };
 export default FileViewPage;
