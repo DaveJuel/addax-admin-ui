@@ -92,6 +92,33 @@ export const destroyEntity = async (entityName, userData, activeAppApiKey) => {
     return null;
   }
 };
+export const deleteEntityInstance = async (entityName, instanceId, userData, activeAppApiKey) => {
+  try {
+    const requestData = {
+      entity_name: entityName,
+      instance_id: instanceId,
+      username: userData.username,
+      login_token: userData.login_token,
+      api_key: activeAppApiKey,
+    };
+    const response = await fetch(`${API_ENDPOINT}/instance/delete`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestData),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete record.");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(`Error deleting entity ${entityName}:`, error);
+    return null;
+  }
+};
 
 export const fetchEntityProperties = async (
   entityName,

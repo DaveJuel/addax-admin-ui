@@ -13,13 +13,22 @@ import {
   Modal,
   Paper,
   Grid,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Snackbar,
+  Alert,
 } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 import MainCard from "ui-component/cards/MainCard";
 import formatTitle from "utils/title-formatter";
 import { apiUrl } from "utils/httpclient-handler";
-import { fetchEntityData, fetchEntityProperties } from "utils/entityApi";
+import { deleteEntityInstance, fetchEntityData, fetchEntityProperties } from "utils/entityApi";
 import renderInputField from "ui-component/InputField";
 import TableEmptyState from "views/utilities/TableEmptyState";
+import { Edit } from "@mui/icons-material";
 
 const API_ENDPOINT = `${apiUrl}/entity`;
 
@@ -31,6 +40,21 @@ const EntityPage = () => {
   const [formData, setFormData] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const [reload, setReload] = useState(false);
+
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
@@ -140,6 +164,39 @@ const EntityPage = () => {
     }
   };
 
+  const handleDelete = async (instance) => {
+    try {
+      const userData = JSON.parse(localStorage.getItem("user"));
+      const activeAppApiKey = localStorage.getItem("activeApp") || "";
+      const response = await deleteEntityInstance(entityName,instance.uuid,userData, activeAppApiKey);
+      if (response.success) {
+        setSnackbarMessage(response.result);
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
+        setReload(true); // Indicate that a reload is required after snackbar is closed
+      } else {
+        setSnackbarMessage(response.error_message || 'An error occurred while deleting the entity.');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+      }
+    } catch (error) {
+      console.error('Error deleting entity:', error);
+      setSnackbarMessage('An unexpected error occurred. Please try again.');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+    if (reload) {
+      window.location.reload(); // Reload the page when the snackbar closes and reload is required
+    }
+  };
+
   if (!itemDetails) {
     return <div>Loading...</div>;
   }
@@ -171,6 +228,8 @@ const EntityPage = () => {
                 {attribute_list.map((attribute) => (
                   <TableCell key={attribute.name}>{formatTitle(attribute.name)}</TableCell>
                 ))}
+                <TableCell key='actions'>Actions
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -187,11 +246,31 @@ const EntityPage = () => {
                       )}
                     </TableCell>
                   ))}
+                  <TableCell>
+                    <IconButton onClick={handleClickOpen}>
+                      <Edit />
+                    </IconButton>
+                    <IconButton onClick={() => handleDelete(dataItem)} size="small" aria-label="delete">
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
+          <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>Coming Soon</DialogTitle>
+            <DialogContent>
+              This feature is under development and will be available soon.
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
         </TableContainer>
+        
       )}
       {/* Add New Entity Modal */}
       <Modal open={showAddModal} onClose={handleModalClose}>
@@ -229,6 +308,16 @@ const EntityPage = () => {
           </Box>
         </Paper>
       </Modal>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </MainCard>
   );
 };
