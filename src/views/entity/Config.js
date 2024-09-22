@@ -44,6 +44,7 @@ const EntityConfigPage = () => {
     is_unique: false,
     has_reference: false,
   }]);
+  const [isActionEdit, setIsActionEdit] = useState(false);
 
   const userData = JSON.parse(localStorage.getItem("user"));
   const activeAppApiKey = localStorage.getItem("activeApp") || "";
@@ -208,8 +209,14 @@ const EntityConfigPage = () => {
   };
 
   const handleAddClick = () => {
+    setIsActionEdit(false);
     setShowAddModal(true);
   };
+
+  const handleEditClick = (entity) => {
+    setIsActionEdit(true);
+    setShowAddModal(true);
+  }
 
   const handleModalClose = () => {
     setShowAddModal(false);
@@ -230,16 +237,20 @@ const EntityConfigPage = () => {
         <TableEmptyState p={2} />
       ) : (
         <TableContainer>
-            <EntityTable entityList={entityList}/>
+            <EntityTable entityList={entityList} handleEdit={handleEditClick}/>
         </TableContainer>
       )}
       {/* Add New Entity Modal */}
       <Modal open={showAddModal} onClose={handleModalClose}>
         <Paper>
           <Box p={2}>
-            <Typography variant="h6" gutterBottom>
-              Create new entity
-            </Typography>
+            {
+              isActionEdit ? 
+                <Typography variant="h6" gutterBottom>Modify entity</Typography>
+              :
+                <Typography variant="h6" gutterBottom>Create new entity</Typography>
+            }
+            
             <form>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={12}>
@@ -344,14 +355,27 @@ const EntityConfigPage = () => {
               </Grid>
               </Grid>
               <Box mt={2}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  onClick={handleSave}
-                >
-                  Save
-                </Button>
+                {
+                  isActionEdit?
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    onClick={handleSave}
+                  >
+                    Update
+                  </Button>
+                  :
+                  <Button
+                      variant="contained"
+                      color="primary"
+                      type="submit"
+                      // onClick={handleSave}
+                    >
+                      Submit
+                    </Button>
+                }
+               
                 <Button
                   variant="outlined"
                   color="secondary"

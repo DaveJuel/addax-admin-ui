@@ -6,8 +6,6 @@ import Loadable from "ui-component/Loadable";
 import EntityPage from "views/entity/View";
 import EntityConfigPage from "views/entity/Config";
 import UserListPage from "views/user/List";
-import UserPrivilegesPage from "views/user/Privileges";
-import UserRolesPage from "views/user/Roles";
 import FileViewPage from "views/files/View";
 import UserProfilePage from "views/user/Profile";
 
@@ -57,14 +55,6 @@ const MainRoutes = {
     {
       path: "user/list",
       element: <UserListPage />,
-    },
-    {
-      path: "user/privileges",
-      element: <UserPrivilegesPage />,
-    },
-    {
-      path: "user/roles",
-      element: <UserRolesPage />,
     },
     {
       path: "user/profile",

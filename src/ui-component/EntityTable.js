@@ -1,25 +1,16 @@
 import React, { useState } from 'react';
-import { Table, TableHead, TableRow, TableCell, TableBody, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button, Snackbar, Alert } from '@mui/material';
+import { Table, TableHead, TableRow, TableCell, TableBody, IconButton, Snackbar, Alert } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { iconMapping } from './IconInputField';
 import { Article, Edit } from '@mui/icons-material';
 import formatTitle from 'utils/title-formatter';
 import { destroyEntity } from 'utils/entityApi';
 
-const EntityTable = ({ entityList, handleDelete }) => {
-  const [open, setOpen] = useState(false);
+const EntityTable = ({ entityList, handleEdit }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const [reload, setReload] = useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const handleDeleteEntity = async (entityName) => {
     try {
@@ -87,7 +78,7 @@ const EntityTable = ({ entityList, handleDelete }) => {
                 ) : null
               )}
               <TableCell>
-                <IconButton onClick={handleClickOpen}>
+                <IconButton onClick={() =>handleEdit(dataItem)} size="small" aria-label="edit">
                   <Edit />
                 </IconButton>
                 <IconButton onClick={() => handleDeleteEntity(dataItem.name)} size="small" aria-label="delete">
@@ -98,18 +89,6 @@ const EntityTable = ({ entityList, handleDelete }) => {
           ))}
         </TableBody>
       </Table>
-
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Coming Soon</DialogTitle>
-        <DialogContent>
-          This feature is under development and will be available soon.
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}

@@ -14,10 +14,6 @@ import {
   Paper,
   Grid,
   IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Snackbar,
   Alert,
 } from "@mui/material";
@@ -40,21 +36,11 @@ const EntityPage = () => {
   const [formData, setFormData] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [open, setOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const [reload, setReload] = useState(false);
-
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
+  const [isActionEdit, setIsActionEdit] = useState(false);
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
@@ -80,6 +66,13 @@ const EntityPage = () => {
   }, [entityName]);
 
   const handleAddClick = () => {
+    setIsActionEdit(false);
+    setShowAddModal(true);
+  };
+
+  const handleEditClick = (instance) =>{
+    console.log(instance);
+    setIsActionEdit(true);
     setShowAddModal(true);
   };
 
@@ -247,7 +240,7 @@ const EntityPage = () => {
                     </TableCell>
                   ))}
                   <TableCell>
-                    <IconButton onClick={handleClickOpen}>
+                    <IconButton onClick={() => handleEditClick(dataItem)} size="small" aria-label="edit">
                       <Edit />
                     </IconButton>
                     <IconButton onClick={() => handleDelete(dataItem)} size="small" aria-label="delete">
@@ -258,17 +251,6 @@ const EntityPage = () => {
               ))}
             </TableBody>
           </Table>
-          <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Coming Soon</DialogTitle>
-            <DialogContent>
-              This feature is under development and will be available soon.
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose} color="primary">
-                Close
-              </Button>
-            </DialogActions>
-          </Dialog>
         </TableContainer>
         
       )}
@@ -276,9 +258,12 @@ const EntityPage = () => {
       <Modal open={showAddModal} onClose={handleModalClose}>
         <Paper>
           <Box p={2}>
-            <Typography variant="h6" gutterBottom>
-              Add New {formatTitle(name)}
-            </Typography>
+              {
+                isActionEdit ?
+                <Typography variant="h6" gutterBottom>Edit {formatTitle(name)}</Typography>
+                :
+                <Typography variant="h6" gutterBottom>Add New {formatTitle(name)}</Typography>
+              }
             <form onSubmit={handleSubmit}>
               <Grid container spacing={2}>
                 {attribute_list.map((attribute) => (
@@ -288,14 +273,26 @@ const EntityPage = () => {
                 ))}
               </Grid>
               <Box mt={2}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  disabled={submitting}
-                >
-                  Submit
-                </Button>
+                {
+                  isActionEdit ?
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    disabled={submitting}
+                  >
+                    Update
+                  </Button>
+                  :
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    disabled={submitting}
+                  >
+                    Submit
+                  </Button>
+                }
                 <Button
                   variant="outlined"
                   color="secondary"

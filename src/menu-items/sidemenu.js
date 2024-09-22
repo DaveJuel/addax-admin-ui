@@ -52,7 +52,7 @@ const generateMenuItems = async () => {
       title: `Roles`,
       icon: AssignmentIndIcon,
       type: "item",
-      url: `/user/roles`,
+      url: `/entity/user_role`,
       breadcrumbs: false,
     },
     {
@@ -60,7 +60,7 @@ const generateMenuItems = async () => {
       title: `Privileges`,
       icon: LockPersonIcon,
       type: "item",
-      url: `/user/privileges`,
+      url: `/entity/privilege`,
       breadcrumbs: false,
     },
   ];
