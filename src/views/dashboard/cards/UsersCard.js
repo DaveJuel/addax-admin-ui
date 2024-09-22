@@ -91,7 +91,7 @@ const UsersCard = ({ isLoading }) => {
                           <MenuItem onClick={() => { handleClose(); navigate('/user/list'); }}>
                               <PeopleIcon sx={{ mr: 1.75 }} /> View list
                           </MenuItem>
-                          <MenuItem onClick={() => { handleClose(); navigate('/user/roles'); }}>
+                          <MenuItem onClick={() => { handleClose(); navigate('/entity/user_role'); }}>
                               <AssignmentIndIcon sx={{ mr: 1.75 }} /> View roles
                           </MenuItem>
                           <MenuItem onClick={() => { handleClose(); navigate('/user/privileges'); }}>
