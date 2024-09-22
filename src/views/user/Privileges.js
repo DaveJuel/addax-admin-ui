@@ -30,6 +30,9 @@ import TableEmptyState from "views/utilities/TableEmptyState";
 import { deleteEntityInstance, fetchEntityData, fetchEntityList, fetchEntityProperties } from "utils/entityApi";
 import formatTitle from "utils/title-formatter";
 import { Edit } from "@mui/icons-material";
+import { apiUrl } from "utils/httpclient-handler";
+
+const API_ENDPOINT = `${apiUrl}/entity`;
 
 const UserPrivilegesPage = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -44,6 +47,10 @@ const UserPrivilegesPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [entityList, setEntityList] = useState([]);
   const [roleList, setRoleList] = useState([]);
+  const [selectedEntity, setSelectedEntity] = useState(null);
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [selectedReadLevel, setSelectedReadLevel] = useState(null);
+  const [selectedAccessLevel, setSelectedAccessLevel] = useState(null);
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
@@ -87,7 +94,7 @@ const UserPrivilegesPage = () => {
         setSnackbarMessage(response.result);
         setSnackbarSeverity('success');
         setSnackbarOpen(true);
-        setReload(true); // Indicate that a reload is required after snackbar is closed
+        setReload(true);
       } else {
         setSnackbarMessage(response.error_message || 'An error occurred while deleting the entity.');
         setSnackbarSeverity('error');
@@ -115,6 +122,54 @@ const UserPrivilegesPage = () => {
   const handleSubmit = async (e) =>{
     e.preventDefault();
     setSubmitting(true);
+    try{
+      const userData = JSON.parse(localStorage.getItem("user"));
+      const activeAppApiKey = localStorage.getItem("activeApp") || "";
+      // debugger;
+      const requestData = {
+        entity_name: 'privilege',
+        username: userData.username,
+        login_token: userData.login_token,
+        api_key: activeAppApiKey,
+        
+        details: {
+          entity_name: selectedEntity,
+          user_role: selectedRole,
+          access_level:selectedAccessLevel,
+    	    read_level: selectedReadLevel
+        },
+      };
+      const response = await fetch(`${API_ENDPOINT}/save`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
+      const jsonReply = await response.json();
+      if (jsonReply.success) {
+        setSnackbarMessage(jsonReply.result);
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
+        setReload(true);
+      } else {
+        setSnackbarMessage(response.error_message || 'An error occurred while deleting the entity.');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+      }
+
+      if (!response.ok) {
+        throw new Error("Failed to save entity");
+      }
+      setShowAddModal(false);
+    }catch(error){
+      console.error("Error saving privileges:", error);
+      setSnackbarMessage('An unexpected error occurred. Please try again.');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (!roleList || !entityList || !privProperties || !privileges) {
@@ -199,6 +254,7 @@ const UserPrivilegesPage = () => {
                       labelId="entity-label"
                       label="Entity List"
                       // value={selectedEntity}
+                      onChange={(e) => setSelectedEntity(e.target.value)}
                       // onChange={handleEntityChange}
                       required
                     >
@@ -219,6 +275,8 @@ const UserPrivilegesPage = () => {
                       labelId="roles-label"
                       label="Roles"
                       // value={selectedRole}
+                      onChange={(e) => setSelectedRole(e.target.value)}
+
                       // onChange={handleRoleChange}
                       required
                     >
@@ -240,6 +298,7 @@ const UserPrivilegesPage = () => {
                     <RadioGroup
                       aria-label="access-level"
                       // value={accessLevel}
+                      onChange={(e) => setSelectedAccessLevel(e.target.value)}
                       // onChange={handleAccessLevelChange}
                     >
                       <FormControlLabel value="read" control={<Radio />} label="Read" />
@@ -257,7 +316,7 @@ const UserPrivilegesPage = () => {
                     <RadioGroup
                       aria-label="read-level"
                       // value={readLevel}
-                      // onChange={handleReadLevelChange}
+                      onChange={(e) => setSelectedReadLevel(e.target.value)}
                     >
                       <FormControlLabel value="self" control={<Radio />} label="Self" />
                       <FormControlLabel value="all" control={<Radio />} label="All" />
