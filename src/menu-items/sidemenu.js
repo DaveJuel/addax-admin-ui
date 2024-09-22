@@ -60,7 +60,7 @@ const generateMenuItems = async () => {
       title: `Privileges`,
       icon: LockPersonIcon,
       type: "item",
-      url: `/entity/privilege`,
+      url: `/user/privileges`,
       breadcrumbs: false,
     },
   ];

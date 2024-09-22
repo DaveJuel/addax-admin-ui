@@ -361,7 +361,7 @@ const EntityConfigPage = () => {
                     variant="contained"
                     color="primary"
                     type="submit"
-                    onClick={handleSave}
+                    // onClick={handleSave}
                   >
                     Update
                   </Button>
@@ -370,7 +370,7 @@ const EntityConfigPage = () => {
                       variant="contained"
                       color="primary"
                       type="submit"
-                      // onClick={handleSave}
+                      onClick={handleSave}
                     >
                       Submit
                     </Button>
