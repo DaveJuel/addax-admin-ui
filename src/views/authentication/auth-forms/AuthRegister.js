@@ -133,7 +133,7 @@ const FirebaseRegister = ({ ...others }) => {
           <form noValidate onSubmit={handleSubmit} {...others}>
             <FormControl
               fullWidth
-              error={Boolean(touched.email && errors.email)}
+              error={Boolean(touched.username && errors.username)}
               sx={{ ...theme.typography.customInput }}
             >
               <InputLabel htmlFor="outlined-adornment-email-register">
