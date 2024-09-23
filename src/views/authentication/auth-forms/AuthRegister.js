@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // material-ui
 import { useTheme } from "@mui/material/styles";
@@ -31,6 +31,7 @@ import { strengthColor, strengthIndicator } from "utils/password-strength";
 // assets
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { apiUrl } from "utils/httpclient-handler";
 
 // ===========================|| FIREBASE - REGISTER ||=========================== //
 
@@ -42,6 +43,8 @@ const FirebaseRegister = ({ ...others }) => {
 
   const [strength, setStrength] = useState(0);
   const [level, setLevel] = useState();
+
+  const navigate = useNavigate();
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -65,23 +68,49 @@ const FirebaseRegister = ({ ...others }) => {
     <>
       <Formik
         initialValues={{
-          email: "",
+          username: "",
           password: "",
+          confirmPassword: "",
+          appName: "",
           submit: null,
         }}
         validationSchema={Yup.object().shape({
-          email: Yup.string()
+          username: Yup.string()
             .email("Must be a valid email")
             .max(255)
             .required("Email is required"),
           password: Yup.string().max(255).required("Password is required"),
+          appName: Yup.string().max(255).required("App name is required"),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            if (scriptedRef.current) {
-              setStatus({ success: true });
-              setSubmitting(false);
+            const url = `${apiUrl}/user/sign-up`;
+            const request = {
+              app_name: values.appName,
+              username: values.username,
+              password: values.password,
+              confirm_password: values.confirmPassword
             }
+            const response = await fetch(url, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(request),
+            });
+            if (response.ok) {
+              navigate("/auth/login");
+            } else {
+              const errorData = await response.json();
+              if (scriptedRef.current) {
+                setStatus({ success: false });
+                setErrors({ submit: "Something went wrong!!" });
+                setSubmitting(false);
+              }
+              console.error(errorData);
+              // Handle error responses here, e.g., formik.setErrors
+            }
+
           } catch (err) {
             console.error(err);
             if (scriptedRef.current) {
@@ -113,18 +142,18 @@ const FirebaseRegister = ({ ...others }) => {
               <OutlinedInput
                 id="outlined-adornment-email-register"
                 type="email"
-                value={values.email}
-                name="email"
+                value={values.username}
+                name="username"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 inputProps={{}}
               />
-              {touched.email && errors.email && (
+              {touched.username && errors.username && (
                 <FormHelperText
                   error
                   id="standard-weight-helper-text--register"
                 >
-                  {errors.email}
+                  {errors.username}
                 </FormHelperText>
               )}
             </FormControl>
@@ -134,8 +163,11 @@ const FirebaseRegister = ({ ...others }) => {
                   fullWidth
                   label="App Name"
                   margin="normal"
-                  name="fname"
+                  name="appName"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
                   type="text"
+                  value={values.appName}
                   defaultValue=""
                   sx={{ ...theme.typography.customInput }}
                 />
@@ -206,7 +238,7 @@ const FirebaseRegister = ({ ...others }) => {
             )}
             <FormControl
               fullWidth
-              error={Boolean(touched.password && errors.password)}
+              error={Boolean(touched.confirmPassword && errors.confirmPassword)}
               sx={{ ...theme.typography.customInput }}
             >
               <InputLabel htmlFor="outlined-adornment-password-register">
@@ -215,7 +247,7 @@ const FirebaseRegister = ({ ...others }) => {
               <OutlinedInput
                 id="outlined-adornment-password-register"
                 type={showPassword ? "text" : "confirm password"}
-                value={values.password}
+                value={values.confirmPassword}
                 name="confirmPassword"
                 label="Confirm Password"
                 onBlur={handleBlur}
@@ -238,12 +270,12 @@ const FirebaseRegister = ({ ...others }) => {
                 }
                 inputProps={{}}
               />
-              {touched.password && errors.password && (
+              {touched.confirmPassword && errors.confirmPassword && (
                 <FormHelperText
                   error
                   id="standard-weight-helper-text-password-register"
                 >
-                  {errors.password}
+                  {errors.confirmPassword}
                 </FormHelperText>
               )}
             </FormControl>
