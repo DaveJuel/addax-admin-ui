@@ -1,50 +1,21 @@
-import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { useState } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import { Box, Grid, Typography, Avatar, TextField, InputAdornment, IconButton, Collapse } from '@mui/material';
 import DefaultCard from 'views/dashboard/cards/DefaultCard';
 import CommonCardWrapper from 'views/utilities/CommonCardWrapper';
 import { SearchOutlined, WbSunny } from '@mui/icons-material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { fetchWeatherData } from 'utils/weatherApi';
 
 const WeatherCardWrapper = styled(CommonCardWrapper)(({ theme }) => ({
   backgroundColor: theme.palette.info.dark,
 }));
 
-const WeatherCard = () => {
+const WeatherCard = ({isLoading, weatherData, loadWeatherData}) => {
   const theme = useTheme();
   const [location, setLocation] = useState('');
   const [showSearch, setShowSearch] = useState(false);
-  const [weatherData, setWeatherData] = useState(null);
-  const [isLoading, setLoading] = useState(true);
-
-  const loadWeatherData = async (location = 'Kigali') => {
-    try {
-      const data = await fetchWeatherData(location);
-      setWeatherData(data.result);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching weather data:', error);
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          loadWeatherData(`${latitude},${longitude}`);
-        },
-        () => {
-          loadWeatherData();
-        }
-      );
-    } else {
-      loadWeatherData();
-    }
-  }, []);
-
+  
   const toggleSearch = () => {
     setShowSearch(!showSearch);
   };
@@ -53,8 +24,7 @@ const WeatherCard = () => {
     setLocation(event.target.value);
   };
 
-  const handleFetchWeather = (location) => {
-    setLoading(true);
+  const handleFetchWeather = () => {
     loadWeatherData(location);
   };
 
@@ -144,5 +114,9 @@ const WeatherCard = () => {
       )}
     </>
   );
+};
+WeatherCard.propTypes = {
+  isLoading: PropTypes.bool,
+  weatherData: PropTypes.any,
 };
 export default WeatherCard;

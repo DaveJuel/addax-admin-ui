@@ -7,8 +7,7 @@ import CommonCardWrapper from 'views/utilities/CommonCardWrapper';
 import { Avatar, Box, Grid, Typography, Menu, MenuItem } from '@mui/material';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { useEffect, useState } from 'react';
-import { apiUrl } from 'utils/httpclient-handler';
+import { useState } from 'react';
 
 // ==============================|| DASHBOARD - FILE STORAGE CARD ||============================== //
 
@@ -19,47 +18,10 @@ const FileStorageCardWrapper = styled(CommonCardWrapper)(({ theme }) => ({
   boxShadow: theme.shadows[3],
 }));
 
-const FileStorageCard = () => {
+const FileStorageCard = ({isLoading, usedSpaceSize = 0, usedSpaceUnit ='KB'}) => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [isLoading, setLoading] = useState(true);
-  const [usedSize, setUsedSize ] = useState(0);
-  const [usedUnit, setUsedUnit] = useState('KB');
   
-  const loadStorageMeasurements = async() => {
-    try{
-      const userData = JSON.parse(localStorage.getItem("user"));
-      const activeAppApiKey = localStorage.getItem("activeApp") || "";
-
-      const requestData = {
-        username: userData.username,
-        login_token: userData.login_token,
-        api_key: activeAppApiKey,
-      };
-      const response = await fetch(`${apiUrl}/upload/used-space`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
-      const data = await response.json();
-      setLoading(false);
-      setUsedSize(data.result.value);
-      setUsedUnit(data.result.unit);
-    }catch(error){
-      console.error('Failed loading used storage', error);
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    loadStorageMeasurements();
-  }, []);
-
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -135,7 +97,7 @@ const FileStorageCard = () => {
                   variant="h4"
                   sx={{ fontSize: '1.5rem', fontWeight: 500, mt: 1.75, mb: 0.75 }}
                 >
-                  {usedSize} {usedUnit}
+                  {usedSpaceSize} {usedSpaceUnit}
                 </Typography>
               </Grid>
               <Grid item sx={{ mt: 1 }}>
@@ -155,7 +117,9 @@ const FileStorageCard = () => {
 };
 
 FileStorageCard.propTypes = {
-  isLoading: PropTypes.bool
+  isLoading: PropTypes.bool,
+  usedSpaceSize: PropTypes.number,
+  usedSpaceUnit: PropTypes.string,
 };
 
 export default FileStorageCard;

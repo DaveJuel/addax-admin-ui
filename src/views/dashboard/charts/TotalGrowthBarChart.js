@@ -1,61 +1,77 @@
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
 import { Card, CardContent } from '@mui/material';
 import ReactApexChart from 'react-apexcharts';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import SkeletonTotalGrowthBarChart from 'ui-component/cards/Skeleton/TotalGrowthBarChart';
+import formatTitle from 'utils/title-formatter';
 
 // ==============================|| DASHBOARD DEFAULT - TOTAL GROWTH BAR CHART ||============================== //
 
-const TotalGrowthBarChart = ({ isLoading }) => {
+const TotalGrowthBarChart = ({isLoading, entityList}) => {
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
-
   const [chartOptions, setChartOptions] = useState({});
   const [chartSeries, setChartSeries] = useState([]);
+  const [entityNames] = useState(entityList? 
+    entityList.map((entity)=>{
+    return formatTitle(entity.name);
+  }):[]);
+  const [entityRecords] = useState(entityList?entityList.map((entity)=>{
+    return entity.total_records;
+  }): []); 
+  
+  
 
-  useEffect(() => {
-    if (!isLoading) {
-      setChartOptions({
-        chart: {
-          type: 'bar',
-          height: 350,
-          toolbar: {
-            show: false
-          }
-        },
-        xaxis: {
-          categories: ['Entity 1', 'Entity 2', 'Entity 3', 'Entity 4', 'Entity 5'],
-        },
-        colors: [theme.palette.primary.main],
-        plotOptions: {
-          bar: {
-            borderRadius: 4,
-            horizontal: false,
-          }
-        },
-        dataLabels: {
-          enabled: false,
-        },
-        theme: {
-          mode: customization.navType === 'dark' ? 'dark' : 'light'
-        },
-      });
-
-      setChartSeries([
-        {
-          name: 'Records',
-          data: [10, 41, 35, 51, 49]
+  const populateGraph = (items, records) => {
+    setChartOptions({
+      chart: {
+        type: 'bar',
+        height: 350,
+        toolbar: {
+          show: false
         }
-      ]);
+      },
+      xaxis: {
+        categories: items || [],
+      },
+      colors: [theme.palette.primary.main],
+      plotOptions: {
+        bar: {
+          borderRadius: 4,
+          horizontal: false,
+        }
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      theme: {
+        mode: customization.navType === 'dark' ? 'dark' : 'light'
+      },
+    });
+
+    setChartSeries([
+      {
+        name: 'Records',
+        data: records || []
+      }
+    ]);
+  }
+
+  useEffect(()=>{
+    if (entityList && entityList.length > 0) {
+      const entityNames = entityList.map((entity) => formatTitle(entity.name));
+      const entityRecords = entityList.map((entity) => entity.total_records);
+      populateGraph(entityNames, entityRecords);
     }
-  }, [isLoading, theme, customization.navType]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [entityList, isLoading, theme, customization.navType])
 
   return (
     <Card>
       <CardContent>
-        {isLoading ? (
+        {isLoading && !entityNames && !entityRecords? (
           <SkeletonTotalGrowthBarChart  />
         ) : (
           <ReactApexChart
@@ -71,7 +87,8 @@ const TotalGrowthBarChart = ({ isLoading }) => {
 };
 
 TotalGrowthBarChart.propTypes = {
-  isLoading: PropTypes.bool
+  isLoading: PropTypes.bool,
+  entities: PropTypes.number
 };
 
 export default TotalGrowthBarChart;
