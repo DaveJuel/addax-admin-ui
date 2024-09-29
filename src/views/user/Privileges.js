@@ -58,10 +58,9 @@ const UserPrivilegesPage = () => {
     const fetchData = async () => {
       const roles = await fetchEntityData('user_role', userData, activeAppApiKey);
       const response = await fetchEntityList(userData, activeAppApiKey);
-      const entities = response.result;
       const privileges = await fetchEntityData('privilege', userData, activeAppApiKey);
       const privilegeTableProps = await fetchEntityProperties('privilege', userData, activeAppApiKey);
-      setEntityList(entities);
+      setEntityList(response.result);
       setRoleList(roles);
       setPrivileges(privileges);
       setPrivProperties(privilegeTableProps);
@@ -126,7 +125,6 @@ const UserPrivilegesPage = () => {
     try{
       const userData = JSON.parse(localStorage.getItem("user"));
       const activeAppApiKey = localStorage.getItem("activeApp") || "";
-      // debugger;
       const requestData = {
         entity_name: 'privilege',
         username: userData.username,

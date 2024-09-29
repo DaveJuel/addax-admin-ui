@@ -39,7 +39,9 @@ const UserListPage = () => {
         userData,
         activeAppApiKey
       );
-      setUserData(entityDataResponse);
+      if(entityDataResponse){
+        setUserData(entityDataResponse);
+      }
       setLoading(false);
     };
 

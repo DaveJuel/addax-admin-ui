@@ -36,7 +36,6 @@ const Dashboard = () => {
 
   const loadWeatherData = async (location = 'Kigali') => {
     try {
-      debugger
       const response = await fetchWeatherData (location);
       setWeather(response.result);
       setLoading(false);
