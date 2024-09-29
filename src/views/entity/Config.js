@@ -156,7 +156,8 @@ const EntityConfigPage = () => {
   async function fetchEntities(){
     const userData = JSON.parse(localStorage.getItem("user"));
     const activeAppApiKey = localStorage.getItem("activeApp") || "";
-    const entityList = await fetchEntityList(userData, activeAppApiKey);
+    const response = await fetchEntityList(userData, activeAppApiKey);
+    const entityList = response.result;
     setEntityList(entityList);
     setLoading(false);
   }

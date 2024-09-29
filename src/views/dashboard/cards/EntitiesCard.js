@@ -6,8 +6,9 @@ import CommonCardWrapper from 'views/utilities/CommonCardWrapper';
 import { Avatar, Box, Grid, Typography, Menu, MenuItem } from '@mui/material';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { fetchEntityList } from 'utils/entityApi';
 
 
 // ==============================|| DASHBOARD - ENTITIES CARD ||============================== //
@@ -19,10 +20,29 @@ const EntitiesCardWrapper = styled(CommonCardWrapper)(({ theme }) => ({
   boxShadow: theme.shadows[3],
 }));
 
-const EntitiesCard = ({ isLoading }) => {
+const EntitiesCard = () => {
   const theme = useTheme();
+  const [isLoading, setLoading] = useState(true);
+  const [totalEntities, setTotalEntities] = useState(0);
+
+  const loadEntitiesList = async ()=>{
+    try{
+      const userData = JSON.parse(localStorage.getItem("user"));
+      const activeAppApiKey = localStorage.getItem("activeApp") || "";
+      const response = await fetchEntityList(userData, activeAppApiKey);
+      setTotalEntities(response.result_count);
+      setLoading(false);
+    }catch(error){
+      console.error('Failed to load entities');
+      setLoading(false);
+    }
+  }
 
   const [anchorEl, setAnchorEl] = useState(null);
+
+  useEffect (() => {
+    loadEntitiesList();
+  }, []);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -99,7 +119,7 @@ const EntitiesCard = ({ isLoading }) => {
                   variant="h4"
                   sx={{ fontSize: '1.5rem', fontWeight: 500, mt: 1.75, mb: 0.75 }}
                 >
-                  500
+                  {totalEntities}
                 </Typography>
               </Grid>
               <Grid item sx={{ mt: 1 }}>

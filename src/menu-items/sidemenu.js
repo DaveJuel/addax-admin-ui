@@ -13,7 +13,8 @@ const icons = { IconDashboard, IconArticle };
 const generateMenuItems = async () => {
   const userData = JSON.parse(localStorage.getItem("user"));
   const activeAppApiKey = localStorage.getItem("activeApp") || "";
-  const entityData = await fetchEntityList(userData, activeAppApiKey);
+  const response = await fetchEntityList(userData, activeAppApiKey);
+  const entityData = response.result;
   const entityMenuItems = entityData.filter(item => !CONFIG_ENTITIES.includes(item.name)).map((item) => {
     
     const SelectedIcon = iconMapping[item.icon];

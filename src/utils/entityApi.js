@@ -26,7 +26,7 @@ export const fetchEntityList = async (userData,
         throw new Error("Failed to fetch data");
       }
       const data = await response.json();
-      return data.result;
+      return data;
     } catch (error) {
       console.error("Error fetching entity data:", error);
       return [];
