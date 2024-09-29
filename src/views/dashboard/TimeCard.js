@@ -7,6 +7,7 @@ import { format, addHours } from 'date-fns';
 
 // Custom analog clock component
 import AnalogClock, { getUTCTime } from 'ui-component/AnalogClock';
+import { fetchWeatherData } from 'utils/weatherApi';
 
 // ==============================|| DASHBOARD - TIME CARD ||============================== //
 
@@ -14,10 +15,39 @@ function convertOffsetToHours(offsetInSeconds) {
     return offsetInSeconds / 3600;
 }
 
-const TimeCard = ({ isLoading, weatherData }) => {
+const TimeCard = () => {
     const [timezoneOffset, setTimezoneOffset] = useState(0);
     const [date, setDate] = useState(format(new Date(), 'MMMM d, yyyy'));
     const [time, setTime] = useState(format(new Date(), 'hh:mm:ss a'));
+    const [isLoading, setLoading] = useState(true);
+    const [weatherData, setWeatherData] = useState(null);
+
+    const loadWeatherData = async (location = 'Kigali') => {
+        try {
+            const data = await fetchWeatherData(location);
+            setWeatherData(data.result);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching weather data:', error);
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              loadWeatherData(`${latitude},${longitude}`);
+            },
+            () => {
+              loadWeatherData();
+            }
+          );
+        } else {
+          loadWeatherData();
+        }
+      }, []);
 
     useEffect(() => {
         const timer = setInterval(() => {

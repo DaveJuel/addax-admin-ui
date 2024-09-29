@@ -1,21 +1,49 @@
-import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import { Box, Grid, Typography, Avatar, TextField, InputAdornment, IconButton, Collapse } from '@mui/material';
 import DefaultCard from 'views/dashboard/cards/DefaultCard';
 import CommonCardWrapper from 'views/utilities/CommonCardWrapper';
 import { SearchOutlined, WbSunny } from '@mui/icons-material';
-import { useState } from 'react';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { fetchWeatherData } from 'utils/weatherApi';
 
-
-// Styled component for the WeatherCard
 const WeatherCardWrapper = styled(CommonCardWrapper)(({ theme }) => ({
-  backgroundColor: theme.palette.info.dark, // Change color for this card
+  backgroundColor: theme.palette.info.dark,
 }));
-const WeatherCard = ({ isLoading, weatherData, onFetchWeather }) => {
+
+const WeatherCard = () => {
   const theme = useTheme();
   const [location, setLocation] = useState('');
   const [showSearch, setShowSearch] = useState(false);
+  const [weatherData, setWeatherData] = useState(null);
+  const [isLoading, setLoading] = useState(true);
+
+  const loadWeatherData = async (location = 'Kigali') => {
+    try {
+      const data = await fetchWeatherData(location);
+      setWeatherData(data.result);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching weather data:', error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          loadWeatherData(`${latitude},${longitude}`);
+        },
+        () => {
+          loadWeatherData();
+        }
+      );
+    } else {
+      loadWeatherData();
+    }
+  }, []);
 
   const toggleSearch = () => {
     setShowSearch(!showSearch);
@@ -25,11 +53,11 @@ const WeatherCard = ({ isLoading, weatherData, onFetchWeather }) => {
     setLocation(event.target.value);
   };
 
-  const handleFetchWeather = () => {
-    if (location.trim()) {
-      onFetchWeather(location);
-    }
+  const handleFetchWeather = (location) => {
+    setLoading(true);
+    loadWeatherData(location);
   };
+
   return (
     <>
       {isLoading || !weatherData ? (
@@ -117,11 +145,4 @@ const WeatherCard = ({ isLoading, weatherData, onFetchWeather }) => {
     </>
   );
 };
-
-WeatherCard.propTypes = {
-  isLoading: PropTypes.bool,
-  weatherData: PropTypes.object,
-  onFetchWeather: PropTypes.func.isRequired,
-};
-
 export default WeatherCard;
