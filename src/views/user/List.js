@@ -40,7 +40,7 @@ const UserListPage = () => {
         activeAppApiKey
       );
       if(entityDataResponse){
-        setUserData(entityDataResponse);
+        setUserData(entityDataResponse.result);
       }
       setLoading(false);
     };
@@ -75,18 +75,18 @@ const UserListPage = () => {
           <Table>
             <TableHead>
               <TableRow>
-              <TableCell key='first_name'>First name</TableCell>
-              <TableCell key='last_name'>Last name</TableCell>
-              <TableCell key='email'>Email</TableCell>
-              <TableCell key='phone_number'>Phone number</TableCell>
-              <TableCell key='address'>Address</TableCell>
+                <TableCell key='username'>Username</TableCell>
+                <TableCell key='type'>Type</TableCell>
+                <TableCell key='last_login'>Last Login</TableCell>
+                <TableCell key='role'>Role</TableCell>
+                <TableCell key='status'>Status</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {userData.map((dataItem, index) => (
                 <TableRow key={index}>
                     {Object.keys(dataItem).map((key) =>
-                        key !== "uuid" ? (
+                        key !== "uuid" && key!=="login_token" ? (
                         <TableCell key={key}>
                             {(dataItem[key])}
                         </TableCell>

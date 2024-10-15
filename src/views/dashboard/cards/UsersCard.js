@@ -19,7 +19,7 @@ const UsersCardWrapper = styled(CommonCardWrapper)(({ theme }) => ({
   boxShadow: theme.shadows[3],
 }));
 
-const UsersCard = ({ isLoading }) => {
+const UsersCard = ({ isLoading, userCount }) => {
   const theme = useTheme();
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -106,7 +106,7 @@ const UsersCard = ({ isLoading }) => {
                   variant="h4"
                   sx={{ fontSize: '1.5rem', fontWeight: 500, mt: 1.75, mb: 0.75 }}
                 >
-                  1,250
+                  {userCount}
                 </Typography>
               </Grid>
               <Grid item sx={{ mt: 1 }}>
@@ -126,7 +126,8 @@ const UsersCard = ({ isLoading }) => {
 };
 
 UsersCard.propTypes = {
-  isLoading: PropTypes.bool
+  isLoading: PropTypes.bool,
+  userCount: PropTypes.number
 };
 
 export default UsersCard;

@@ -9,7 +9,7 @@ export const fetchUserProfiles = async(userData,
             api_key: activeAppApiKey,
           };
           try {
-            const response = await fetch(`${API_ENDPOINT}/profile/all`, {
+            const response = await fetch(`${API_ENDPOINT}/list`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -21,7 +21,7 @@ export const fetchUserProfiles = async(userData,
               throw new Error("Failed to fetch data");
             }
             const data = await response.json();
-            return data.result;
+            return data;
           } catch (error) {
             console.error("Error fetching data:", error);
             return null;

@@ -13,12 +13,14 @@ import { useEffect, useState } from 'react';
 import { fetchEntityList } from 'utils/entityApi';
 import { fetchWeatherData } from 'utils/weatherApi';
 import { apiUrl } from 'utils/httpclient-handler';
+import { fetchUserProfiles } from 'utils/userApi';
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 
 const Dashboard = () => {
   const [isLoading, setLoading] = useState(true);
   const [entities, setEntities] = useState([]);
   const [numberOfEntities, setNumberOfEntities] = useState(0);
+  const [numberOfUsers, setNumberOfUsers] = useState(0);
   const [weather, setWeather] = useState(null);
   const [usedSpace, setUsedSpace] = useState({size: 0, unit:'KB'})
   
@@ -28,6 +30,21 @@ const Dashboard = () => {
       const activeAppApiKey = localStorage.getItem("activeApp") || "";
       const response = await fetchEntityList(userData, activeAppApiKey);
       return response;
+    }catch(error){
+      console.error('Failed loading entity list');
+      setLoading(false);
+    }
+  }
+
+  const loadUserList = async()=>{
+    try{
+      const userData = JSON.parse(localStorage.getItem("user"));
+      const activeAppApiKey = localStorage.getItem("activeApp") || "";
+      const entityDataResponse = await fetchUserProfiles(
+        userData,
+        activeAppApiKey
+      );
+      return entityDataResponse;
     }catch(error){
       console.error('Failed loading entity list');
       setLoading(false);
@@ -82,6 +99,8 @@ const Dashboard = () => {
       setNumberOfEntities(entityData.result_count);
       const storage = await loadStorageData();
       setUsedSpace(storage);
+      const users = await loadUserList();
+      setNumberOfUsers(users.result_count);
 
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -106,7 +125,7 @@ const Dashboard = () => {
       <Grid item xs={12}>
       <Grid container spacing={gridSpacing}>
             <Grid item lg={3} md={6} sm={6} xs={12}>
-                <UsersCard isLoading={isLoading} />
+                <UsersCard isLoading={isLoading} userCount={numberOfUsers} />
             </Grid>
             <Grid item lg={3} md={6} sm={6} xs={12}>
                 <EntitiesCard isLoading={isLoading} entityCount={numberOfEntities}/>
