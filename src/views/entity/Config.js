@@ -30,7 +30,6 @@ const API_ENDPOINT = `${apiUrl}/entity`;
 
 const EntityConfigPage = () => {
   const [entityList, setEntityList] = useState([]);
-  const [entityAttributes , setEntityAttributes ] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [attributeNumber, setAttributeNumber] = useState(1);
@@ -43,6 +42,8 @@ const EntityConfigPage = () => {
     is_null: false,
     is_unique: false,
     has_reference: false,
+    display_column: null,
+    display_column_options: null,
   }]);
   const [isActionEdit, setIsActionEdit] = useState(false);
 
@@ -96,7 +97,7 @@ const EntityConfigPage = () => {
         try {
           const itemDetailsResponse = await fetchEntityProperties(value, userData, activeAppApiKey);
           if (itemDetailsResponse && itemDetailsResponse.attribute_list) {
-            setEntityAttributes(mapEntityListToDataTypes(itemDetailsResponse.attribute_list));
+            updatedAttributeList[index]['display_column_options'] = mapEntityListToDataTypes(itemDetailsResponse.attribute_list);
           }
         } catch (error) {
           console.error('Error fetching entity properties:', error);
@@ -305,7 +306,7 @@ const EntityConfigPage = () => {
                                   label={`Display Column ${index + 1}`}
                                   value={attribute.display_column}
                                   onChange={(e) => onAttributeChange(index, 'display_column', e.target.value)}
-                                  options={entityAttributes}
+                                  options={attribute.display_column_options}
                                 />
                               )}
                     </Grid>
