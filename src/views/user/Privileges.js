@@ -180,8 +180,6 @@ const UserPrivilegesPage = () => {
     <MainCard>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography variant="body2">
-          {/* Add your dynamic content here based on the entityName */}
-          {/* You can fetch data or render specific details */}
           Privileges
         </Typography>
         <Button variant="contained" color="primary" onClick={handleAddClick}>
@@ -215,7 +213,7 @@ const UserPrivilegesPage = () => {
                         click here
                       </a>
                     ) : (
-                      dataItem[attribute.name]
+                      formatTitle(dataItem[attribute.name])
                     )}
                   </TableCell>
                 ))}
@@ -233,7 +231,6 @@ const UserPrivilegesPage = () => {
           </Table>
         </TableContainer>
       )}
-       {/* Add New Entity Modal */}
       <Modal open={showAddModal} onClose={handleModalClose}>
         <Paper style={{ maxWidth: '500px', margin: 'auto', padding: '20px' }}>
           <Box p={3}>
@@ -252,9 +249,7 @@ const UserPrivilegesPage = () => {
                     <Select
                       labelId="entity-label"
                       label="Entity List"
-                      // value={selectedEntity}
                       onChange={(e) => setSelectedEntity(e.target.value)}
-                      // onChange={handleEntityChange}
                       required
                     >
                       {entityList.map((entity, index) => (
@@ -273,10 +268,7 @@ const UserPrivilegesPage = () => {
                     <Select
                       labelId="roles-label"
                       label="Roles"
-                      // value={selectedRole}
                       onChange={(e) => setSelectedRole(e.target.value)}
-
-                      // onChange={handleRoleChange}
                       required
                     >
                       {roleList.map((role, index) => (
@@ -296,9 +288,7 @@ const UserPrivilegesPage = () => {
                     </Typography>
                     <RadioGroup
                       aria-label="access-level"
-                      // value={accessLevel}
                       onChange={(e) => setSelectedAccessLevel(e.target.value)}
-                      // onChange={handleAccessLevelChange}
                     >
                       <FormControlLabel value="read" control={<Radio />} label="Read" />
                       <FormControlLabel value="write" control={<Radio />} label="Write" />
@@ -314,7 +304,6 @@ const UserPrivilegesPage = () => {
                     </Typography>
                     <RadioGroup
                       aria-label="read-level"
-                      // value={readLevel}
                       onChange={(e) => setSelectedReadLevel(e.target.value)}
                     >
                       <FormControlLabel value="self" control={<Radio />} label="Self" />
