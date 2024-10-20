@@ -98,7 +98,9 @@ const Dashboard = () => {
       setEntities(entityData.result);
       setNumberOfEntities(entityData.result_count);
       const storage = await loadStorageData();
-      setUsedSpace(storage);
+      if(storage){
+        setUsedSpace(storage);
+      }
       const users = await loadUserList();
       setNumberOfUsers(users.result_count);
 
