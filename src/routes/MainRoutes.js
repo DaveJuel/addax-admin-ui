@@ -50,7 +50,7 @@ const MainRoutes = {
       element: <EntityPage />,
     },
     {
-      path: "create/entity",
+      path: "/entity/config",
       element: <EntityConfigPage />,
     },
     {

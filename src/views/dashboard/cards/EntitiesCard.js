@@ -87,7 +87,7 @@ const EntitiesCard = ({isLoading, entityCount}) => {
                               horizontal: 'right'
                           }}
                           >
-                          <MenuItem onClick={() => { handleClose(); navigate('/create/entity'); }}>
+                          <MenuItem onClick={() => { handleClose(); navigate('/entity/config'); }}>
                               <ViewListIcon sx={{ mr: 1.75 }} /> View list
                           </MenuItem>
                       </Menu>
