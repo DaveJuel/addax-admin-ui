@@ -38,6 +38,7 @@ const EntityConfigPage = () => {
   const [entityList, setEntityList] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [attributeNumber, setAttributeNumber] = useState(1);
   const [name, setName] = useState("");
   const [icon, setIcon] = useState("");
@@ -185,6 +186,7 @@ const EntityConfigPage = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setSubmitting(true);
     try {
       const userData = JSON.parse(localStorage.getItem("user"));
       const activeAppApiKey = localStorage.getItem("activeApp") || "";
@@ -218,10 +220,12 @@ const EntityConfigPage = () => {
         setSnackbarOpen(true);
       }
     } catch (error) {
-      console.error('Error saving attributes:', error);
+      console.error('Error creating an entity.:', error);
       setSnackbarMessage('An unexpected error occurred. Please try again.');
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -398,6 +402,7 @@ const EntityConfigPage = () => {
                       color="primary"
                       type="submit"
                       onClick={handleSave}
+                      disabled={submitting}
                     >
                       Submit
                     </Button>
