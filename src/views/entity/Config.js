@@ -16,6 +16,8 @@ import {
   Checkbox,
   FormControlLabel,
   Grid,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 
 import { apiUrl } from "utils/httpclient-handler";
@@ -29,6 +31,10 @@ import TableEmptyState from "views/utilities/TableEmptyState";
 const API_ENDPOINT = `${apiUrl}/entity`;
 
 const EntityConfigPage = () => {
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const [reload, setReload] = useState(false);
   const [entityList, setEntityList] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -176,7 +182,8 @@ const EntityConfigPage = () => {
     fetchEntities();
   }, []);
 
-  const handleSave = async () => {
+  const handleSave = async (e) => {
+    e.preventDefault();
     setLoading(true);
     try {
       const userData = JSON.parse(localStorage.getItem("user"));
@@ -191,8 +198,6 @@ const EntityConfigPage = () => {
         privacy: privacy,
         attribute_list: formatCreateEntityRequest(attributeList)
       };
-      console.log(`===== <handleSave> REQUESTDATA`);
-      console.log(requestData);
       const jsonBody = JSON.stringify(requestData);
       const response = await fetch(`${API_ENDPOINT}/create`, {
         method: "POST",
@@ -201,12 +206,22 @@ const EntityConfigPage = () => {
         },
         body: jsonBody,
       });
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
+      const jsonReply = await response.json();
+      if (jsonReply.success) {
+        setSnackbarMessage('Entity created successfully!');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
+        setReload(true);
+      } else {
+        setSnackbarMessage(response.error_message || 'An error occurred while creating the entity.');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
       }
-      setLoading(false);
     } catch (error) {
       console.error('Error saving attributes:', error);
+      setSnackbarMessage('An unexpected error occurred. Please try again.');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     }
   };
 
@@ -219,6 +234,16 @@ const EntityConfigPage = () => {
     setIsActionEdit(true);
     setShowAddModal(true);
   }
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+    if (reload) {
+      window.location.reload();
+    }
+  };
 
   const handleModalClose = () => {
     setShowAddModal(false);
@@ -390,6 +415,19 @@ const EntityConfigPage = () => {
           </Box>
         </Paper>
       </Modal>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+        onClose={handleSnackbarClose} 
+        severity={snackbarSeverity} 
+        sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </MainCard>
   );
 };

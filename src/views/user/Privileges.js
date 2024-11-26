@@ -76,7 +76,6 @@ const UserPrivilegesPage = () => {
   };
 
   const handleEditClick = (instance) =>{
-    console.log(instance);
     setIsActionEdit(true);
     setShowAddModal(true);
   };

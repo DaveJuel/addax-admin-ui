@@ -128,7 +128,6 @@ const UserListPage = () => {
   };
 
   const handleEditClick = (instance) =>{
-    console.log(instance);
     setIsActionEdit(true);
     setShowAddModal(true);
   };
