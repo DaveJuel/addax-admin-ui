@@ -5,7 +5,7 @@ import { Link, Typography, Stack } from '@mui/material';
 
 const AuthFooter = () => (
   <Stack direction="row" justifyContent="space-between">
-    <Typography variant="subtitle2" component={Link} href="https://addax-api.herokuapp.com/" target="_blank" underline="hover">
+    <Typography variant="subtitle2" component={Link} href="https://documenter.getpostman.com/view/23507537/2s93XsY6da" target="_blank" underline="hover">
       API docs
     </Typography>
     <Typography variant="subtitle2" component={Link} href="#" target="_blank" underline="hover">
