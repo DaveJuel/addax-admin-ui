@@ -9,7 +9,9 @@ import UserListPage from "views/user/List";
 import FileViewPage from "views/files/View";
 import UserProfilePage from "views/user/Profile";
 import UserPrivilegesPage from "views/user/Privileges";
-
+import AppProfilePage from "views/settings/AppProfile";
+import PaymentMethods from "views/settings/PaymentMethods";
+import Subscription from "views/settings/Subscription";
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("views/dashboard")));
 
@@ -17,7 +19,7 @@ const DashboardDefault = Loadable(lazy(() => import("views/dashboard")));
 const UtilsTypography = Loadable(
   lazy(() => import("views/utilities/Typography"))
 );
-const UtilsColor = Loadable(lazy(() => import("views/utilities/Color")));
+const SettingsColor = Loadable(lazy(() => import("views/settings/ColorPalette")));
 const UtilsShadow = Loadable(lazy(() => import("views/utilities/Shadow")));
 const UtilsMaterialIcons = Loadable(
   lazy(() => import("views/utilities/MaterialIcons"))
@@ -70,6 +72,27 @@ const MainRoutes = {
       element: <FileViewPage />,
     },
     {
+      path:"settings",
+      children: [
+        {
+          path:"app-profile",
+          element: <AppProfilePage />
+        },
+        {
+          path: "color-palette",
+          element: <SettingsColor />
+        },
+        {
+          path: "subscription",
+          element: <Subscription />
+        },
+        {
+          path: "payment-methods",
+          element: <PaymentMethods />
+        }
+      ]
+    },
+    {
       path: "utils",
       children: [
         {
@@ -83,7 +106,7 @@ const MainRoutes = {
       children: [
         {
           path: "util-color",
-          element: <UtilsColor />,
+          element: <SettingsColor />,
         },
       ],
     },

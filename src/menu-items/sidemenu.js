@@ -6,8 +6,8 @@ import dashboard from "./dashboard";
 import createEntity from "./createEntity";
 import formatTitle from "utils/title-formatter";
 import { CONFIG_ENTITIES, fetchEntityList } from "utils/entityApi";
-import utilities from "./utilities";
 import { iconMapping } from "utils/iconMapping";
+import settings from "./settings";
 
 const icons = { IconDashboard, IconArticle };
 const generateMenuItems = async () => {
@@ -74,7 +74,7 @@ const generateMenuItems = async () => {
     children: userAccess,
   };
   const menuItems = {
-    items: [dashboard, entityGroup, accessLevel, utilities],
+    items: [dashboard, entityGroup, accessLevel, settings],
   };
 
   return menuItems;
