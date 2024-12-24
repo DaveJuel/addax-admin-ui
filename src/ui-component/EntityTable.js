@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Table, TableHead, TableRow, TableCell, TableBody, IconButton, Snackbar, Alert } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { iconMapping } from './IconInputField';
 import { Article, Edit } from '@mui/icons-material';
 import formatTitle from 'utils/title-formatter';
 import { destroyEntity } from 'utils/entityApi';
+import { iconMapping } from 'utils/iconMapping';
 
 const EntityTable = ({ entityList, handleEdit }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);

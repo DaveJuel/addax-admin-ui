@@ -7,7 +7,7 @@ import createEntity from "./createEntity";
 import formatTitle from "utils/title-formatter";
 import { CONFIG_ENTITIES, fetchEntityList } from "utils/entityApi";
 import utilities from "./utilities";
-import { iconMapping } from "ui-component/IconInputField";
+import { iconMapping } from "utils/iconMapping";
 
 const icons = { IconDashboard, IconArticle };
 const generateMenuItems = async () => {
