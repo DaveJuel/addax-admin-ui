@@ -18,54 +18,52 @@ const TotalGrowthBarChart = ({isLoading, entityList}) => {
     entityList.map((entity)=>{
     return formatTitle(entity.name);
   }):[]);
+
   const [entityRecords] = useState(entityList?entityList.map((entity)=>{
     return entity.total_records;
   }): []); 
-  
-  
-
-  const populateGraph = (items, records) => {
-    setChartOptions({
-      chart: {
-        type: 'bar',
-        height: 350,
-        toolbar: {
-          show: false
-        }
-      },
-      xaxis: {
-        categories: items || [],
-      },
-      colors: [theme.palette.primary.main],
-      plotOptions: {
-        bar: {
-          borderRadius: 4,
-          horizontal: false,
-        }
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      theme: {
-        mode: customization.navType === 'dark' ? 'dark' : 'light'
-      },
-    });
-
-    setChartSeries([
-      {
-        name: 'Records',
-        data: records || []
-      }
-    ]);
-  }
 
   useEffect(()=>{
-    if (entityList && entityList.length > 0) {
+    const populateGraph = (items, records) => {
+      setChartOptions({
+        chart: {
+          type: 'bar',
+          height: 350,
+          toolbar: {
+            show: false
+          }
+        },
+        xaxis: {
+          categories: items || [],
+        },
+        colors: [theme.palette.primary.main],
+        plotOptions: {
+          bar: {
+            borderRadius: 4,
+            horizontal: false,
+          }
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        theme: {
+          mode: customization.navType === 'dark' ? 'dark' : 'light'
+        },
+      });
+  
+      setChartSeries([
+        {
+          name: 'Records',
+          data: records || []
+        }
+      ]);
+    }
+    if (entityList && entityList.length && entityList?.length > 0) {
       const entityNames = entityList.map((entity) => formatTitle(entity.name));
       const entityRecords = entityList.map((entity) => entity.total_records);
       populateGraph(entityNames, entityRecords);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+ 
   }, [entityList, isLoading, theme, customization.navType])
 
   return (
