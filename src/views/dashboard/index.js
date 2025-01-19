@@ -18,7 +18,6 @@ import { fetchUserProfiles } from 'utils/userApi';
 
 const Dashboard = () => {
   const [isLoading, setLoading] = useState(true);
-  const [entities, setEntities] = useState([]);
   const [numberOfEntities, setNumberOfEntities] = useState(0);
   const [numberOfUsers, setNumberOfUsers] = useState(0);
   const [weather, setWeather] = useState(null);
@@ -95,7 +94,6 @@ const Dashboard = () => {
   useEffect(()=>{
     const loadDashboardData = async () =>{
       const entityData = await loadEntityList();
-      setEntities(entityData.result);
       setNumberOfEntities(entityData.result_count);
       const storage = await loadStorageData();
       if(storage){
