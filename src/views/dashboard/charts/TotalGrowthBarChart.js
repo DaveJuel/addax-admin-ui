@@ -14,14 +14,6 @@ const TotalGrowthBarChart = ({isLoading, entityList}) => {
   const customization = useSelector((state) => state.customization);
   const [chartOptions, setChartOptions] = useState({});
   const [chartSeries, setChartSeries] = useState([]);
-  const [entityNames] = useState(entityList? 
-    entityList.map((entity)=>{
-    return formatTitle(entity.name);
-  }):[]);
-
-  const [entityRecords] = useState(entityList?entityList.map((entity)=>{
-    return entity.total_records;
-  }): []); 
 
   useEffect(()=>{
     const populateGraph = (items, records) => {
@@ -69,7 +61,7 @@ const TotalGrowthBarChart = ({isLoading, entityList}) => {
   return (
     <Card>
       <CardContent>
-        {isLoading && !entityNames && !entityRecords? (
+        {isLoading ? (
           <SkeletonTotalGrowthBarChart  />
         ) : (
           <ReactApexChart

@@ -62,8 +62,8 @@ const AnalogClock = ({ timeOffset }) => {
     return (
         <canvas
             ref={canvasRef}
-            width="375"
-            height="375"
+            width="325"
+            height="320"
             style={{ display: 'block', margin: 'auto' }}
         ></canvas>
     );
