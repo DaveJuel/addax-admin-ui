@@ -8,7 +8,7 @@ import EntitiesCard from './cards/EntitiesCard';
 import UsersCard from './cards/UsersCard';
 import FileStorageCard from './cards/FileStorageCard';
 import WeatherCard from './cards/WeatherCard';
-import TotalGrowthBarChart from './charts/TotalGrowthBarChart';
+// import TotalGrowthBarChart from './charts/TotalGrowthBarChart';
 import { useEffect, useState } from 'react';
 import { fetchEntityList } from 'utils/entityApi';
 import { fetchWeatherData } from 'utils/weatherApi';
@@ -143,7 +143,7 @@ const Dashboard = () => {
       <Grid item xs={12}>
         <Grid container spacing={gridSpacing}>
           <Grid item xs={12} md={8}>
-            <TotalGrowthBarChart isLoading={isLoading} entityList={entities} />
+            {/* <TotalGrowthBarChart isLoading={isLoading} entityList={entities} /> */}
           </Grid>
           <Grid item xs={12} md={4}>
             <TimeCard isLoading={isLoading} weatherData={weather} />
