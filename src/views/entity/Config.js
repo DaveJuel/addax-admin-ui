@@ -258,9 +258,10 @@ const EntityConfigPage = () => {
         <Typography variant="body2">
           Entities
         </Typography>
+        {userData.role === 'sysadmin' &&
         <Button variant="contained" color="primary" onClick={handleAddClick}>
           Add New
-        </Button>
+        </Button>}
       </Box>
       {loading ? (
         <Typography variant="body2">Loading entity data...</Typography>

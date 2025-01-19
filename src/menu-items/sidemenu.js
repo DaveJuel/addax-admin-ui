@@ -73,8 +73,9 @@ const generateMenuItems = async () => {
     type: "group",
     children: userAccess,
   };
+  const defaultAccess = [dashboard, entityGroup];
   const menuItems = {
-    items: [dashboard, entityGroup, accessLevel, settings],
+    items: userData.role === 'sysadmin' ?[...defaultAccess, accessLevel, settings]: [...defaultAccess],
   };
 
   return menuItems;
