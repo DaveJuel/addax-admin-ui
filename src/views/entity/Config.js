@@ -258,7 +258,7 @@ const EntityConfigPage = () => {
         <Typography variant="body2">
           Entities
         </Typography>
-        {userData.role === 'sysadmin' &&
+        {(userData.role === 'sysadmin' || userData.role === 'admin') &&
         <Button variant="contained" color="primary" onClick={handleAddClick}>
           Add New
         </Button>}
