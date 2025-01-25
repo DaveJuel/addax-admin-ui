@@ -91,6 +91,7 @@ const EntityPage = () => {
       formData.append('api_key', activeAppApiKey);
       formData.append('file', files[0]);
       try {
+        setSubmitting(true);
         const response = await fetch(`${apiUrl}/upload`, {
           method: 'POST',
           body: formData,
@@ -106,6 +107,7 @@ const EntityPage = () => {
           ...prevData,
           [attribute.name]: fileUrl,
         }));
+        setSubmitting(false);
       } catch (error) {
         console.error('Error uploading file:', error);
       }
