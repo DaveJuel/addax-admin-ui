@@ -70,6 +70,44 @@ const EntityPage = () => {
     setShowAddModal(true);
   };
 
+  const handleExport = async () => {
+    try {
+      const userData = JSON.parse(localStorage.getItem("user"));
+      const activeAppApiKey = localStorage.getItem("activeApp") || "";
+      const response = await fetch(`${API_ENDPOINT}/template/${entityName}`, {
+        method: "GET",
+        headers: {
+          "username": userData.username,
+          "token": userData.login_token,
+          "api_key": activeAppApiKey
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to export file");
+      }
+  
+      // Convert response to blob
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+  
+      // Create a download link
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "exported_data.xlsx";
+      document.body.appendChild(a);
+      a.click();
+  
+      // Clean up
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+  
+    } catch (error) {
+      console.error("Error exporting file:", error);
+    }
+  };
+  
+
   const handleEditClick = (instance) =>{
     setIsActionEdit(true);
     setShowAddModal(true);
@@ -200,12 +238,18 @@ const EntityPage = () => {
 
   return (
     <MainCard>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Box justifyContent="space-between" alignItems="center">
         <Typography variant="body2">
           {/* Add your dynamic content here based on the entityName */}
           {/* You can fetch data or render specific details */}
           {formatTitle(name)} entity records.
         </Typography>
+        <Button variant="contained" color="success" onClick={handleExport}>
+          Export
+        </Button>
+        <Button variant="contained" color="secondary" onClick={handleAddClick}>
+          Bulk Import
+        </Button>
         <Button variant="contained" color="primary" onClick={handleAddClick}>
           Add New
         </Button>
