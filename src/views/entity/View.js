@@ -25,6 +25,7 @@ import { deleteEntityInstance, fetchEntityData, fetchEntityProperties } from "ut
 import renderInputField from "ui-component/InputField";
 import TableEmptyState from "views/utilities/TableEmptyState";
 import { Edit } from "@mui/icons-material";
+import ImportEntityModal from "ui-component/modals/ImportEntityModal";
 
 const API_ENDPOINT = `${apiUrl}/entity`;
 
@@ -33,6 +34,7 @@ const EntityPage = () => {
   const [itemDetails, setItemDetails] = useState(null);
   const [entityData, setEntityData] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
   const [formData, setFormData] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -74,7 +76,7 @@ const EntityPage = () => {
     try {
       const userData = JSON.parse(localStorage.getItem("user"));
       const activeAppApiKey = localStorage.getItem("activeApp") || "";
-      const response = await fetch(`${API_ENDPOINT}/template/${entityName}`, {
+      const response = await fetch(`${API_ENDPOINT}/export/${entityName}`, {
         method: "GET",
         headers: {
           "username": userData.username,
@@ -112,6 +114,15 @@ const EntityPage = () => {
     setIsActionEdit(true);
     setShowAddModal(true);
   };
+
+  const handleImportClick = () =>{
+    setShowImportModal(true);
+    setIsActionEdit(true);
+  }
+
+  const handleImportModalClose = () => {
+    setShowImportModal(false);
+  }
 
   const handleModalClose = () => {
     setShowAddModal(false);
@@ -219,6 +230,7 @@ const EntityPage = () => {
       setSnackbarOpen(true);
     }
   };
+  
 
   const handleSnackbarClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -247,7 +259,7 @@ const EntityPage = () => {
         <Button variant="contained" color="success" onClick={handleExport}>
           Export
         </Button>
-        <Button variant="contained" color="secondary" onClick={handleAddClick}>
+        <Button variant="contained" color="secondary" onClick={handleImportClick}>
           Bulk Import
         </Button>
         <Button variant="contained" color="primary" onClick={handleAddClick}>
@@ -351,6 +363,7 @@ const EntityPage = () => {
           </Box>
         </Paper>
       </Modal>
+      <ImportEntityModal showImportModal={showImportModal} handleModalClose={handleImportModalClose} entityName={entityName}/>
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
