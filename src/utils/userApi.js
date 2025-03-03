@@ -1,20 +1,17 @@
 import { apiUrl } from "utils/httpclient-handler";
-const API_ENDPOINT = `${apiUrl}/user`;
+const API_ENDPOINT = `${apiUrl}`;
 
 export const fetchUserProfiles = async(userData,
     activeAppApiKey) =>{
-        const requestData = {
-            username: userData.username,
-            login_token: userData.login_token,
-            api_key: activeAppApiKey,
-          };
           try {
-            const response = await fetch(`${API_ENDPOINT}/list`, {
-              method: "POST",
+            const response = await fetch(`${API_ENDPOINT}/users`, {
+              method: "GET",
               headers: {
                 "Content-Type": "application/json",
+                "username": userData.username,
+                "token": userData.login_token,
+                "api_key": activeAppApiKey
               },
-              body: JSON.stringify(requestData),
             });
         
             if (!response.ok) {

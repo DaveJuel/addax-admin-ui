@@ -67,17 +67,14 @@ const Dashboard = () => {
       const userData = JSON.parse(localStorage.getItem("user"));
       const activeAppApiKey = localStorage.getItem("activeApp") || "";
 
-      const requestData = {
-        username: userData.username,
-        login_token: userData.login_token,
-        api_key: activeAppApiKey,
-      };
       const response = await fetch(`${apiUrl}/upload/used-space`, {
-        method: "POST",
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "username": userData.username,
+          "token": userData.login_token,
+          "api_key": activeAppApiKey,
         },
-        body: JSON.stringify(requestData),
       });
       if (!response.ok) {
         throw new Error("Failed to fetch data");

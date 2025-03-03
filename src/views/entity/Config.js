@@ -191,9 +191,6 @@ const EntityConfigPage = () => {
       const userData = JSON.parse(localStorage.getItem("user"));
       const activeAppApiKey = localStorage.getItem("activeApp") || "";
       const requestData = {
-        username: userData.username,
-        login_token: userData.login_token,
-        api_key: activeAppApiKey,
         entity_name: name,
         icon: icon,
         number_of_attribute: attributeNumber,
@@ -201,10 +198,13 @@ const EntityConfigPage = () => {
         attribute_list: formatCreateEntityRequest(attributeList)
       };
       const jsonBody = JSON.stringify(requestData);
-      const response = await fetch(`${API_ENDPOINT}/create`, {
+      const response = await fetch(`${API_ENDPOINT}/create/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "username": userData.username,
+          "token": userData.login_token,
+          "api_key": activeAppApiKey,
         },
         body: jsonBody,
       });

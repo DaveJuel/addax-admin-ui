@@ -2,24 +2,21 @@
 
 import { apiUrl } from "utils/httpclient-handler";
 
-const API_ENDPOINT = `${apiUrl}/entity`;
+const API_ENDPOINT = `${apiUrl}`;
 
 export const CONFIG_ENTITIES = ['user_role', 'privilege', 'file_upload'];
 
 export const fetchEntityList = async (userData,
   activeAppApiKey)=>{
-    const requestData = {
-      username: userData.username,
-      login_token: userData.login_token,
-      api_key: activeAppApiKey,
-    };
     try {
-      const response = await fetch(`${API_ENDPOINT}/list`, {
-        method: "POST",
+      const response = await fetch(`${API_ENDPOINT}/entities`, {
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "username": userData.username,
+          "token": userData.login_token,
+          "api_key": activeAppApiKey
         },
-        body: JSON.stringify(requestData),
       });
 
       if (!response.ok) {
@@ -38,20 +35,16 @@ export const fetchEntityData = async (
   userData,
   activeAppApiKey
 ) => {
-  const requestData = {
-    entity_name: entityName,
-    username: userData.username,
-    login_token: userData.login_token,
-    api_key: activeAppApiKey,
-  };
 
   try {
-    const response = await fetch(`${API_ENDPOINT}/read/data`, {
-      method: "POST",
+    const response = await fetch(`${API_ENDPOINT}/entity/data/${entityName}`, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "username": userData.username,
+        "token": userData.login_token,
+        "api_key": activeAppApiKey,
       },
-      body: JSON.stringify(requestData),
     });
 
     if (!response.ok) {
@@ -125,19 +118,15 @@ export const fetchEntityProperties = async (
   userData,
   activeAppApiKey
 ) => {
-  const requestData = {
-    entity_name: entityName,
-    username: userData.username,
-    login_token: userData.login_token,
-    api_key: activeAppApiKey,
-  };
   try {
-    const response = await fetch(`${API_ENDPOINT}/read/properties`, {
-      method: "POST",
+    const response = await fetch(`${API_ENDPOINT}/entity/properties/${entityName}`, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "username": userData.username,
+        "token": userData.login_token,
+        "api_key": activeAppApiKey,
       },
-      body: JSON.stringify(requestData),
     });
 
     if (!response.ok) {

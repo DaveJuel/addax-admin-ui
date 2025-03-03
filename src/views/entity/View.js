@@ -57,7 +57,7 @@ const EntityPage = () => {
         userData,
         activeAppApiKey
       );
-      setEntityData(entityDataResponse);
+      setEntityData(entityDataResponse || []);
 
       setLoading(false);
     };
@@ -128,15 +128,16 @@ const EntityPage = () => {
 
       const requestData = {
         entity_name: entityName,
-        username: userData.username,
-        login_token: userData.login_token,
-        api_key: activeAppApiKey,
+       
         details: formData,
       };
-      const response = await fetch(`${API_ENDPOINT}/save`, {
+      const response = await fetch(`${API_ENDPOINT}/save/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "username": userData.username,
+          "token": userData.login_token,
+          "api_key": activeAppApiKey,
         },
         body: JSON.stringify(requestData),
       });
@@ -212,7 +213,7 @@ const EntityPage = () => {
       {/* Generate table based on attribute_list */}
       {loading ? (
         <Typography variant="body2">Loading entity data...</Typography>
-      ) : entityData.length === 0 ? (
+      ) : !entityData || entityData.length === 0 ? (
         <TableEmptyState p={2} />
       ) : (
         <TableContainer>
@@ -227,7 +228,7 @@ const EntityPage = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {entityData.map((dataItem, index) => (
+              {entityData?.map((dataItem, index) => (
                 <TableRow key={index}>
                   {attribute_list.map((attribute) => (
                     <TableCell key={attribute.name}>
