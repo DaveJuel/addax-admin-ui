@@ -4,7 +4,7 @@ const API_ENDPOINT = `${apiUrl}`;
 export const fetchUserProfiles = async(userData,
     activeAppApiKey) =>{
           try {
-            const response = await fetch(`${API_ENDPOINT}/users`, {
+            const response = await fetch(`${API_ENDPOINT}/user/list`, {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
