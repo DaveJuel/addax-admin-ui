@@ -209,7 +209,7 @@ const UserListPage = () => {
                       onChange={(e) => setSelectedRole(e.target.value)}
                       required
                     >
-                      {roleList.map((role, index) => (
+                      {roleList && roleList.map((role, index) => (
                         <MenuItem key={index} value={role.title}>
                           {role.title}
                         </MenuItem>

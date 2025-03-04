@@ -242,11 +242,7 @@ const EntityPage = () => {
     }
   };
 
-  if (!itemDetails) {
-    return <div>Loading...</div>;
-  }
-
-  const { name, attribute_list } = itemDetails;
+  const { name, attribute_list } = itemDetails || {name: entityName, attribute_list: []};
 
   return (
     <MainCard>
@@ -269,7 +265,7 @@ const EntityPage = () => {
       {/* Generate table based on attribute_list */}
       {loading ? (
         <Typography variant="body2">Loading entity data...</Typography>
-      ) : !entityData || entityData.length === 0 ? (
+      ) :!itemDetails || !entityData || entityData.length === 0 ? (
         <TableEmptyState p={2} />
       ) : (
         <TableContainer>

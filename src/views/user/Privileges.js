@@ -170,10 +170,7 @@ const UserPrivilegesPage = () => {
     }
   }
 
-  if (!roleList || !entityList || !privProperties || !privileges) {
-    return <div>Loading...</div>;
-  }
-  const { attribute_list } = privProperties;
+  const { attribute_list } = privProperties || [];
 
   return (
     <MainCard>
@@ -188,7 +185,7 @@ const UserPrivilegesPage = () => {
       {/* Generate table based on attribute_list */}
       {loading ? (
         <Typography variant="body2">Loading privileges ...</Typography>
-      ) : privileges.length === 0 ? (
+      ) : !roleList || !entityList || !privProperties || !privileges || privileges.length === 0 ? (
         <TableEmptyState p={2} />
       ) : (
         <TableContainer>

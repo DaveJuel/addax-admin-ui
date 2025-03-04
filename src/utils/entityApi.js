@@ -55,7 +55,7 @@ export const fetchEntityData = async (
     return data.result;
   } catch (error) {
     console.error("Error fetching entity data:", error);
-    return null;
+    return [];
   }
 };
 

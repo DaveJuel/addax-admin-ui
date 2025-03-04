@@ -15,7 +15,7 @@ const generateMenuItems = async () => {
   const activeAppApiKey = localStorage.getItem("activeApp") || "";
   const response = await fetchEntityList(userData, activeAppApiKey);
   const entityData = response.result;
-  const entityMenuItems = entityData.filter(item => !CONFIG_ENTITIES.includes(item.name)).map((item) => {
+  const filteredEntities = entityData.filter(item => !CONFIG_ENTITIES.includes(item.name)).map((item) => {
     
     const SelectedIcon = iconMapping[item.icon];
   
@@ -28,6 +28,21 @@ const generateMenuItems = async () => {
       breadcrumbs: false,
     };
   });
+
+  const entityMenuItems = filteredEntities.length > 0
+  ? filteredEntities.map((item) => {
+      const SelectedIcon = iconMapping[item.icon];
+
+      return {
+        id: `entity-${item.uuid}`,
+        title: formatTitle(item.name),
+        icon: SelectedIcon || icons.IconArticle,
+        type: "item",
+        url: `/entity/${item.name}`,
+        breadcrumbs: false,
+      };
+    })
+  : [];
   const titleText = entityMenuItems.length > 1 ? "Entities" : "Entity";
   // Construct the 'entity' group with its children
   entityMenuItems.push(createEntity);
