@@ -8,7 +8,6 @@ export const fetchUserProfiles = async(userData,
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                "username": userData.username,
                 "token": userData.login_token,
                 "api_key": activeAppApiKey
               },
@@ -21,7 +20,7 @@ export const fetchUserProfiles = async(userData,
             return data;
           } catch (error) {
             console.error("Error fetching data:", error);
-            return null;
+            return [];
           }
     };
 
@@ -36,6 +35,8 @@ export const fetchUserProfile = async (userData,activeAppApiKey) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "token": userData.login_token,
+        "api_key": activeAppApiKey,
       },
       body: JSON.stringify(requestData),
     });

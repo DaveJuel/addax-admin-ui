@@ -13,7 +13,6 @@ export const fetchEntityList = async (userData,
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "username": userData.username,
           "token": userData.login_token,
           "api_key": activeAppApiKey
         },
@@ -41,7 +40,6 @@ export const fetchEntityData = async (
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "username": userData.username,
         "token": userData.login_token,
         "api_key": activeAppApiKey,
       },
@@ -63,7 +61,6 @@ export const destroyEntity = async (entityName, userData, activeAppApiKey) => {
   try {
     const requestData = {
       entity_name: entityName,
-      username: userData.username,
       login_token: userData.login_token,
       api_key: activeAppApiKey,
     };
@@ -90,9 +87,6 @@ export const deleteEntityInstance = async (entityName, instanceId, userData, act
     const requestData = {
       entity_name: entityName,
       instance_id: instanceId,
-      username: userData.username,
-      login_token: userData.login_token,
-      api_key: activeAppApiKey,
     };
     const response = await fetch(`${API_ENDPOINT}/instance/delete`, {
       method: "POST",
@@ -123,7 +117,6 @@ export const fetchEntityProperties = async (
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "username": userData.username,
         "token": userData.login_token,
         "api_key": activeAppApiKey,
       },

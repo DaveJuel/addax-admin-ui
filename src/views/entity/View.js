@@ -79,7 +79,6 @@ const EntityPage = () => {
       const response = await fetch(`${API_ENDPOINT}/export/${entityName}`, {
         method: "GET",
         headers: {
-          "username": userData.username,
           "token": userData.login_token,
           "api_key": activeAppApiKey
         }

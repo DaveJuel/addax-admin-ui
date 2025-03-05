@@ -29,7 +29,6 @@ const ImportEntityModal = ({ showImportModal, handleModalClose, entityName }) =>
       const response = await fetch(`${API_ENDPOINT}/import/${entityName}/`, {
         method: "POST",
         headers: {
-          "username": userData.username,
           "token": userData.login_token,
           "api_key": activeAppApiKey
         },
@@ -63,7 +62,6 @@ const ImportEntityModal = ({ showImportModal, handleModalClose, entityName }) =>
       const response = await fetch(`${API_ENDPOINT}/template/${entityName}`, {
         method: "GET",
         headers: {
-          "username": userData.username,
           "token": userData.login_token,
           "api_key": activeAppApiKey
         }
