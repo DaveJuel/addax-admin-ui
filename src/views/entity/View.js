@@ -183,7 +183,6 @@ const EntityPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "username": userData.username,
           "token": userData.login_token,
           "api_key": activeAppApiKey,
         },
