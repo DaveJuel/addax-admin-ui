@@ -134,14 +134,15 @@ const EntityPage = () => {
   
     if (attribute.data_type === 'file' && files && files[0]) {
       const formData = new FormData();
-      formData.append('username', userData.username);
-      formData.append('login_token', userData.login_token);
-      formData.append('api_key', activeAppApiKey);
       formData.append('file', files[0]);
       try {
         setSubmitting(true);
-        const response = await fetch(`${apiUrl}/upload`, {
+        const response = await fetch(`${apiUrl}/upload/`, {
           method: 'POST',
+          headers: {
+            "token": userData.login_token,
+            "api_key": activeAppApiKey,
+          },
           body: formData,
         });
   
@@ -149,8 +150,8 @@ const EntityPage = () => {
           throw new Error('File upload failed');
         }
   
-        const result = await response.json();
-        const fileUrl = result.url;
+        const data = await response.json();
+        const fileUrl = data.result;
         setFormData((prevData) => ({
           ...prevData,
           [attribute.name]: fileUrl,
