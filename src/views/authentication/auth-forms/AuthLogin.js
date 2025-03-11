@@ -75,17 +75,14 @@ const FirebaseLogin = ({ ...others }) => {
               // Navigate to the dashboard
               navigate("/auth/select/app");
             } else {
-              const {errors} = await response.json();
+              const {result} = await response.json();
               if (scriptedRef.current) {
-                const {message} = errors[0] ?? "Something went wrong!";
                 setStatus({ success: false });
-                setErrors({ submit: message });
+                setErrors({ submit: result ?? "Something went wrong!" });
                 setSubmitting(false);
               }
-              console.error(errors);
             }
           } catch (err) {
-            console.error(err);
             if (scriptedRef.current) {
               setStatus({ success: false });
               setErrors({ submit: err.message });
