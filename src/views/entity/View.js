@@ -218,7 +218,7 @@ const EntityPage = () => {
         setSnackbarOpen(true);
         setReload(true); // Indicate that a reload is required after snackbar is closed
       } else {
-        setSnackbarMessage(response.error_message || 'An error occurred while deleting the entity.');
+        setSnackbarMessage(response.result || 'An error occurred while deleting the entity.');
         setSnackbarSeverity('error');
         setSnackbarOpen(true);
       }

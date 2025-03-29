@@ -214,7 +214,7 @@ const EntityConfigPage = () => {
         setSnackbarOpen(true);
         setReload(true);
       } else {
-        setSnackbarMessage(response.error_message || 'An error occurred while creating the entity.');
+        setSnackbarMessage(response.result || 'An error occurred while creating the entity.');
         setSnackbarSeverity('error');
         setSnackbarOpen(true);
       }
