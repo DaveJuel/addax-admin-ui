@@ -27,6 +27,7 @@ import IconInputField from "ui-component/IconInputField";
 import EntityTable from "ui-component/EntityTable";
 import { Add, Remove } from "@mui/icons-material";
 import TableEmptyState from "views/utilities/TableEmptyState";
+import TableLoadingState from "views/utilities/TableLoadingState";
 
 const API_ENDPOINT = `${apiUrl}/entity`;
 
@@ -263,7 +264,7 @@ const EntityConfigPage = () => {
         </Button>}
       </Box>
       {loading ? (
-        <Typography variant="body2">Loading entity data...</Typography>
+        <TableLoadingState />
       ) : entityList.length === 0 ? (
         <TableEmptyState p={2} />
       ) : (

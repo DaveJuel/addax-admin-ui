@@ -26,6 +26,7 @@ import renderInputField from "ui-component/InputField";
 import TableEmptyState from "views/utilities/TableEmptyState";
 import { Edit } from "@mui/icons-material";
 import ImportEntityModal from "ui-component/modals/ImportEntityModal";
+import TableLoadingState from "views/utilities/TableLoadingState";
 
 const API_ENDPOINT = `${apiUrl}/entity`;
 
@@ -263,7 +264,7 @@ const EntityPage = () => {
       </Box>
       {/* Generate table based on attribute_list */}
       {loading ? (
-        <Typography variant="body2">Loading entity data...</Typography>
+        <TableLoadingState />
       ) :!itemDetails || !entityData || entityData.length === 0 ? (
         <TableEmptyState p={2} />
       ) : (
