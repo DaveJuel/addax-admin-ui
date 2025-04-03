@@ -27,7 +27,7 @@ const renderInputField = (attribute, formData, handleInputChange) => {
           value={formData[attribute.name] || ""}
           onChange={(e) => handleInputChange(e, attribute)}
         >
-          {attribute.options.map((item) => (
+        {attribute.options.map((item) => (
             <MenuItem key={item.id} value={item.id}>
               {item[attribute.reference.display_column]}
             </MenuItem>

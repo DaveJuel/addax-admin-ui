@@ -70,6 +70,7 @@ const EntityPage = () => {
 
   const handleAddClick = () => {
     setIsActionEdit(false);
+    setFormData({});
     setShowAddModal(true);
   };
 
@@ -111,6 +112,7 @@ const EntityPage = () => {
   
 
   const handleEditClick = (instance) =>{
+    setFormData(instance);
     setIsActionEdit(true);
     setShowAddModal(true);
   };
@@ -181,8 +183,10 @@ const EntityPage = () => {
        
         details: formData,
       };
-      const response = await fetch(`${API_ENDPOINT}/save/`, {
-        method: "POST",
+      const path = isActionEdit? `${API_ENDPOINT}/${entityName}/${formData.uuid}` : `${API_ENDPOINT}/save/`;
+      const method = isActionEdit? `PATCH`: `POST`;
+      const response = await fetch(path, {
+        method: method,
         headers: {
           "Content-Type": "application/json",
           "token": userData.login_token,
