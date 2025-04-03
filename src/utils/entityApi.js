@@ -84,16 +84,14 @@ export const destroyEntity = async (entityName, userData, activeAppApiKey) => {
 };
 export const deleteEntityInstance = async (entityName, instanceId, userData, activeAppApiKey) => {
   try {
-    const requestData = {
-      entity_name: entityName,
-      instance_id: instanceId,
-    };
-    const response = await fetch(`${API_ENDPOINT}/instance/delete`, {
-      method: "POST",
+
+    const response = await fetch(`${API_ENDPOINT}/entity/${entityName}/${instanceId}`, {
+      method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        "token": userData.login_token,
+        "api_key": activeAppApiKey,
       },
-      body: JSON.stringify(requestData),
     });
 
     if (!response.ok) {
