@@ -62,19 +62,17 @@ const UserListPage = () => {
       const roles = await fetchEntityData('user_role', userData, activeAppApiKey);
       setRoleList(roles);
       setLoading(false);
+      setReload(false);
     };
 
     fetchData();
-  }, []);
+  }, [reload]);
 
   const handleSnackbarClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
     setSnackbarOpen(false);
-    if (reload) {
-      window.location.reload(); // Reload the page when the snackbar closes and reload is required
-    }
   };
 
   const handleSubmit = async (e) =>{

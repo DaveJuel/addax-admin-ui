@@ -66,10 +66,11 @@ const EntityPage = () => {
       setName(entityName);
       setAttributeList(itemDetailsResponse.attribute_list);
       setLoading(false);
+      setReload(false);
     };
 
     fetchData();
-  }, [entityName]);
+  }, [entityName, reload]);
 
   const handleAddClick = () => {
     setIsActionEdit(false);
@@ -208,8 +209,15 @@ const EntityPage = () => {
         activeAppApiKey
       );
       setEntityData(entityDataResponse);
+      setSnackbarMessage('Saved data successfully.');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
+      setReload(true);
     } catch (error) {
       console.error("Error saving entity:", error);
+      setSnackbarMessage(error.message || 'An error occurred while deleting the entity.');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     } finally {
       setSubmitting(false);
     }
@@ -224,14 +232,13 @@ const EntityPage = () => {
         setSnackbarMessage(response.result);
         setSnackbarSeverity('success');
         setSnackbarOpen(true);
-        setReload(true); // Indicate that a reload is required after snackbar is closed
+        setReload(true);
       } else {
         setSnackbarMessage(response.result || 'An error occurred while deleting the entity.');
         setSnackbarSeverity('error');
         setSnackbarOpen(true);
       }
     } catch (error) {
-      console.error('Error deleting entity:', error);
       setSnackbarMessage('An unexpected error occurred. Please try again.');
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
@@ -244,9 +251,6 @@ const EntityPage = () => {
       return;
     }
     setSnackbarOpen(false);
-    if (reload) {
-      window.location.reload(); // Reload the page when the snackbar closes and reload is required
-    }
   };
 
   return (
@@ -364,7 +368,7 @@ const EntityPage = () => {
           </Box>
         </Paper>
       </Modal>
-      <ImportEntityModal showImportModal={showImportModal} handleModalClose={handleImportModalClose} entityName={entityName}/>
+      <ImportEntityModal showImportModal={showImportModal} handleModalClose={handleImportModalClose} entityName={entityName} setReload={setReload}/>
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}

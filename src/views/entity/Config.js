@@ -182,7 +182,7 @@ const EntityConfigPage = () => {
 
   useEffect(() => {
     fetchEntities();
-  }, []);
+  }, [reload]);
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -244,9 +244,6 @@ const EntityConfigPage = () => {
       return;
     }
     setSnackbarOpen(false);
-    if (reload) {
-      window.location.reload();
-    }
   };
 
   const handleModalClose = () => {

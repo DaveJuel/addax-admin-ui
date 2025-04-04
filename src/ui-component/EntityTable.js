@@ -10,7 +10,6 @@ const EntityTable = ({ entityList, handleEdit }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-  const [reload, setReload] = useState(false);
 
   const handleDeleteEntity = async (entityName) => {
     try {
@@ -21,7 +20,6 @@ const EntityTable = ({ entityList, handleEdit }) => {
         setSnackbarMessage(response.result);
         setSnackbarSeverity('success');
         setSnackbarOpen(true);
-        setReload(true); // Indicate that a reload is required after snackbar is closed
       } else {
         setSnackbarMessage(response.result || 'An error occurred while deleting the entity.');
         setSnackbarSeverity('error');
@@ -40,9 +38,6 @@ const EntityTable = ({ entityList, handleEdit }) => {
       return;
     }
     setSnackbarOpen(false);
-    if (reload) {
-      window.location.reload(); // Reload the page when the snackbar closes and reload is required
-    }
   };
 
   return (

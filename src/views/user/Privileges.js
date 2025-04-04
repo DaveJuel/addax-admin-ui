@@ -66,10 +66,10 @@ const UserPrivilegesPage = () => {
       setPrivileges(privileges);
       setPrivProperties(privilegeTableProps);
       setLoading(false);
+      setReload(false);
     };
-
     fetchData();
-  }, []);
+  }, [reload]);
 
   const handleAddClick = () => {
     setIsActionEdit(false);
@@ -101,8 +101,7 @@ const UserPrivilegesPage = () => {
         setSnackbarOpen(true);
       }
     } catch (error) {
-      console.error('Error deleting entity:', error);
-      setSnackbarMessage('An unexpected error occurred. Please try again.');
+      setSnackbarMessage(error.message || 'An unexpected error occurred. Please try again.');
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
     }
@@ -113,9 +112,6 @@ const UserPrivilegesPage = () => {
       return;
     }
     setSnackbarOpen(false);
-    if (reload) {
-      window.location.reload(); // Reload the page when the snackbar closes and reload is required
-    }
   };
 
 

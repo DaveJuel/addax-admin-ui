@@ -4,7 +4,7 @@ import { apiUrl } from "utils/httpclient-handler";
 
 const API_ENDPOINT = `${apiUrl}/entity`;
 
-const ImportEntityModal = ({ showImportModal, handleModalClose, entityName }) => {
+const ImportEntityModal = ({ showImportModal, handleModalClose, entityName, setReload }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
@@ -42,9 +42,8 @@ const ImportEntityModal = ({ showImportModal, handleModalClose, entityName }) =>
       setMessage("File uploaded successfully!");
       setMessageType("success");
       setSelectedFile(null);
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
+      setReload(true);
+      handleModalClose();
     } catch (error) {
       setMessage(error.message);
       setMessageType("error");
