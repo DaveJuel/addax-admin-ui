@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, CircularProgress } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 const TableLoadingState = () => {
@@ -24,15 +24,6 @@ const TableLoadingState = () => {
           marginBottom: '16px'
         }}
       />
-      <Typography
-        variant="body2"
-        color={theme.palette.secondary.main}
-        align="center"
-        maxWidth="300px"
-        mt={1}
-      >
-        Updating records
-      </Typography>
     </Box>
   );
 };
