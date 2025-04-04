@@ -31,7 +31,7 @@ const TableLoadingState = () => {
         maxWidth="300px"
         mt={1}
       >
-        Please wait while we fetch your data...
+        Updating records
       </Typography>
     </Box>
   );
