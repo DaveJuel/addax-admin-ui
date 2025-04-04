@@ -275,8 +275,16 @@ const EntityConfigPage = () => {
       )}
       {/* Add New Entity Modal */}
       <Modal open={showAddModal} onClose={handleModalClose}>
-        <Paper>
-          <Box p={2}>
+        <Paper sx={{position: 'absolute',
+                    top: '30%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)', 
+                    width: "80%", 
+                    p: 3, mx: "auto", 
+                    mt: "10%", 
+                    maxHeight: '90vh',
+                    overflowY: 'auto',}}>
+          <Box>
             {
               isActionEdit ? 
                 <Typography variant="h6" gutterBottom>Modify entity</Typography>

@@ -297,8 +297,7 @@ const EntityPage = () => {
                       ) : (
                         attribute.data_type === 'long text'? (
                           dataItem[attribute.name].length > 20
-                          ? dataItem[attribute.name]?.slice(0, 20) + '...':  dataItem[attribute.name]
-                        ) : dataItem[attribute.name]
+                          ? dataItem[attribute.name]?.slice(0, 20) + '...':  dataItem[attribute.name]) : dataItem[attribute.name]
                       )}
                     </TableCell>
                   ))}
@@ -319,8 +318,16 @@ const EntityPage = () => {
     
       {/* Add New Entity Modal */}
       <Modal open={showAddModal} onClose={handleModalClose}>
-        <Paper>
-          <Box p={2}>
+        <Paper sx={{position: 'absolute',
+                    top: '30%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)', 
+                    width: "80%", 
+                    p: 3, mx: "auto", 
+                    mt: "10%", 
+                    maxHeight: '90vh',
+                    overflowY: 'auto',}}>
+          <Box>
               {
                 isActionEdit ?
                 <Typography variant="h6" gutterBottom>Edit {formatTitle(name)}</Typography>

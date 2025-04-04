@@ -94,7 +94,15 @@ const ImportEntityModal = ({ showImportModal, handleModalClose, entityName, setR
 
   return (
     <Modal open={showImportModal} onClose={handleModalClose}>
-      <Paper sx={{ width: 400, p: 3, mx: "auto", mt: "10%" }}>
+      <Paper sx={{position: 'absolute',
+                    top: '30%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)', 
+                    width: "80%", 
+                    p: 3, mx: "auto", 
+                    mt: "10%", 
+                    maxHeight: '90vh',
+                    overflowY: 'auto',}}>
         <Box>
           <Typography variant="h6" gutterBottom>Upload {formatTitle(entityName)} File</Typography>
 
