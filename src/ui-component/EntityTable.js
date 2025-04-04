@@ -5,8 +5,13 @@ import { Article, Edit } from '@mui/icons-material';
 import formatTitle from 'utils/title-formatter';
 import { destroyEntity } from 'utils/entityApi';
 import { iconMapping } from 'utils/iconMapping';
+import { useDispatch } from 'react-redux';
+import { toggleReload } from "store/slices/globalSlice";
+
 
 const EntityTable = ({ entityList, handleEdit }) => {
+  const dispatch = useDispatch ();
+
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
@@ -20,6 +25,7 @@ const EntityTable = ({ entityList, handleEdit }) => {
         setSnackbarMessage(response.result);
         setSnackbarSeverity('success');
         setSnackbarOpen(true);
+        dispatch(toggleReload());
       } else {
         setSnackbarMessage(response.result || 'An error occurred while deleting the entity.');
         setSnackbarSeverity('error');

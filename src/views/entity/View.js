@@ -32,7 +32,6 @@ const API_ENDPOINT = `${apiUrl}/entity`;
 
 const EntityPage = () => {
   const { entityName } = useParams();
-  const [itemDetails, setItemDetails] = useState(null);
   const [name, setName] = useState(entityName);
   const [attributeList, setAttributeList] = useState([]);
   const [entityData, setEntityData] = useState([]);
@@ -46,7 +45,6 @@ const EntityPage = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const [reload, setReload] = useState(false);
   const [isActionEdit, setIsActionEdit] = useState(false);
-
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
     const activeAppApiKey = localStorage.getItem("activeApp") || "";
@@ -56,7 +54,6 @@ const EntityPage = () => {
         userData,
         activeAppApiKey
       );
-      setItemDetails(itemDetailsResponse);
       const entityDataResponse = await fetchEntityData(
         entityName,
         userData,
@@ -68,7 +65,7 @@ const EntityPage = () => {
       setLoading(false);
       setReload(false);
     };
-
+    setLoading(true);
     fetchData();
   }, [entityName, reload]);
 
@@ -256,27 +253,28 @@ const EntityPage = () => {
   return (
     <MainCard>
       <Box justifyContent="space-between" alignItems="center">
-        <Typography variant="body2">
-          {/* Add your dynamic content here based on the entityName */}
-          {/* You can fetch data or render specific details */}
-          {formatTitle(name)} entity records.
-        </Typography>
-        <Button variant="contained" color="success" onClick={handleExport}>
-          Export
-        </Button>
-        <Button variant="contained" color="secondary" onClick={handleImportClick}>
-          Bulk Import
-        </Button>
-        <Button variant="contained" color="primary" onClick={handleAddClick}>
-          Add New
-        </Button>
+        {!loading && (
+          <>
+            <Typography variant="body2">
+              {formatTitle(name)} entity records.
+            </Typography>
+          
+            <Button variant="contained" color="success" onClick={handleExport}>
+              Export
+            </Button>
+            <Button variant="contained" color="secondary" onClick={handleImportClick}>
+              Bulk Import
+            </Button>
+            <Button variant="contained" color="primary" onClick={handleAddClick}>
+              Add New
+            </Button>
+          </>
+        )}
       </Box>
       {/* Generate table based on attribute_list */}
-      {loading ? (
-        <TableLoadingState />
-      ) :!itemDetails || !entityData || entityData.length === 0 ? (
-        <TableEmptyState p={2} />
-      ) : (
+      {loading && <TableLoadingState />}
+      {!loading && entityData?.length === 0 && <TableEmptyState />}
+      {!loading && entityData?.length > 0 && (
         <TableContainer>
           <Table>
             <TableHead>
@@ -315,8 +313,8 @@ const EntityPage = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        
       )}
+    
       {/* Add New Entity Modal */}
       <Modal open={showAddModal} onClose={handleModalClose}>
         <Paper>

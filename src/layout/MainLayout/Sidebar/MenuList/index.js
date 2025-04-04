@@ -1,15 +1,19 @@
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 // material-ui
 import { Typography } from "@mui/material";
+
 
 // project imports
 import NavGroup from "./NavGroup";
 import generateMenuItems from "menu-items/sidemenu";
-import { useState } from "react";
-import { useEffect } from "react";
+
 
 // ==============================|| SIDEBAR MENU LIST ||============================== //
 
 const MenuList = () => {
+  const reload = useSelector((state) => state.global.reload);
+
   const loadMenuItems = async () => {
     try {
       const generatedMenuItems = await generateMenuItems();
@@ -31,7 +35,7 @@ const MenuList = () => {
     };
 
     fetchMenuItems();
-  }, []);
+  }, [reload]);
 
   // Map through menu items and render NavGroup or an error message
   const navItems = menuItems.map((item) => {

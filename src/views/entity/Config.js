@@ -28,14 +28,17 @@ import EntityTable from "ui-component/EntityTable";
 import { Add, Remove } from "@mui/icons-material";
 import TableEmptyState from "views/utilities/TableEmptyState";
 import TableLoadingState from "views/utilities/TableLoadingState";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleReload } from "store/slices/globalSlice";
 
 const API_ENDPOINT = `${apiUrl}/entity`;
 
 const EntityConfigPage = () => {
+  const reload = useSelector((state) => state.global.reload);
+  const dispatch = useDispatch();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-  const [reload, setReload] = useState(false);
   const [entityList, setEntityList] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -213,7 +216,8 @@ const EntityConfigPage = () => {
         setSnackbarMessage('Entity created successfully!');
         setSnackbarSeverity('success');
         setSnackbarOpen(true);
-        setReload(true);
+        dispatch(toggleReload());
+        setShowAddModal(false);
       } else {
         setSnackbarMessage(response.result || 'An error occurred while creating the entity.');
         setSnackbarSeverity('error');
