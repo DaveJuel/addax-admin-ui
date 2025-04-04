@@ -107,7 +107,7 @@ const EntityConfigPage = () => {
         updatedAttributeList[index]['has_reference'] = true;
         try {
           const itemDetailsResponse = await fetchEntityProperties(value, userData, activeAppApiKey);
-          if (itemDetailsResponse && itemDetailsResponse.attribute_list) {
+          if (itemDetailsResponse && itemDetailsResponse?.attribute_list) {
             updatedAttributeList[index]['display_column_options'] = mapEntityListToDataTypes(itemDetailsResponse.attribute_list);
           }
         } catch (error) {

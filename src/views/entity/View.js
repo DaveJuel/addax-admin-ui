@@ -61,7 +61,7 @@ const EntityPage = () => {
       );
       setEntityData(entityDataResponse || []);
       setName(entityName);
-      setAttributeList(itemDetailsResponse.attribute_list);
+      setAttributeList(itemDetailsResponse?.attribute_list);
       setLoading(false);
       setReload(false);
     };
@@ -279,7 +279,7 @@ const EntityPage = () => {
           <Table>
             <TableHead>
               <TableRow>
-                {attributeList.map((attribute) => (
+                {attributeList?.map((attribute) => (
                   <TableCell key={attribute.name}>{formatTitle(attribute.name)}</TableCell>
                 ))}
                 <TableCell key='actions'>Actions
@@ -289,7 +289,7 @@ const EntityPage = () => {
             <TableBody>
               {entityData?.map((dataItem, index) => (
                 <TableRow key={index}>
-                  {attributeList.map((attribute) => (
+                  {attributeList?.map((attribute) => (
                     <TableCell key={attribute.name}>
                       {attribute.data_type === 'file' ? (
                         <a href={dataItem[attribute.name]} target="_blank" rel="noopener noreferrer">
@@ -327,7 +327,7 @@ const EntityPage = () => {
               }
             <form onSubmit={handleSubmit}>
               <Grid container spacing={2}>
-                {attributeList.map((attribute) => (
+                {attributeList?.map((attribute) => (
                   <Grid key={attribute.name} item xs={12} md={6}>
                     {renderInputField(attribute, formData, handleInputChange)}
                   </Grid>
