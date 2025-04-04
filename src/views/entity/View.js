@@ -295,7 +295,10 @@ const EntityPage = () => {
                           click here
                         </a>
                       ) : (
-                        attribute.data_type === 'long text'? dataItem[attribute.name]?.slice(0, 20) + '...' : dataItem[attribute.name]
+                        attribute.data_type === 'long text'? (
+                          dataItem[attribute.name].length > 20
+                          ? dataItem[attribute.name]?.slice(0, 20) + '...':  dataItem[attribute.name]
+                        ) : dataItem[attribute.name]
                       )}
                     </TableCell>
                   ))}
