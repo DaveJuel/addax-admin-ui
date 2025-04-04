@@ -73,7 +73,7 @@ const EntityTable = ({ entityList, handleEdit }) => {
                         React.createElement(iconMapping[dataItem[key]], { fontSize: "small" }) :
                         React.createElement(Article, { fontSize: "small" })
                     ) : (
-                      dataItem[key]
+                      key === "name" ? formatTitle(dataItem.name): dataItem[key]
                     )}
                   </TableCell>
                 ) : null

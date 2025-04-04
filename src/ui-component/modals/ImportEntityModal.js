@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Modal, Paper, Box, Typography, Button, TextField, Snackbar, Alert, SnackbarContent } from "@mui/material";
 import { apiUrl } from "utils/httpclient-handler";
+import formatTitle from "utils/title-formatter";
 
 const API_ENDPOINT = `${apiUrl}/entity`;
 
@@ -95,7 +96,7 @@ const ImportEntityModal = ({ showImportModal, handleModalClose, entityName, setR
     <Modal open={showImportModal} onClose={handleModalClose}>
       <Paper sx={{ width: 400, p: 3, mx: "auto", mt: "10%" }}>
         <Box>
-          <Typography variant="h6" gutterBottom>Upload {entityName} File</Typography>
+          <Typography variant="h6" gutterBottom>Upload {formatTitle(entityName)} File</Typography>
 
           {/* Download Template Button */}
           <Button
