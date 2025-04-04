@@ -27,6 +27,7 @@ import { fetchUserProfiles } from "utils/userApi";
 import { apiUrl } from "utils/httpclient-handler";
 import { Edit } from "@mui/icons-material";
 import { fetchEntityData } from "utils/entityApi";
+import TableLoadingState from "views/utilities/TableLoadingState";
 
 const API_ENDPOINT = `${apiUrl}/user`;
 
@@ -148,7 +149,7 @@ const UserListPage = () => {
         </Button>
       </Box>
       {loading ? (
-        <Typography variant="body2">Loading users ...</Typography>
+        <TableLoadingState />
       ) : userData.length === 0 ? (
         <TableEmptyState p={2} />
       ) : (

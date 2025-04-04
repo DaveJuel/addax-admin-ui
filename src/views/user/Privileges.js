@@ -31,6 +31,7 @@ import { deleteEntityInstance, fetchEntityData, fetchEntityList, fetchEntityProp
 import formatTitle from "utils/title-formatter";
 import { Edit } from "@mui/icons-material";
 import { apiUrl } from "utils/httpclient-handler";
+import TableLoadingState from "views/utilities/TableLoadingState";
 
 const API_ENDPOINT = `${apiUrl}/entity`;
 
@@ -126,10 +127,6 @@ const UserPrivilegesPage = () => {
       const activeAppApiKey = localStorage.getItem("activeApp") || "";
       const requestData = {
         entity_name: 'privilege',
-        username: userData.username,
-        login_token: userData.login_token,
-        api_key: activeAppApiKey,
-        
         details: {
           entity_name: selectedEntity,
           user_role: selectedRole,
@@ -137,10 +134,12 @@ const UserPrivilegesPage = () => {
     	    read_level: selectedReadLevel
         },
       };
-      const response = await fetch(`${API_ENDPOINT}/save`, {
+      const response = await fetch(`${API_ENDPOINT}/save/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          api_key: activeAppApiKey,
+          token: userData.login_token
         },
         body: JSON.stringify(requestData),
       });
@@ -184,7 +183,7 @@ const UserPrivilegesPage = () => {
       </Box>
       {/* Generate table based on attribute_list */}
       {loading ? (
-        <Typography variant="body2">Loading privileges ...</Typography>
+        <TableLoadingState />
       ) : !roleList || !entityList || !privProperties || !privileges || privileges.length === 0 ? (
         <TableEmptyState p={2} />
       ) : (
