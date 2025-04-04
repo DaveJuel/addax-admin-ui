@@ -209,7 +209,6 @@ const EntityPage = () => {
       setSnackbarMessage('Saved data successfully.');
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
-      setReload(true);
     } catch (error) {
       console.error("Error saving entity:", error);
       setSnackbarMessage(error.message || 'An error occurred while deleting the entity.');
@@ -358,9 +357,16 @@ const EntityPage = () => {
                   variant="outlined"
                   color="secondary"
                   onClick={handleModalClose}
+                  disabled={submitting}
                 >
                   Cancel
                 </Button>
+                {submitting && (
+                  <Typography  variant="h6" color="warning" align="center">
+                    Saving ...
+                  </Typography>
+                )}
+                
               </Box>
             </form>
           </Box>
