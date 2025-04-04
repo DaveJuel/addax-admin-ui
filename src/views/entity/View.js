@@ -328,12 +328,13 @@ const EntityPage = () => {
                     maxHeight: '90vh',
                     overflowY: 'auto',}}>
           <Box>
-              {
-                isActionEdit ?
-                <Typography variant="h6" gutterBottom>Edit {formatTitle(name)}</Typography>
-                :
-                <Typography variant="h6" gutterBottom>Add New {formatTitle(name)}</Typography>
-              }
+            {isActionEdit ? 
+              <Typography variant="h6" gutterBottom>Edit {formatTitle(name)}</Typography>
+              :
+              <Typography variant="h6" gutterBottom>Add New {formatTitle(name)}</Typography>
+            }
+          </Box>
+          <Box style={{paddingTop: '10px'}} sx={{top: '10%', overflowY: 'auto', flexGrow: 1 }}>
             <form onSubmit={handleSubmit}>
               <Grid container spacing={2}>
                 {attributeList?.map((attribute) => (

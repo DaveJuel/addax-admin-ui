@@ -291,7 +291,8 @@ const EntityConfigPage = () => {
               :
                 <Typography variant="h6" gutterBottom>Create new entity</Typography>
             }
-            
+          </Box>
+          <Box style={{paddingTop: '10px'}} sx={{ overflowY: 'auto', flexGrow: 1 }}>
             <form>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={12}>
