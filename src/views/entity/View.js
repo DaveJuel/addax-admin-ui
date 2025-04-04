@@ -33,6 +33,8 @@ const API_ENDPOINT = `${apiUrl}/entity`;
 const EntityPage = () => {
   const { entityName } = useParams();
   const [itemDetails, setItemDetails] = useState(null);
+  const [name, setName] = useState(entityName);
+  const [attributeList, setAttributeList] = useState([]);
   const [entityData, setEntityData] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
@@ -61,7 +63,8 @@ const EntityPage = () => {
         activeAppApiKey
       );
       setEntityData(entityDataResponse || []);
-
+      setName(entityName);
+      setAttributeList(itemDetailsResponse.attribute_list);
       setLoading(false);
     };
 
@@ -246,8 +249,6 @@ const EntityPage = () => {
     }
   };
 
-  const { name, attribute_list } = itemDetails || {name: entityName, attribute_list: []};
-
   return (
     <MainCard>
       <Box justifyContent="space-between" alignItems="center">
@@ -276,7 +277,7 @@ const EntityPage = () => {
           <Table>
             <TableHead>
               <TableRow>
-                {attribute_list.map((attribute) => (
+                {attributeList.map((attribute) => (
                   <TableCell key={attribute.name}>{formatTitle(attribute.name)}</TableCell>
                 ))}
                 <TableCell key='actions'>Actions
@@ -286,7 +287,7 @@ const EntityPage = () => {
             <TableBody>
               {entityData?.map((dataItem, index) => (
                 <TableRow key={index}>
-                  {attribute_list.map((attribute) => (
+                  {attributeList.map((attribute) => (
                     <TableCell key={attribute.name}>
                       {attribute.data_type === 'file' ? (
                         <a href={dataItem[attribute.name]} target="_blank" rel="noopener noreferrer">
@@ -324,7 +325,7 @@ const EntityPage = () => {
               }
             <form onSubmit={handleSubmit}>
               <Grid container spacing={2}>
-                {attribute_list.map((attribute) => (
+                {attributeList.map((attribute) => (
                   <Grid key={attribute.name} item xs={12} md={6}>
                     {renderInputField(attribute, formData, handleInputChange)}
                   </Grid>
