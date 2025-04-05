@@ -39,13 +39,6 @@ const settings = {
       type: 'collapse',
       icon: icons.IconCreditCard,
       children:[
-        {
-            id: 'settings-payment-methods',
-            title: 'Payment Methods',
-            type: 'item',
-            url: '/settings/payment-methods',
-            breadcrumbs: false
-          },
           {
             id: 'settings-subscription',
             title: 'Subscription',
@@ -53,6 +46,27 @@ const settings = {
             url: '/settings/subscription',
             breadcrumbs: false
           },
+          // {
+          //   id: 'settings-invoices',
+          //   title: 'Invoices',
+          //   type: 'item',
+          //   url: '/settings/invoices',
+          //   breadcrumbs: false
+          // },
+          // {
+          //   id: 'settings-payments',
+          //   title: 'Payments',
+          //   type: 'item',
+          //   url: '/settings/payments',
+          //   breadcrumbs: false
+          // },
+          // {
+          //   id: 'settings-payment-methods',
+          //   title: 'Payment Methods',
+          //   type: 'item',
+          //   url: '/settings/payment-methods',
+          //   breadcrumbs: false
+          // },
       ]
     },
   ]
