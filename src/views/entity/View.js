@@ -27,6 +27,7 @@ import TableEmptyState from "views/utilities/TableEmptyState";
 import { Edit } from "@mui/icons-material";
 import ImportEntityModal from "ui-component/modals/ImportEntityModal";
 import TableLoadingState from "views/utilities/TableLoadingState";
+import { LongTextCell } from "ui-component/LongTextCell";
 
 const API_ENDPOINT = `${apiUrl}/entity`;
 
@@ -107,7 +108,7 @@ const EntityPage = () => {
       window.URL.revokeObjectURL(url);
   
     } catch (error) {
-      console.error("Error exporting file:", error);
+      handleOpenSnackbar(error.message, 'error');
     }
   };
   
@@ -131,46 +132,64 @@ const EntityPage = () => {
     setShowAddModal(false);
   };
 
-  const handleInputChange = async (e, attribute) => {
+  const handleUploadFile = async (attribute, files) => {
     const userData = JSON.parse(localStorage.getItem("user"));
     const activeAppApiKey = localStorage.getItem("activeApp") || "";
-    const { value, files } = e.target;
-  
-    if (attribute.data_type === 'file' && files && files[0]) {
-      const formData = new FormData();
-      formData.append('file', files[0]);
-      try {
-        setSubmitting(true);
-        const response = await fetch(`${apiUrl}/upload/`, {
-          method: 'POST',
-          headers: {
-            "token": userData.login_token,
-            "api_key": activeAppApiKey,
-          },
-          body: formData,
-        });
-  
-        if (!response.ok) {
-          throw new Error('File upload failed');
-        }
-  
-        const data = await response.json();
-        const fileUrl = data.result;
-        setFormData((prevData) => ({
-          ...prevData,
-          [attribute.name]: fileUrl,
-        }));
-        setSubmitting(false);
-      } catch (error) {
-        console.error('Error uploading file:', error);
+    const formData = new FormData();
+    formData.append('file', files[0]);
+    try {
+      setSubmitting(true);
+      const response = await fetch(`${apiUrl}/upload/`, {
+        method: 'POST',
+        headers: {
+          "token": userData.login_token,
+          "api_key": activeAppApiKey,
+        },
+        body: formData,
+      });
+      if (!response.ok) {
+        throw new Error('File upload failed');
       }
-    } else {
+      const data = await response.json();
+      const fileUrl = data.result;
       setFormData((prevData) => ({
         ...prevData,
-        [attribute.name]: value,
+        [attribute.name]: fileUrl,
       }));
+      setSubmitting(false);
+    } catch (error) {
+      handleOpenSnackbar(error.message, 'error');
+    }
+  }
+
+  const handleInputChange = async (e, attribute) => {
+    try {
+      if (!attribute || !attribute.name) {
+        console.warn("Invalid attribute passed to handleInputChange.");
+        return;
+      }
+      const isStringInput = typeof e === 'string';
+      const value = isStringInput ? e : e?.target?.value ?? '';
+      const files = e?.target?.files;
+      if (attribute.data_type === 'file' && files && files[0]) {
+        await handleUploadFile(attribute, files);
+      } else {
+        setFormData((prevData) => ({
+          ...prevData,
+          [attribute.name]: value,
+        }));
+      }
+    } catch (error) {
+      console.error("Error in handleInputChange:", error);
     }
   };
+  
+
+  const handleOpenSnackbar = (message, status) => {
+      setSnackbarMessage(message);
+      setSnackbarSeverity(status);
+      setSnackbarOpen(true);
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -206,14 +225,9 @@ const EntityPage = () => {
         activeAppApiKey
       );
       setEntityData(entityDataResponse);
-      setSnackbarMessage('Saved data successfully.');
-      setSnackbarSeverity('success');
-      setSnackbarOpen(true);
+      handleOpenSnackbar('Saved data successfully.', 'success');
     } catch (error) {
-      console.error("Error saving entity:", error);
-      setSnackbarMessage(error.message || 'An error occurred while deleting the entity.');
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true);
+      handleOpenSnackbar(error.message || 'An error occurred while deleting the entity.', 'error');
     } finally {
       setSubmitting(false);
     }
@@ -225,19 +239,13 @@ const EntityPage = () => {
       const activeAppApiKey = localStorage.getItem("activeApp") || "";
       const response = await deleteEntityInstance(entityName,instance.uuid,userData, activeAppApiKey);
       if (response.success) {
-        setSnackbarMessage(response.result);
-        setSnackbarSeverity('success');
-        setSnackbarOpen(true);
+        handleOpenSnackbar(response.result, 'success');
         setReload(true);
       } else {
-        setSnackbarMessage(response.result || 'An error occurred while deleting the entity.');
-        setSnackbarSeverity('error');
-        setSnackbarOpen(true);
+        handleOpenSnackbar(response.result || 'An error occurred while deleting the entity.', 'error');
       }
     } catch (error) {
-      setSnackbarMessage('An unexpected error occurred. Please try again.');
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true);
+      handleOpenSnackbar('An unexpected error occurred. Please try again.', 'error');
     }
   };
   
@@ -290,15 +298,18 @@ const EntityPage = () => {
                 <TableRow key={index}>
                   {attributeList?.map((attribute) => (
                     <TableCell key={attribute.name}>
-                      {attribute.data_type === 'file' ? (
+                      {attribute.data_type === 'file' && dataItem[attribute.name] && (
                         <a href={dataItem[attribute.name]} target="_blank" rel="noopener noreferrer">
                           click here
                         </a>
-                      ) : (
-                        attribute.data_type === 'long text'? (
-                          dataItem[attribute.name].length > 20
-                          ? dataItem[attribute.name]?.slice(0, 20) + '...':  dataItem[attribute.name]) : dataItem[attribute.name]
                       )}
+                      {attribute.data_type === 'long text' && (
+                        <LongTextCell
+                          attribute={attribute}
+                          value={dataItem[attribute.name]}
+                        />
+                      )}
+                      {attribute.data_type !== 'file' && attribute.data_type !== 'long text' && dataItem[attribute.name]}
                     </TableCell>
                   ))}
                   <TableCell>

@@ -1,4 +1,6 @@
 import React from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { TextField, MenuItem, Select, FormControl, InputLabel, Input } from '@mui/material';
 import { DatePicker, DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -43,23 +45,34 @@ const renderInputField = (attribute, formData, handleInputChange) => {
         <TextField
           {...commonProps}
           type="text"
-          onChange={(e) => handleInputChange(e, attribute)}
         />
       );
-    case "long text":
-      return (<TextField
-          {...commonProps}
-          multiline={true}
-          rows={4}
-          variant="outlined"
-          onChange={(e) => handleInputChange(e, attribute)}
-        />);
+      case "long text":
+        return (
+          <FormControl fullWidth variant="outlined" style={{ marginTop: 8 }}>
+            <InputLabel shrink style={{ marginBottom: 4, fontSize: '0.9rem' }}>
+              {formatTitle(attribute.name)}
+            </InputLabel>
+            <ReactQuill
+              theme="snow"
+              value={formData[attribute.name] || ""}
+              onChange={(value) =>
+                handleInputChange({ target: { value } }, attribute)
+              }
+              style={{
+                minHeight: '150px',
+                borderRadius: '12px',
+                backgroundColor: '#fff',
+                border: '1px solid rgba(0, 0, 0, 0.23)',
+              }}
+            />
+          </FormControl>
+        );      
     case "password":
       return (
         <TextField
           {...commonProps}
           type="password"
-          onChange={(e) => handleInputChange(e, attribute)}
         />
       );
     case "numeric":
@@ -67,16 +80,13 @@ const renderInputField = (attribute, formData, handleInputChange) => {
         <TextField
           {...commonProps}
           type="number"
-          onChange={(e) => handleInputChange(e, attribute)}
         />
       );
     case "date":
       return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
-            label={formatTitle(attribute.name)}
-            value={formData[attribute.name] || null}
-            onChange={(date) => handleInputChange({ target: { value: date } }, attribute)}
+           {...commonProps}
             renderInput={(params) => <TextField {...params} {...commonProps} />}
           />
         </LocalizationProvider>
@@ -86,9 +96,7 @@ const renderInputField = (attribute, formData, handleInputChange) => {
       return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DateTimePicker
-            label={formatTitle(attribute.name)}
-            value={formData[attribute.name] || null}
-            onChange={(date) => handleInputChange({ target: { value: date } }, attribute)}
+            {...commonProps}
             renderInput={(params) => <TextField {...params} {...commonProps} />}
           />
         </LocalizationProvider>
