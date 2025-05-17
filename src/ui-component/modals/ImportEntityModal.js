@@ -5,9 +5,8 @@ import formatTitle from "utils/title-formatter";
 
 const API_ENDPOINT = `${apiUrl}/entity`;
 
-const ImportEntityModal = ({ showImportModal, handleModalClose, entityName, setReload }) => {
+const ImportEntityModal = ({ showImportModal, handleModalClose, entityName, uploading, setUploading }) => {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("success");
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -43,7 +42,6 @@ const ImportEntityModal = ({ showImportModal, handleModalClose, entityName, setR
       setMessage("File uploaded successfully!");
       setMessageType("success");
       setSelectedFile(null);
-      setReload(true);
       handleModalClose();
     } catch (error) {
       setMessage(error.message);

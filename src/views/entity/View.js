@@ -41,11 +41,13 @@ const EntityPage = () => {
   const [formData, setFormData] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-  const [reload, setReload] = useState(false);
   const [isActionEdit, setIsActionEdit] = useState(false);
+  
+
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
     const activeAppApiKey = localStorage.getItem("activeApp") || "";
@@ -64,11 +66,10 @@ const EntityPage = () => {
       setName(entityName);
       setAttributeList(itemDetailsResponse?.attribute_list);
       setLoading(false);
-      setReload(false);
     };
     setLoading(true);
     fetchData();
-  }, [entityName, reload]);
+  }, [entityName]);
 
   const handleAddClick = () => {
     setIsActionEdit(false);
@@ -180,7 +181,7 @@ const EntityPage = () => {
         }));
       }
     } catch (error) {
-      console.error("Error in handleInputChange:", error);
+      handleOpenSnackbar(error.message ?? 'Input error', 'error');
     }
   };
   
@@ -191,16 +192,32 @@ const EntityPage = () => {
       setSnackbarOpen(true);
   }
 
+  const updateEntityData = async () => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const activeAppApiKey = localStorage.getItem("activeApp") || "";
+    try{
+      setLoading(true);
+      const entityDataResponse = await fetchEntityData(
+        entityName,
+        userData,
+        activeAppApiKey
+      );
+      setEntityData(entityDataResponse);
+    }catch(error){
+      handleOpenSnackbar(error.message ?? 'Error updating records','error');
+    }finally {
+      setLoading(false);
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const activeAppApiKey = localStorage.getItem("activeApp") || "";
     try {
-      const userData = JSON.parse(localStorage.getItem("user"));
-      const activeAppApiKey = localStorage.getItem("activeApp") || "";
-
       const requestData = {
         entity_name: entityName,
-       
         details: formData,
       };
       const path = isActionEdit? `${API_ENDPOINT}/${entityName}/${formData.uuid}` : `${API_ENDPOINT}/save/`;
@@ -214,18 +231,14 @@ const EntityPage = () => {
         },
         body: JSON.stringify(requestData),
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to save entity");
+      const jsonData = await response.json();
+      if (response.ok) {
+        setShowAddModal(false);
+        handleOpenSnackbar('Saved data successfully.', 'success');
+        await updateEntityData();
+      } else {
+        handleOpenSnackbar(jsonData.result, 'error');
       }
-      setShowAddModal(false);
-      const entityDataResponse = await fetchEntityData(
-        entityName,
-        userData,
-        activeAppApiKey
-      );
-      setEntityData(entityDataResponse);
-      handleOpenSnackbar('Saved data successfully.', 'success');
     } catch (error) {
       handleOpenSnackbar(error.message || 'An error occurred while deleting the entity.', 'error');
     } finally {
@@ -240,17 +253,17 @@ const EntityPage = () => {
       const response = await deleteEntityInstance(entityName,instance.uuid,userData, activeAppApiKey);
       if (response.success) {
         handleOpenSnackbar(response.result, 'success');
-        setReload(true);
+        await updateEntityData();
       } else {
         handleOpenSnackbar(response.result || 'An error occurred while deleting the entity.', 'error');
       }
     } catch (error) {
-      handleOpenSnackbar('An unexpected error occurred. Please try again.', 'error');
+      handleOpenSnackbar(error.message || 'An unexpected error occurred. Please try again.', 'error');
     }
   };
   
 
-  const handleSnackbarClose = (event, reason) => {
+  const handleSnackbarClose = (reason) => {
     if (reason === 'clickaway') {
       return;
     }
@@ -394,7 +407,7 @@ const EntityPage = () => {
           </Box>
         </Paper>
       </Modal>
-      <ImportEntityModal showImportModal={showImportModal} handleModalClose={handleImportModalClose} entityName={entityName} setReload={setReload}/>
+      <ImportEntityModal showImportModal={showImportModal} handleModalClose={handleImportModalClose} entityName={entityName} setUploading={setUploading} uploading={uploading}/>
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}

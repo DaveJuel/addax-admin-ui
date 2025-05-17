@@ -59,12 +59,6 @@ const renderInputField = (attribute, formData, handleInputChange) => {
               onChange={(value) =>
                 handleInputChange({ target: { value } }, attribute)
               }
-              style={{
-                minHeight: '150px',
-                borderRadius: '12px',
-                backgroundColor: '#fff',
-                border: '1px solid rgba(0, 0, 0, 0.23)',
-              }}
             />
           </FormControl>
         );      
