@@ -9,6 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import formatTitle from 'utils/title-formatter';
 
 const MAX_LENGTH = 100; // Number of visible characters before truncation
 
@@ -39,7 +40,7 @@ export const LongTextCell = ({ attribute, value }) => {
 
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">
         <DialogTitle>
-          Full Description
+          Full {formatTitle (attribute.name)}
           <IconButton
             onClick={() => setOpen(false)}
             sx={{ position: 'absolute', right: 8, top: 8 }}
