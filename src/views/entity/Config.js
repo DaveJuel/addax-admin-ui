@@ -170,15 +170,15 @@ const EntityConfigPage = () => {
 
   useEffect(() => {
     async function fetchEntities(){
-    try{
-      const response = await fetchEntityList();
-      const entityList = response.result;
-      setEntityList(entityList);
-      setLoading(false);
-    }catch(error){
-      handleOpenSnackbar(error.message || 'An unexpected error occurred. Please try again.', 'error');
+      try{
+        const response = await fetchEntityList();
+        const entityList = response.result;
+        setEntityList(entityList);
+        setLoading(false);
+      }catch(error){
+        handleOpenSnackbar(error.message || 'An unexpected error occurred. Please try again.', 'error');
+      }
     }
-  }
     fetchEntities();
   }, [reload]);
 
