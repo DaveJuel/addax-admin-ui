@@ -20,16 +20,13 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import MainCard from "ui-component/cards/MainCard";
 import formatTitle from "utils/title-formatter";
-import { apiUrl } from "utils/httpclient-handler";
-import { deleteEntityInstance, fetchEntityData, fetchEntityProperties } from "utils/entityApi";
+import { deleteEntityInstance, exportEntityData, fetchEntityData, fetchEntityProperties, saveEntityData, uploadFile } from "utils/entityApi";
 import renderInputField from "ui-component/InputField";
 import TableEmptyState from "views/utilities/TableEmptyState";
 import { Edit } from "@mui/icons-material";
 import ImportEntityModal from "ui-component/modals/ImportEntityModal";
 import TableLoadingState from "views/utilities/TableLoadingState";
 import { LongTextCell } from "ui-component/LongTextCell";
-
-const API_ENDPOINT = `${apiUrl}/entity`;
 
 const EntityPage = () => {
   const { entityName } = useParams();
@@ -49,22 +46,16 @@ const EntityPage = () => {
   
 
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("user"));
-    const activeAppApiKey = localStorage.getItem("activeApp") || "";
     const fetchData = async () => {
-      const itemDetailsResponse = await fetchEntityProperties(
-        entityName,
-        userData,
-        activeAppApiKey
+      const entityProperties = await fetchEntityProperties(
+        entityName
       );
-      const entityDataResponse = await fetchEntityData(
-        entityName,
-        userData,
-        activeAppApiKey
+      const entityData = await fetchEntityData(
+        entityName
       );
-      setEntityData(entityDataResponse || []);
+      setEntityData(entityData || []);
       setName(entityName);
-      setAttributeList(itemDetailsResponse?.attribute_list);
+      setAttributeList(entityProperties?.attribute_list);
       setLoading(false);
     };
     setLoading(true);
@@ -79,35 +70,7 @@ const EntityPage = () => {
 
   const handleExport = async () => {
     try {
-      const userData = JSON.parse(localStorage.getItem("user"));
-      const activeAppApiKey = localStorage.getItem("activeApp") || "";
-      const response = await fetch(`${API_ENDPOINT}/export/${entityName}`, {
-        method: "GET",
-        headers: {
-          "token": userData.login_token,
-          "api_key": activeAppApiKey
-        }
-      });
-  
-      if (!response.ok) {
-        throw new Error("Failed to export file");
-      }
-  
-      // Convert response to blob
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-  
-      // Create a download link
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "exported_data.xlsx";
-      document.body.appendChild(a);
-      a.click();
-  
-      // Clean up
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-  
+      await exportEntityData(entityName);
     } catch (error) {
       handleOpenSnackbar(error.message, 'error');
     }
@@ -134,32 +97,17 @@ const EntityPage = () => {
   };
 
   const handleUploadFile = async (attribute, files) => {
-    const userData = JSON.parse(localStorage.getItem("user"));
-    const activeAppApiKey = localStorage.getItem("activeApp") || "";
-    const formData = new FormData();
-    formData.append('file', files[0]);
+    setSubmitting(true);
     try {
-      setSubmitting(true);
-      const response = await fetch(`${apiUrl}/upload/`, {
-        method: 'POST',
-        headers: {
-          "token": userData.login_token,
-          "api_key": activeAppApiKey,
-        },
-        body: formData,
-      });
-      if (!response.ok) {
-        throw new Error('File upload failed');
-      }
-      const data = await response.json();
-      const fileUrl = data.result;
+      const fileUrl = await uploadFile(files);
       setFormData((prevData) => ({
         ...prevData,
         [attribute.name]: fileUrl,
       }));
-      setSubmitting(false);
     } catch (error) {
       handleOpenSnackbar(error.message, 'error');
+    }finally{
+      setSubmitting(false);
     }
   }
 
@@ -181,7 +129,7 @@ const EntityPage = () => {
         }));
       }
     } catch (error) {
-      handleOpenSnackbar(error.message ?? 'Input error', 'error');
+      handleOpenSnackbar(error.message || 'Input error', 'error');
     }
   };
   
@@ -193,16 +141,12 @@ const EntityPage = () => {
   }
 
   const updateEntityData = async () => {
-    const userData = JSON.parse(localStorage.getItem("user"));
-    const activeAppApiKey = localStorage.getItem("activeApp") || "";
     try{
       setLoading(true);
-      const entityDataResponse = await fetchEntityData(
-        entityName,
-        userData,
-        activeAppApiKey
+      const entityData = await fetchEntityData(
+        entityName
       );
-      setEntityData(entityDataResponse);
+      setEntityData(entityData);
     }catch(error){
       handleOpenSnackbar(error.message ?? 'Error updating records','error');
     }finally {
@@ -213,32 +157,11 @@ const EntityPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    const userData = JSON.parse(localStorage.getItem("user"));
-    const activeAppApiKey = localStorage.getItem("activeApp") || "";
     try {
-      const requestData = {
-        entity_name: entityName,
-        details: formData,
-      };
-      const path = isActionEdit? `${API_ENDPOINT}/${entityName}/${formData.uuid}` : `${API_ENDPOINT}/save/`;
-      const method = isActionEdit? `PATCH`: `POST`;
-      const response = await fetch(path, {
-        method: method,
-        headers: {
-          "Content-Type": "application/json",
-          "token": userData.login_token,
-          "api_key": activeAppApiKey,
-        },
-        body: JSON.stringify(requestData),
-      });
-      const jsonData = await response.json();
-      if (response.ok) {
-        setShowAddModal(false);
-        handleOpenSnackbar('Saved data successfully.', 'success');
-        await updateEntityData();
-      } else {
-        handleOpenSnackbar(jsonData.result, 'error');
-      }
+      await saveEntityData(isActionEdit, entityName, formData);
+      setShowAddModal(false);
+      handleOpenSnackbar('Saved successfully.', 'success');
+      await updateEntityData();
     } catch (error) {
       handleOpenSnackbar(error.message || 'An error occurred while deleting the entity.', 'error');
     } finally {
@@ -248,9 +171,7 @@ const EntityPage = () => {
 
   const handleDelete = async (instance) => {
     try {
-      const userData = JSON.parse(localStorage.getItem("user"));
-      const activeAppApiKey = localStorage.getItem("activeApp") || "";
-      const response = await deleteEntityInstance(entityName,instance.uuid,userData, activeAppApiKey);
+      const response = await deleteEntityInstance(entityName,instance.uuid);
       if (response.success) {
         handleOpenSnackbar(response.result, 'success');
         await updateEntityData();

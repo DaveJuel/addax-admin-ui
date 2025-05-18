@@ -5,32 +5,29 @@ import {
   Button,
   Grid,
   TextField,
-//   IconButton,
   Avatar,
-//   Modal,
-//   Paper,
-  Snackbar,
 } from '@mui/material';
-// import { Edit, Save } from '@mui/icons-material';
-import { Alert } from '@mui/material';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import MainCard from 'ui-component/cards/MainCard';
+import { useEffect } from 'react';
 
 const AppProfile = () => {
   const [previewLogo, setPreviewLogo] = useState(null);
-  const [location, setLocation] = useState({ lat: 0, lng: 0 });
-  const [contactInfo, setContactInfo] = useState({
-    email: '',
-    phone: '',
-  });
   const [appDetails, setAppDetails] = useState({
     name: '',
-    description: '',
-    industry: '',
-    category: '',
+    status: '',
+    added_by: '',
+    added_on: '',
+    api_key: '',
   });
+
   const [isEditMode, setIsEditMode] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  useEffect(()=>{
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const activeApp = localStorage.getItem("activeApp");
+    const appList = userData?.app_list || [];
+    setAppDetails(appList.find((app)=>app.api_key === activeApp));
+  }, []);
 
   const handleLogoChange = (event) => {
     const file = event.target.files[0];
@@ -38,27 +35,17 @@ const AppProfile = () => {
     setPreviewLogo(URL.createObjectURL(file));
   };
 
-  const handleSaveLocation = (newLocation) => {
-    setLocation(newLocation);
-    setSnackbarOpen(true);
-  };
+ 
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setAppDetails((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleContactChange = (event) => {
-    const { name, value } = event.target;
-    setContactInfo((prev) => ({ ...prev, [name]: value }));
-  };
+
 
   const toggleEditMode = () => {
     setIsEditMode((prev) => !prev);
-  };
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
   };
 
   return (
@@ -73,9 +60,6 @@ const AppProfile = () => {
       <Grid container spacing={3}>
         {/* App Details */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h6" gutterBottom>
-            App Details
-          </Typography>
           <TextField
             label="App Name"
             fullWidth
@@ -86,30 +70,39 @@ const AppProfile = () => {
             margin="normal"
           />
           <TextField
-            label="Description"
+            label="Created At"
             fullWidth
-            name="description"
-            value={appDetails.description}
+            name="added_on"
+            value={appDetails.added_on}
             onChange={handleInputChange}
-            disabled={!isEditMode}
+            disabled={true}
             margin="normal"
           />
           <TextField
-            label="Industry"
+            label="Owner's Email"
             fullWidth
-            name="industry"
-            value={appDetails.industry}
+            name="added_by"
+            value={appDetails.added_by}
             onChange={handleInputChange}
-            disabled={!isEditMode}
+            disabled={true}
             margin="normal"
           />
           <TextField
-            label="Category"
+            label="Status"
             fullWidth
-            name="category"
-            value={appDetails.category}
+            name="status"
+            value={appDetails.status}
             onChange={handleInputChange}
-            disabled={!isEditMode}
+            disabled={true}
+            margin="normal"
+          />
+          <TextField
+            label="API Key"
+            fullWidth
+            name="api_key"
+            value={appDetails.api_key}
+            onChange={handleInputChange}
+            disabled={true}
             margin="normal"
           />
         </Grid>
@@ -129,63 +122,7 @@ const AppProfile = () => {
             )}
           </Box>
         </Grid>
-
-        {/* Contact Information */}
-        <Grid item xs={12} md={6}>
-          <Typography variant="h6" gutterBottom>
-            Contact Information
-          </Typography>
-          <TextField
-            label="Email"
-            fullWidth
-            name="email"
-            value={contactInfo.email}
-            onChange={handleContactChange}
-            disabled={!isEditMode}
-            margin="normal"
-          />
-          <TextField
-            label="Phone"
-            fullWidth
-            name="phone"
-            value={contactInfo.phone}
-            onChange={handleContactChange}
-            disabled={!isEditMode}
-            margin="normal"
-          />
-        </Grid>
-
-        {/* Default Location */}
-        <Grid item xs={12}>
-          <Typography variant="h6" gutterBottom>
-            Default Location
-          </Typography>
-          <LoadScript googleMapsApiKey="YOUR_GOOGLE_MAPS_API_KEY">
-            <GoogleMap
-              center={location}
-              zoom={10}
-              mapContainerStyle={{ height: '400px', width: '100%' }}
-              onClick={(e) =>
-                isEditMode && handleSaveLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
-              }
-            >
-              <Marker position={location} />
-            </GoogleMap>
-          </LoadScript>
-        </Grid>
       </Grid>
-
-      {/* Snackbar */}
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert onClose={handleSnackbarClose} severity="success">
-          Location saved successfully!
-        </Alert>
-      </Snackbar>
     </MainCard>
   );
 };
