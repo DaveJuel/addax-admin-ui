@@ -8,25 +8,19 @@ const userData = JSON.parse(localStorage.getItem("user"));
 const activeAppApiKey = localStorage.getItem("activeApp") || "";
 
 export const fetchEntityList = async ()=>{
-  try {
-    const response = await fetch(`${API_ENDPOINT}/entities`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "token": userData.login_token,
-        "api_key": activeAppApiKey
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch data");
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching entity data:", error);
-    return [];
+  const response = await fetch(`${API_ENDPOINT}/entities`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "token": userData.login_token,
+      "api_key": activeAppApiKey
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.result || "Failed to fetch data");
   }
+  return data;
 };
 
 export const fetchEntityData = async (
@@ -192,3 +186,21 @@ export const saveEntityData = async (isActionEdit, entityName, formData) => {
   }
   return jsonBody.result;
 };
+
+export const createEntity = async(requestData) => {
+  const jsonBody = JSON.stringify(requestData);
+  const response = await fetch(`${API_ENDPOINT}/entity/create/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "token": userData.login_token,
+      "api_key": activeAppApiKey,
+    },
+    body: jsonBody,
+  });
+  const jsonResponse = await response.json();
+  if (!response.ok) {
+    throw new Error(jsonResponse.result);
+  }
+  return jsonResponse.result;
+}

@@ -19,10 +19,8 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-
-import { apiUrl } from "utils/httpclient-handler";
 import formatTitle from "utils/title-formatter";
-import { fetchEntityList, fetchEntityProperties } from "utils/entityApi";
+import { createEntity, fetchEntityList, fetchEntityProperties } from "utils/entityApi";
 import IconInputField from "ui-component/IconInputField";
 import EntityTable from "ui-component/EntityTable";
 import { Add, Remove } from "@mui/icons-material";
@@ -30,9 +28,6 @@ import TableEmptyState from "views/utilities/TableEmptyState";
 import TableLoadingState from "views/utilities/TableLoadingState";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleReload } from "store/slices/globalSlice";
-
-const API_ENDPOINT = `${apiUrl}/entity`;
-
 const EntityConfigPage = () => {
   const reload = useSelector((state) => state.global.reload);
   const dispatch = useDispatch();
@@ -59,7 +54,6 @@ const EntityConfigPage = () => {
   const [isActionEdit, setIsActionEdit] = useState(false);
 
   const userData = JSON.parse(localStorage.getItem("user"));
-  const activeAppApiKey = localStorage.getItem("activeApp") || "";
   
   const handleAddAttribute = () => {
     const newAttributeNumber = attributeNumber + 1;
@@ -106,7 +100,7 @@ const EntityConfigPage = () => {
       if (!defaultDataTypes.some(dataType => dataType.value === value)) {
         updatedAttributeList[index]['has_reference'] = true;
         try {
-          const itemDetailsResponse = await fetchEntityProperties(value, userData, activeAppApiKey);
+          const itemDetailsResponse = await fetchEntityProperties(value);
           if (itemDetailsResponse && itemDetailsResponse?.attribute_list) {
             updatedAttributeList[index]['display_column_options'] = mapEntityListToDataTypes(itemDetailsResponse.attribute_list);
           }
@@ -165,15 +159,6 @@ const EntityConfigPage = () => {
     />
   );
 
-  async function fetchEntities(){
-    const userData = JSON.parse(localStorage.getItem("user"));
-    const activeAppApiKey = localStorage.getItem("activeApp") || "";
-    const response = await fetchEntityList(userData, activeAppApiKey);
-    const entityList = response.result;
-    setEntityList(entityList);
-    setLoading(false);
-  }
-
   useEffect(() => {
     for(let index = 0;index < attributeList.length; index++){
       const element = document.getElementById(`attribute_name-${index}`);
@@ -184,16 +169,30 @@ const EntityConfigPage = () => {
   }, [attributeList, name, icon, privacy]);
 
   useEffect(() => {
+    async function fetchEntities(){
+    try{
+      const response = await fetchEntityList();
+      const entityList = response.result;
+      setEntityList(entityList);
+      setLoading(false);
+    }catch(error){
+      handleOpenSnackbar(error.message || 'An unexpected error occurred. Please try again.', 'error');
+    }
+  }
     fetchEntities();
   }, [reload]);
+
+  const handleOpenSnackbar = (message, status) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(status);
+    setSnackbarOpen(true);
+  }
 
   const handleSave = async (e) => {
     e.preventDefault();
     setLoading(true);
     setSubmitting(true);
     try {
-      const userData = JSON.parse(localStorage.getItem("user"));
-      const activeAppApiKey = localStorage.getItem("activeApp") || "";
       const requestData = {
         entity_name: name,
         icon: icon,
@@ -201,33 +200,12 @@ const EntityConfigPage = () => {
         privacy: privacy,
         attribute_list: formatCreateEntityRequest(attributeList)
       };
-      const jsonBody = JSON.stringify(requestData);
-      const response = await fetch(`${API_ENDPOINT}/create/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "token": userData.login_token,
-          "api_key": activeAppApiKey,
-        },
-        body: jsonBody,
-      });
-      const jsonReply = await response.json();
-      if (jsonReply.success) {
-        setSnackbarMessage('Entity created successfully!');
-        setSnackbarSeverity('success');
-        setSnackbarOpen(true);
-        dispatch(toggleReload());
-        setShowAddModal(false);
-      } else {
-        setSnackbarMessage(response.result || 'An error occurred while creating the entity.');
-        setSnackbarSeverity('error');
-        setSnackbarOpen(true);
-      }
+      await createEntity(requestData);
+      handleOpenSnackbar('Entity created successfully!','success' );
+      dispatch(toggleReload());
+      setShowAddModal(false);
     } catch (error) {
-      console.error('Error creating an entity.:', error);
-      setSnackbarMessage('An unexpected error occurred. Please try again.');
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true);
+      handleOpenSnackbar(error.message || 'An unexpected error occurred. Please try again.', 'error');
     } finally {
       setSubmitting(false);
     }

@@ -114,7 +114,6 @@ const EntityPage = () => {
   const handleInputChange = async (e, attribute) => {
     try {
       if (!attribute || !attribute.name) {
-        console.warn("Invalid attribute passed to handleInputChange.");
         return;
       }
       const isStringInput = typeof e === 'string';
