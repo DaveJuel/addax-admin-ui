@@ -145,15 +145,15 @@ export const exportEntityData = async (entityName) =>{
   window.URL.revokeObjectURL(url);
 };
 
-export const uploadFile = async (file) => {
+export const uploadFile = async (user, apiKey, file) => {
   const formData = new FormData();
   formData.append('file', file);
   
   const response = await fetch(`${apiUrl}/upload/`, {
     method: 'POST',
     headers: {
-      "token": userData.login_token,
-      "api_key": activeAppApiKey,
+      "token": user.login_token,
+      "api_key": apiKey,
     },
     body: formData,
   });

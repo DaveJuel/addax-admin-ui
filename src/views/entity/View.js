@@ -99,7 +99,9 @@ const EntityPage = () => {
   const handleUploadFile = async (attribute, files) => {
     setSubmitting(true);
     try {
-      const fileUrl = await uploadFile(files[0]);
+      const userData = JSON.parse(localStorage.getItem("user"));
+      const activeApp = localStorage.getItem("activeApp");
+      const fileUrl = await uploadFile(userData,activeApp,files[0]);
       setFormData((prevData) => ({
         ...prevData,
         [attribute.name]: fileUrl,

@@ -69,8 +69,10 @@ const AppProfile = () => {
   const handleLogoChange = async (event) => {
     setUploading(true);
     try{
+      const userData = JSON.parse(localStorage.getItem("user"));
+      const activeApp = localStorage.getItem("activeApp");
       const file = event.target.files[0];
-      const fileUrl = await uploadFile(file);
+      const fileUrl = await uploadFile(userData, activeApp, file);
       await updateAppLogo(fileUrl);
       setPreviewLogo(file);
       setPreviewLogo(fileUrl);
