@@ -145,9 +145,9 @@ export const exportEntityData = async (entityName) =>{
   window.URL.revokeObjectURL(url);
 };
 
-export const uploadFile = async (files) => {
+export const uploadFile = async (file) => {
   const formData = new FormData();
-  formData.append('file', files[0]);
+  formData.append('file', file);
   
   const response = await fetch(`${apiUrl}/upload/`, {
     method: 'POST',

@@ -6,15 +6,24 @@ import {
   Grid,
   TextField,
   Avatar,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import { useEffect } from 'react';
+import { uploadFile } from 'utils/entityApi';
+import { apiUrl } from 'utils/httpclient-handler';
 
 const AppProfile = () => {
   const [previewLogo, setPreviewLogo] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const [appDetails, setAppDetails] = useState({
     name: '',
     status: '',
+    logo_url: null,
     added_by: '',
     added_on: '',
     api_key: '',
@@ -29,10 +38,60 @@ const AppProfile = () => {
     setAppDetails(appList.find((app)=>app.api_key === activeApp));
   }, []);
 
-  const handleLogoChange = (event) => {
-    const file = event.target.files[0];
-    setPreviewLogo(file);
-    setPreviewLogo(URL.createObjectURL(file));
+  useEffect(()=>{
+    setPreviewLogo(appDetails?.logo_url)
+  }, [appDetails?.logo_url]);
+
+  const updateAppLogo = async (logoUrl) => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const activeAppApiKey = localStorage.getItem("activeApp") || "";
+
+    const path = `${apiUrl}/app/logo`;
+    const response = await fetch(path, {
+      method: 'PATCH',
+      headers: {
+        "Content-Type": "application/json",
+        "token": userData.login_token,
+        "api_key": activeAppApiKey,
+      },
+      body: JSON.stringify({...appDetails, app_name: appDetails.name, app_logo: logoUrl}),
+    });
+
+    const jsonBody = await response.json();
+
+    if (!response.ok) {
+      throw new Error(jsonBody.result);
+    }
+
+    return jsonBody.result;
+  };
+
+  const handleLogoChange = async (event) => {
+    setUploading(true);
+    try{
+      const file = event.target.files[0];
+      const fileUrl = await uploadFile(file);
+      await updateAppLogo(fileUrl);
+      setPreviewLogo(file);
+      setPreviewLogo(fileUrl);
+    }catch(error){
+      handleOpenSnackbar(error.message || 'Error occured uploading logo', 'error')
+    }finally{
+      setUploading(false);
+    }
+  };
+
+  const handleOpenSnackbar = (message, status) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(status);
+    setSnackbarOpen(true);
+  }
+
+  const handleSnackbarClose = (reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
   };
 
  
@@ -41,8 +100,6 @@ const AppProfile = () => {
     const { name, value } = event.target;
     setAppDetails((prev) => ({ ...prev, [name]: value }));
   };
-
-
 
   const toggleEditMode = () => {
     setIsEditMode((prev) => !prev);
@@ -115,7 +172,7 @@ const AppProfile = () => {
           <Box display="flex" alignItems="center">
             <Avatar src={previewLogo} alt="App Logo" sx={{ width: 100, height: 100, mr: 2 }} />
             {isEditMode && (
-              <Button variant="contained" component="label">
+              <Button variant="contained" component="label" disabled={uploading}>
                 Upload Logo
                 <input type="file" hidden onChange={handleLogoChange} />
               </Button>
@@ -123,6 +180,16 @@ const AppProfile = () => {
           </Box>
         </Grid>
       </Grid>
+      <Snackbar
+              open={snackbarOpen}
+              autoHideDuration={6000}
+              onClose={handleSnackbarClose}
+              anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+              <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                {snackbarMessage}
+              </Alert>
+            </Snackbar>
     </MainCard>
   );
 };

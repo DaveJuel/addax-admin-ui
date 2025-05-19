@@ -26,9 +26,7 @@ const Dashboard = () => {
   
   const loadEntityList = async()=>{
     try{
-      const userData = JSON.parse(localStorage.getItem("user"));
-      const activeAppApiKey = localStorage.getItem("activeApp") || "";
-      const response = await fetchEntityList(userData, activeAppApiKey);
+      const response = await fetchEntityList();
       return response;
     }catch(error){
       console.error('Failed loading entity list');
@@ -38,12 +36,7 @@ const Dashboard = () => {
 
   const loadUserList = async()=>{
     try{
-      const userData = JSON.parse(localStorage.getItem("user"));
-      const activeAppApiKey = localStorage.getItem("activeApp") || "";
-      const entityDataResponse = await fetchUserProfiles(
-        userData,
-        activeAppApiKey
-      );
+      const entityDataResponse = await fetchUserProfiles();
       return entityDataResponse;
     }catch(error){
       console.error('Failed loading entity list');
@@ -91,8 +84,8 @@ const Dashboard = () => {
   useEffect(()=>{
     const loadDashboardData = async () =>{
       const entityData = await loadEntityList();
-      setEntities(entityData.result);
-      setNumberOfEntities(entityData.result_count);
+      setEntities(entityData?.result);
+      setNumberOfEntities(entityData?.result_count);
       const storage = await loadStorageData();
       if(storage){
         setUsedSpace(storage);

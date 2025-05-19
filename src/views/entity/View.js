@@ -99,7 +99,7 @@ const EntityPage = () => {
   const handleUploadFile = async (attribute, files) => {
     setSubmitting(true);
     try {
-      const fileUrl = await uploadFile(files);
+      const fileUrl = await uploadFile(files[0]);
       setFormData((prevData) => ({
         ...prevData,
         [attribute.name]: fileUrl,
