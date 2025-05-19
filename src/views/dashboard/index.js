@@ -22,27 +22,7 @@ const Dashboard = () => {
   const [numberOfEntities, setNumberOfEntities] = useState(0);
   const [numberOfUsers, setNumberOfUsers] = useState(0);
   const [weather, setWeather] = useState(null);
-  const [usedSpace, setUsedSpace] = useState({size: 0, unit:'KB'})
-  
-  const loadEntityList = async()=>{
-    try{
-      const response = await fetchEntityList();
-      return response;
-    }catch(error){
-      console.error('Failed loading entity list');
-      setLoading(false);
-    }
-  }
-
-  const loadUserList = async()=>{
-    try{
-      const entityDataResponse = await fetchUserProfiles();
-      return entityDataResponse;
-    }catch(error){
-      console.error('Failed loading entity list');
-      setLoading(false);
-    }
-  }
+  const [usedSpace, setUsedSpace] = useState({size: 0, unit:'KB'});
 
   const loadWeatherData = async (location = 'Kigali') => {
     try {
@@ -82,6 +62,28 @@ const Dashboard = () => {
   }
 
   useEffect(()=>{
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const activeAppApiKey = localStorage.getItem("activeApp") || "";
+
+    const loadEntityList = async()=>{
+      try{
+        const response = await fetchEntityList(userData, activeAppApiKey);
+        return response;
+      }catch(error){
+        console.error('Failed loading entity list');
+        setLoading(false);
+      }
+    }
+
+    const loadUserList = async()=>{
+      try{
+        const entityDataResponse = await fetchUserProfiles(userData, activeAppApiKey);
+        return entityDataResponse;
+      }catch(error){
+        console.error('Failed loading entity list');
+        setLoading(false);
+      }
+    }
     const loadDashboardData = async () =>{
       const entityData = await loadEntityList();
       setEntities(entityData?.result);

@@ -170,8 +170,10 @@ const EntityConfigPage = () => {
 
   useEffect(() => {
     async function fetchEntities(){
+      const userData = JSON.parse(localStorage.getItem("user"));
+      const activeAppApiKey = localStorage.getItem("activeApp") || "";
       try{
-        const response = await fetchEntityList();
+        const response = await fetchEntityList(userData, activeAppApiKey);
         const entityList = response.result;
         setEntityList(entityList);
         setLoading(false);

@@ -51,7 +51,9 @@ const UserListPage = () => {
   useEffect(() => {
   
     const fetchData = async () => {
-      const entityDataResponse = await fetchUserProfiles();
+      const userData = JSON.parse(localStorage.getItem("user"));
+      const activeAppApiKey = localStorage.getItem("activeApp") || "";
+      const entityDataResponse = await fetchUserProfiles(userData, activeAppApiKey);
       if(entityDataResponse){
         setUserData(entityDataResponse.result);
       }

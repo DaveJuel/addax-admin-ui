@@ -7,13 +7,13 @@ export const CONFIG_ENTITIES = ['user_role', 'privilege', 'file_upload'];
 const userData = JSON.parse(localStorage.getItem("user"));
 const activeAppApiKey = localStorage.getItem("activeApp") || "";
 
-export const fetchEntityList = async ()=>{
+export const fetchEntityList = async (user, apiKey)=>{
   const response = await fetch(`${API_ENDPOINT}/entities`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "token": userData.login_token,
-      "api_key": activeAppApiKey
+      "token": user.login_token,
+      "api_key": apiKey
     },
   });
   const data = await response.json();

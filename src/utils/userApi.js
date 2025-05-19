@@ -4,14 +4,14 @@ const activeAppApiKey = localStorage.getItem("activeApp") || "";
 
 const API_ENDPOINT = `${apiUrl}/user`;
 
-export const fetchUserProfiles = async() =>{
+export const fetchUserProfiles = async(user, apiKey) =>{
   try {
     const response = await fetch(`${API_ENDPOINT}/list`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "token": userData.login_token,
-        "api_key": activeAppApiKey
+        "token": user.login_token,
+        "api_key": apiKey
       },
     });
 
