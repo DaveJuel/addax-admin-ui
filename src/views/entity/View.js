@@ -192,17 +192,17 @@ const EntityPage = () => {
 
   return (
     <MainCard>
-      <Box justifyContent="space-between" alignItems="center">
+      <Box justifyContent="space-between" gap={3} style={{margin: "20px 0px 10px 0px"}} alignItems="center">
         {!loading && (
           <>
             <Typography variant="body2">
               {formatTitle(name)} entity records.
             </Typography>
           
-            <Button variant="contained" color="success" onClick={handleExport}>
+            <Button variant="contained" color="success" style={{marginRight: "4px"}} onClick={handleExport}>
               Export
             </Button>
-            <Button variant="contained" color="secondary" onClick={handleImportClick}>
+            <Button variant="contained" color="secondary" style={{marginRight: "4px"}} onClick={handleImportClick}>
               Bulk Import
             </Button>
             <Button variant="contained" color="primary" onClick={handleAddClick}>
