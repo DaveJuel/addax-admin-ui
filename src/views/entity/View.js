@@ -134,9 +134,9 @@ const EntityPage = () => {
   
 
   const handleOpenSnackbar = (message, status) => {
-      setSnackbarMessage(message);
-      setSnackbarSeverity(status);
-      setSnackbarOpen(true);
+    setSnackbarMessage(message);
+    setSnackbarSeverity(status);
+    setSnackbarOpen(true);
   }
 
   const updateEntityData = async () => {

@@ -1,53 +1,59 @@
 import { apiUrl } from "utils/httpclient-handler";
-const API_ENDPOINT = `${apiUrl}`;
+const userData = JSON.parse(localStorage.getItem("user"));
+const activeAppApiKey = localStorage.getItem("activeApp") || "";
 
-export const fetchUserProfiles = async(userData,
-    activeAppApiKey) =>{
-          try {
-            const response = await fetch(`${API_ENDPOINT}/user/list`, {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                "token": userData.login_token,
-                "api_key": activeAppApiKey
-              },
-            });
-        
-            if (!response.ok) {
-              throw new Error("Failed to fetch data");
-            }
-            const data = await response.json();
-            return data;
-          } catch (error) {
-            console.error("Error fetching data:", error);
-            return [];
-          }
-    };
+const API_ENDPOINT = `${apiUrl}/user`;
 
-export const fetchUserProfile = async (userData,activeAppApiKey) => {
-  const requestData = {
-    username: userData.username,
-    login_token: userData.login_token,
-    api_key: activeAppApiKey,
-  };
+export const fetchUserProfiles = async() =>{
   try {
-    const response = await fetch(`${API_ENDPOINT}/profile/read`, {
-      method: "POST",
+    const response = await fetch(`${API_ENDPOINT}/list`, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         "token": userData.login_token,
-        "api_key": activeAppApiKey,
+        "api_key": activeAppApiKey
       },
-      body: JSON.stringify(requestData),
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch user prfile");
+      throw new Error("Failed to fetch data");
     }
     const data = await response.json();
-    return data.result;
+    return data;
   } catch (error) {
     console.error("Error fetching data:", error);
-    return null;
+    return [];
   }
+};
+
+export const fetchUserProfile = async () => {
+  const response = await fetch(`${API_ENDPOINT}/profile`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "token": userData.login_token,
+      "api_key": activeAppApiKey,
+    },
+  });
+  const data = await response.json();
+  return data.result;
 }
+
+export const saveUserProfile = async (isActionEdit, data) => {
+  const path = isActionEdit? `${API_ENDPOINT}/profile/` : `${API_ENDPOINT}/profile/`;
+  const method = isActionEdit? `PATCH`: `POST`;
+  const response = await fetch(path, {
+    method: method,
+    headers: {
+      "Content-Type": "application/json",
+      "token": userData.login_token,
+      "api_key": activeAppApiKey,
+    },
+    body: JSON.stringify(data),
+  });
+  const jsonBody = await response.json();
+  if (!response.ok) {
+    throw new Error(jsonBody.result);
+  }
+  return jsonBody.result;
+};

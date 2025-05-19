@@ -49,17 +49,13 @@ const UserListPage = () => {
 
 
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("user"));
-    const activeAppApiKey = localStorage.getItem("activeApp") || "";
+  
     const fetchData = async () => {
-      const entityDataResponse = await fetchUserProfiles(
-        userData,
-        activeAppApiKey
-      );
+      const entityDataResponse = await fetchUserProfiles();
       if(entityDataResponse){
         setUserData(entityDataResponse.result);
       }
-      const roles = await fetchEntityData('user_role', userData, activeAppApiKey);
+      const roles = await fetchEntityData('user_role');
       setRoleList(roles);
       setLoading(false);
       setReload(false);
