@@ -190,6 +190,7 @@ const FirebaseLogin = ({ ...others }) => {
                   type="submit"
                   variant="contained"
                   color="secondary"
+                  id="login-btn"
                 >
                   Sign in
                 </Button>

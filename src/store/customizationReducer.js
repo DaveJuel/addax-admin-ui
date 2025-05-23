@@ -9,7 +9,8 @@ export const initialState = {
   defaultId: 'default',
   fontFamily: config.fontFamily,
   borderRadius: config.borderRadius,
-  opened: true
+  opened: true,
+  themeVariant: localStorage.getItem('themeVariant') || 'default'
 };
 
 // ==============================|| CUSTOMIZATION REDUCER ||============================== //
@@ -38,6 +39,11 @@ const customizationReducer = (state = initialState, action) => {
         ...state,
         borderRadius: action.borderRadius
       };
+    case actionTypes.SET_THEME_VARIANT:
+      return {
+        ...state,
+        themeVariant: action.themeVariant
+      }
     default:
       return state;
   }

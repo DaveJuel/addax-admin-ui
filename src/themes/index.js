@@ -1,7 +1,6 @@
 import { createTheme } from '@mui/material/styles';
 
-// assets
-import colors from 'assets/scss/_themes-vars.module.scss';
+import getThemeColors from './colorLoader';
 
 // project imports
 import componentStyleOverrides from './compStyleOverride';
@@ -14,7 +13,9 @@ import themeTypography from './typography';
  */
 
 export const theme = (customization) => {
-  const color = colors;
+  const appKey = customization?.themeVariant || 'default';
+  
+  const color = getThemeColors(appKey);
 
   const themeOption = {
     colors: color,
