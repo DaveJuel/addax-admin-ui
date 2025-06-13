@@ -169,7 +169,7 @@ export const saveEntityData = async (isActionEdit, entityName, formData) => {
     entity_name: entityName,
     details: formData,
   };
-  const path = isActionEdit? `${API_ENDPOINT}/entity/${entityName}/${formData.uuid}` : `${API_ENDPOINT}/entity/${entityName}/`;
+  const path = isActionEdit? `${API_ENDPOINT}/entity/${entityName}/${formData.id}` : `${API_ENDPOINT}/entity/${entityName}/`;
   const method = isActionEdit? `PATCH`: `POST`;
   const response = await fetch(path, {
     method: method,
