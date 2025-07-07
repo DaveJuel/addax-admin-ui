@@ -8,92 +8,93 @@ $paper: #fefefe; // Slightly warmer white to complement golden tones
 $cardBackground: #fafafa;
 
 // ===================================
-// PRIMARY - Warm Neutrals (inspired by logo's sophistication)
+// PRIMARY - Teal & Golden Harmony
 // ===================================
-$primaryLight: #f8f6f3;    // Warm light grey with golden undertone
-$primaryMain: #e8e4df;     // Sophisticated neutral with warmth
-$primaryDark: #c4beb6;     // Deeper warm neutral
-$primary200: #f2efea;      // Subtle warm highlight
-$primary800: #a09890;      // Muted warm grey
+$primaryLight: #a4a4a4; // Soft teal-tinted light (complements teal main)
+$primaryMain: #FFBE03; // Sophisticated teal (KEPT INTACT)
+$primaryDark: #EEA746; // Warm golden orange (KEPT INTACT)
+$primary200: #cdcdcd; // Gentle teal highlight
+$primary800: #006b79; // Deeper teal for contrast
 
 // ===================================
-// SECONDARY - Deep Charcoals (matching logo's dark elements)
+// SECONDARY - Warm Charcoals (bridging teal and gold)
 // ===================================
-$secondaryLight: #6b6b6b;  // Softer charcoal
-$secondaryMain: #424242;   // Rich charcoal (closer to logo)
-$secondaryDark: #1a1a1a;   // Deep charcoal
-$secondary200: #858585;    // Mid-tone grey
-$secondary800: #0d0d0d;    // Near black
+$secondaryLight: #cdcdcd; // Warm charcoal with subtle gold undertone
+$secondaryMain: #423f3a; // Rich warm charcoal
+$secondaryDark: #2a241f; // Deep warm charcoal
+$secondary200: #857f76; // Mid-tone warm grey
+$secondary800: #1a1611; // Deep warm near-black
 
 // ===================================
-// ACCENT - Golden Harmony (derived from logo)
+// ACCENT - Golden Harmony (enhanced to match primary palette)
 // ===================================
-$accentLight: #fff8e1;     // Soft golden highlight
-$accentMain: #ffc107;      // Primary golden (matching logo tone)
-$accentDark: #ff8f00;      // Rich golden orange
-$accent200: #ffecb3;       // Gentle golden tint
-$accent800: #ff6f00;       // Deep golden accent
+$accentLight: #fdf5e6; // Soft golden highlight with teal undertone
+$accentMain: #e6a547; // Golden tone harmonizing with primaryDark
+$accentDark: #d18b2c; // Rich golden orange
+$accent200: #f4e4c1; // Gentle golden tint
+$accent800: #b8731f; // Deep golden accent
 
 // ===================================
-// SUCCESS - Natural Green (complementary to gold)
+// SUCCESS - Teal-influenced Green
 // ===================================
-$successLight: #e8f5e8;    // Soft sage
-$success200: #a5d6a7;      // Natural green
-$successMain: #66bb6a;     // Balanced green
-$successDark: #388e3c;     // Deep forest green
+$successLight: #e6f3f1; // Soft sage with teal undertone
+$success200: #9bc5c1; // Natural green with teal influence
+$successMain: #5a9591; // Balanced teal-green
+$successDark: #2d6b66; // Deep forest green with teal
 
 // ===================================
 // ERROR - Warm Red (harmonious with golden palette)
 // ===================================
-$errorLight: #ffebee;      // Soft rose
-$errorMain: #ef5350;       // Warm red
-$errorDark: #c62828;       // Deep red
+$errorLight: #fdf0ef; // Soft rose with warm undertone
+$errorMain: #d4615b; // Warm red with golden undertone
+$errorDark: #a73832; // Deep red with warmth
 
 // ===================================
-// WARNING - Amber Harmony
+// WARNING - Amber Harmony (bridging teal and gold)
 // ===================================
-$warningLight: #fff8e1;    // Matches accent light
-$warningMain: #ffb74d;     // Warm amber
-$warningDark: #f57c00;     // Deep amber
+$warningLight: #fdf6e8; // Warm amber light
+$warningMain: #d99c47; // Warm amber echoing primaryDark
+$warningDark: #b5792a; // Deep amber
 
 // ===================================
-// NEUTRAL GREYS - Enhanced Warmth
+// NEUTRAL GREYS - Enhanced Warmth with Teal Undertones
 // ===================================
-$grey50: #faf9f7;          // Warm white
-$grey100: #f5f3f0;         // Light warm grey
-$grey200: #e8e6e1;         // Soft warm grey
-$grey300: #d3d0c9;         // Medium warm grey
-$grey500: #8a8680;         // Balanced warm grey
-$grey600: #6d6962;         // Deep warm grey
-$grey700: #4a453f;         // Rich warm grey
-$grey900: #2d2923;         // Dark warm brown-grey
+$grey50: #faf9f7; // Warm white with subtle teal
+$grey100: #f3f2ef; // Light warm grey
+$grey200: #e6e4df; // Soft warm grey with teal undertone
+$grey300: #d1cec7; // Medium warm grey
+$grey500: #8a8379; // Balanced warm grey
+$grey600: #6d6962; // Deep warm grey
+$grey700: #4a453f; // Rich warm grey
+$grey900: #2d2923; // Dark warm brown-grey
 
 // ===================================
 // DARK THEME - Sophisticated Night Mode
 // ===================================
-$darkBackground: #1a1611;     // Deep warm black
-$darkPaper: #201d16;          // Rich dark brown
-$darkLevel1: #2a251c;         // Elevated warm dark
-$darkLevel2: #332e23;         // Higher elevation
+$darkBackground: #1a1611; // Deep warm black (matches secondary800)
+$darkPaper: #221f18; // Rich dark brown with teal undertone
+$darkLevel1: #2a251c; // Elevated warm dark
+$darkLevel2: #332e23; // Higher elevation
 
-// Dark Theme Primary
-$darkPrimaryLight: #f5f3f0;   // Warm light for contrast
-$darkPrimaryMain: #ffc107;    // Golden accent maintained
-$darkPrimaryDark: #ff8f00;    // Rich golden
-$darkPrimary200: #ffecb3;     // Soft golden tint
-$darkPrimary800: #ff6f00;     // Deep golden
+// Dark Theme Primary (enhanced harmony)
+$darkPrimaryLight: #cdcdcd; // Teal-tinted light for contrast
+$darkPrimaryMain: #4db6c4; // Lighter teal for dark backgrounds
+$darkPrimaryDark: #f2b55c; // Warm golden for dark mode
+$darkPrimary200: #a8d5db; // Soft teal tint
+$darkPrimary800: #006b79; // Deep teal
 
-// Dark Theme Secondary
-$darkSecondaryLight: #9e9e9e; // Light neutral
-$darkSecondaryMain: #616161;  // Medium grey
-$darkSecondaryDark: #424242;  // Dark grey
-$darkSecondary200: #bdbdbd;   // Light grey
-$darkSecondary800: #212121;   // Very dark grey
+// Dark Theme Secondary (warm neutrals)
+$darkSecondaryLight: #9a9189; // Light warm neutral
+$darkSecondaryMain: #cdcdcd; // Medium warm grey
+$darkSecondaryDark: #423f3a; // Dark warm grey
+$darkSecondary200: #b5aca3; // Light warm grey
+$darkSecondary800: #2a241f; // Very dark warm grey
 
-// Dark Theme Text
-$darkTextTitle: #f5f3f0;      // Warm white for headings
-$darkTextPrimary: #e8e6e1;    // Primary text with warmth
-$darkTextSecondary: #a8a59e;  // Secondary text with golden undertone
+// Dark Theme Text (warm and readable)
+$darkTextTitle: #f8f6f3; // Warm white for headings
+$darkTextPrimary: #e8e6e1; // Primary text with warmth
+$darkTextSecondary: #b5aca3; // Secondary text with golden undertone
+
 
 // ===================================
 // ACCESSIBILITY & COMFORT RATIOS
