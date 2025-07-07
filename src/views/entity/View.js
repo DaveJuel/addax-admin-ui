@@ -289,10 +289,10 @@ const EntityPage = () => {
                   </Grid>
                 ))}
               </Grid>
-              <Box mt={2}>
+              <Box mt={2} gap={3} style={{margin: "20px 0px 10px 0px"}}>
                 {
                   isActionEdit ?
-                  <Button
+                  <Button style={{marginRight: "10px"}}
                     variant="contained"
                     color="primary"
                     type="submit"
@@ -301,7 +301,7 @@ const EntityPage = () => {
                     Update
                   </Button>
                   :
-                  <Button
+                  <Button style={{marginRight: "10px"}}
                     variant="contained"
                     color="primary"
                     type="submit"
