@@ -31,12 +31,11 @@ const generateMenuItems = async () => {
       };
     })
   : [];
-  const titleText = entityMenuItems.length > 1 ? "Entities" : "Entity";
   // Construct the 'entity' group with its children
   entityMenuItems.push(createEntity);
   const entityGroup = {
     id: "entity",
-    title: titleText,
+    title: "",
     icon: icons.IconDashboard,
     type: "group",
     children: entityMenuItems,

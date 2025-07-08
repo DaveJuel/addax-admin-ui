@@ -237,66 +237,68 @@ const EntityPage = () => {
             
             <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
               {/* Search Box */}
-              <Box
-                sx={{
-                  position: 'relative',
-                  display: 'flex',
-                  alignItems: 'center',
-                  minWidth: 280,
-                  maxWidth: 400,
-                }}
-              >
-                <TextField
-                  placeholder={`Search ${formatTitle(name)}...`}
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      handleSearch();
-                    }
-                  }}
+              {entityData?.length > 0 && (
+                <Box
                   sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: 2,
-                      paddingRight: '48px',
-                      backgroundColor: 'background.paper',
-                      '&:hover': {
-                        '& .MuiOutlinedInput-notchedOutline': {
-                          borderColor: 'primary.main',
-                        },
-                      },
-                      '&.Mui-focused': {
-                        '& .MuiOutlinedInput-notchedOutline': {
-                          borderColor: 'primary.main',
-                        },
-                      },
-                    },
-                    '& .MuiInputBase-input': {
-                      padding: '8px 12px',
-                    },
+                    position: 'relative',
+                    display: 'flex',
+                    alignItems: 'center',
+                    minWidth: 280,
+                    maxWidth: 400,
                   }}
-                />
-                <IconButton
-                  onClick={handleSearch}
-                  sx={{
-                    position: 'absolute',
-                    right: 4,
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    color: 'text.secondary',
-                    '&:hover': {
-                      color: 'primary.main',
-                      backgroundColor: 'primary.lighter',
-                    },
-                  }}
-                  size="small"
                 >
-                  <SearchIcon />
-                </IconButton>
-              </Box>
+                  <TextField
+                    placeholder={`Search ${formatTitle(name)}...`}
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        handleSearch();
+                      }
+                    }}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                        paddingRight: '48px',
+                        backgroundColor: 'background.paper',
+                        '&:hover': {
+                          '& .MuiOutlinedInput-notchedOutline': {
+                            borderColor: 'primary.main',
+                          },
+                        },
+                        '&.Mui-focused': {
+                          '& .MuiOutlinedInput-notchedOutline': {
+                            borderColor: 'primary.main',
+                          },
+                        },
+                      },
+                      '& .MuiInputBase-input': {
+                        padding: '8px 12px',
+                      },
+                    }}
+                  />
+                  <IconButton
+                    onClick={handleSearch}
+                    sx={{
+                      position: 'absolute',
+                      right: 4,
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      color: 'text.secondary',
+                      '&:hover': {
+                        color: 'primary.main',
+                        backgroundColor: 'primary.lighter',
+                      },
+                    }}
+                    size="small"
+                  >
+                    <SearchIcon />
+                  </IconButton>
+                </Box>
+              )}
 
               {/* Action Buttons */}
               <Box sx={{ display: 'flex', gap: 1 }}>
