@@ -57,10 +57,11 @@ const EntityPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const entityProperties = await fetchEntityProperties(
+      const userData = JSON.parse(localStorage.getItem("user"));
+      const entityProperties = await fetchEntityProperties(userData,
         entityName
       );
-      const entityData = await fetchEntityData(
+      const entityData = await fetchEntityData(userData,
         entityName
       );
       setEntityData(entityData || []);
@@ -167,8 +168,9 @@ const EntityPage = () => {
 
   const updateEntityData = async () => {
     try{
+      const userData = JSON.parse(localStorage.getItem("user"));
       setLoading(true);
-      const entityData = await fetchEntityData(
+      const entityData = await fetchEntityData(userData,
         entityName
       );
       setEntityData(entityData);
@@ -183,7 +185,8 @@ const EntityPage = () => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await saveEntityData(isActionEdit, entityName, formData);
+      const userData = JSON.parse(localStorage.getItem("user"));
+      await saveEntityData(userData,isActionEdit, entityName, formData);
       setShowAddModal(false);
       handleOpenSnackbar('Saved successfully.', 'success');
       await updateEntityData();
@@ -196,7 +199,8 @@ const EntityPage = () => {
 
   const handleDelete = async (instance) => {
     try {
-      const response = await deleteEntityInstance(entityName,instance.uuid);
+      const userData = JSON.parse(localStorage.getItem("user"));
+      const response = await deleteEntityInstance(userData, entityName,instance.uuid);
       if (response.success) {
         handleOpenSnackbar(response.result, 'success');
         await updateEntityData();

@@ -195,6 +195,7 @@ const EntityConfigPage = () => {
     setLoading(true);
     setSubmitting(true);
     try {
+      const userData = JSON.parse(localStorage.getItem("user"));
       const requestData = {
         entity_name: name,
         icon: icon,
@@ -202,7 +203,7 @@ const EntityConfigPage = () => {
         privacy: privacy,
         attribute_list: formatCreateEntityRequest(attributeList)
       };
-      await createEntity(requestData);
+      await createEntity(userData,requestData);
       handleOpenSnackbar('Entity created successfully!','success' );
       dispatch(toggleReload());
       setShowAddModal(false);

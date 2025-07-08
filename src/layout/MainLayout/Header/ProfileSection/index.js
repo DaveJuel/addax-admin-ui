@@ -47,6 +47,7 @@ const ProfileSection = () => {
   const handleLogout = async () => {
     localStorage.removeItem("user");
     localStorage.removeItem("themeVariant");
+    localStorage.removeItem("activeApp");
     dispatch({
       type: 'SET_THEME_VARIANT',
       themeVariant: 'default'

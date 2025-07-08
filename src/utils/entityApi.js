@@ -3,8 +3,6 @@ import { apiUrl } from "utils/httpclient-handler";
 const API_ENDPOINT = `${apiUrl}`;
 
 export const CONFIG_ENTITIES = ['user_role', 'privilege', 'file_upload'];
-
-const userData = JSON.parse(localStorage.getItem("user"));
 const activeAppApiKey = localStorage.getItem("activeApp") || "";
 
 export const fetchEntityList = async (user, apiKey)=>{
@@ -23,7 +21,7 @@ export const fetchEntityList = async (user, apiKey)=>{
   return data;
 };
 
-export const fetchEntityData = async (
+export const fetchEntityData = async (userData,
   entityName
 ) => {
   try {
@@ -48,7 +46,7 @@ export const fetchEntityData = async (
   }
 };
 
-export const destroyEntity = async (entityName) => {
+export const destroyEntity = async (userData, entityName) => {
   try {
     const response = await fetch(`${API_ENDPOINT}/entity/${entityName}`, {
       method: "DELETE",
@@ -69,7 +67,7 @@ export const destroyEntity = async (entityName) => {
     return null;
   }
 };
-export const deleteEntityInstance = async (entityName, instanceId) => {
+export const deleteEntityInstance = async (userData, entityName, instanceId) => {
   try {
 
     const response = await fetch(`${API_ENDPOINT}/entity/${entityName}/${instanceId}`, {
@@ -92,7 +90,7 @@ export const deleteEntityInstance = async (entityName, instanceId) => {
   }
 };
 
-export const fetchEntityProperties = async (
+export const fetchEntityProperties = async (userData,
   entityName
 ) => {
   try {
@@ -116,7 +114,7 @@ export const fetchEntityProperties = async (
   }
 };
 
-export const exportEntityData = async (entityName) =>{
+export const exportEntityData = async (userData, entityName) =>{
   const response = await fetch(`${API_ENDPOINT}/export/${entityName}`, {
     method: "GET",
     headers: {
@@ -164,7 +162,7 @@ export const uploadFile = async (user, apiKey, file) => {
   return data.result;
 };
 
-export const saveEntityData = async (isActionEdit, entityName, formData) => {
+export const saveEntityData = async (userData, isActionEdit, entityName, formData) => {
   const requestData = {
     entity_name: entityName,
     details: formData,
@@ -187,7 +185,7 @@ export const saveEntityData = async (isActionEdit, entityName, formData) => {
   return jsonBody.result;
 };
 
-export const createEntity = async(requestData) => {
+export const createEntity = async(userData, requestData) => {
   const jsonBody = JSON.stringify(requestData);
   const response = await fetch(`${API_ENDPOINT}/entity/create/`, {
     method: "POST",

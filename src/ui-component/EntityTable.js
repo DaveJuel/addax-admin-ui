@@ -20,7 +20,7 @@ const EntityTable = ({ entityList, handleEdit }) => {
     try {
       const userData = JSON.parse(localStorage.getItem("user"));
       const activeAppApiKey = localStorage.getItem("activeApp") || "";
-      const response = await destroyEntity(entityName, userData, activeAppApiKey);
+      const response = await destroyEntity(userData, entityName, userData, activeAppApiKey);
       if (response.success) {
         setSnackbarMessage(response.result);
         setSnackbarSeverity('success');
