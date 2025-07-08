@@ -17,7 +17,10 @@ import {
   Snackbar,
   Alert,
   Divider,
+  TextField,
+  TablePagination
 } from "@mui/material";
+import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MainCard from "ui-component/cards/MainCard";
 import formatTitle from "utils/title-formatter";
@@ -44,6 +47,12 @@ const EntityPage = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const [isActionEdit, setIsActionEdit] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const startIndex = page * rowsPerPage;
+  const paginatedData = entityData?.slice(startIndex, startIndex + rowsPerPage);
   
 
   useEffect(() => {
@@ -67,6 +76,20 @@ const EntityPage = () => {
     setIsActionEdit(false);
     setFormData({});
     setShowAddModal(true);
+  };
+
+  const handleSearch = () => {
+    // Implement your search logic here
+    console.log('Searching for:', searchValue);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const handleExport = async () => {
@@ -198,8 +221,8 @@ const EntityPage = () => {
       <Box justifyContent="space-between" gap={3} alignItems="center">
         {!loading && (
           <>
-            <Typography 
-              variant="h3" 
+            <Typography
+              variant="h3"
               component="h2"
               sx={{
                 fontWeight: 800,
@@ -211,48 +234,114 @@ const EntityPage = () => {
             >
               {formatTitle(name)}
             </Typography>
-            <Box sx={{ display: 'flex', gap: 1 }}>
-              <Button 
-                variant="contained" 
-                color="primary" 
-                onClick={handleAddClick}
-                sx={{ 
-                  borderRadius: 2,
-                  textTransform: 'none',
-                  fontWeight: 500,
-                  px: 3
+            
+            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+              {/* Search Box */}
+              <Box
+                sx={{
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  minWidth: 280,
+                  maxWidth: 400,
                 }}
               >
-                Add New
-              </Button>
-              <Button 
-                variant="contained" 
-                color="secondary" 
-                onClick={handleImportClick}
-                sx={{ 
-                  borderRadius: 2,
-                  textTransform: 'none',
-                  fontWeight: 500,
-                  px: 3
-                }}
-              >
-                Bulk Import
-              </Button>
-              {entityData?.length > 0 && (
-                <Button 
-                  variant="contained" 
-                  color="success" 
-                  onClick={handleExport}
-                  sx={{ 
+                <TextField
+                  placeholder={`Search ${formatTitle(name)}...`}
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSearch();
+                    }
+                  }}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 2,
+                      paddingRight: '48px',
+                      backgroundColor: 'background.paper',
+                      '&:hover': {
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: 'primary.main',
+                        },
+                      },
+                      '&.Mui-focused': {
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: 'primary.main',
+                        },
+                      },
+                    },
+                    '& .MuiInputBase-input': {
+                      padding: '8px 12px',
+                    },
+                  }}
+                />
+                <IconButton
+                  onClick={handleSearch}
+                  sx={{
+                    position: 'absolute',
+                    right: 4,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    color: 'text.secondary',
+                    '&:hover': {
+                      color: 'primary.main',
+                      backgroundColor: 'primary.lighter',
+                    },
+                  }}
+                  size="small"
+                >
+                  <SearchIcon />
+                </IconButton>
+              </Box>
+
+              {/* Action Buttons */}
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleAddClick}
+                  sx={{
                     borderRadius: 2,
                     textTransform: 'none',
                     fontWeight: 500,
                     px: 3
                   }}
                 >
-                  Export
+                  Add New
                 </Button>
-              )}
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleImportClick}
+                  sx={{
+                    borderRadius: 2,
+                    textTransform: 'none',
+                    fontWeight: 500,
+                    px: 3
+                  }}
+                >
+                  Bulk Import
+                </Button>
+                {entityData?.length > 0 && (
+                  <Button
+                    variant="contained"
+                    color="success"
+                    onClick={handleExport}
+                    sx={{
+                      borderRadius: 2,
+                      textTransform: 'none',
+                      fontWeight: 500,
+                      px: 3
+                    }}
+                  >
+                    Export
+                  </Button>
+                )}
+              </Box>
             </Box>
           </>
         )}
@@ -265,98 +354,142 @@ const EntityPage = () => {
       {loading && <TableLoadingState />}
       {!loading && entityData?.length === 0 && <TableEmptyState />}
       {!loading && entityData?.length > 0 && (
-        <TableContainer sx={{ borderRadius: 2, boxShadow: 1 }}>
-          <Table>
-            <TableHead>
-              <TableRow sx={{ backgroundColor: 'grey.50' }}>
-                {attributeList?.map((attribute) => (
-                  <TableCell 
-                    key={attribute.name}
-                    sx={{ 
-                      fontWeight: 600,
-                      color: 'text.primary',
-                      textTransform: 'capitalize'
-                    }}
-                  >
-                    {formatTitle(attribute.name)}
-                  </TableCell>
-                ))}
-                <TableCell 
-                  key='actions'
-                  sx={{ 
-                    fontWeight: 600,
-                    color: 'text.primary'
-                  }}
-                >
-                  Actions
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {entityData?.map((dataItem, index) => (
-                <TableRow 
-                  key={index}
-                  sx={{ 
-                    '&:hover': { backgroundColor: 'grey.50' },
-                    '&:last-child td, &:last-child th': { border: 0 }
-                  }}
-                >
+        <>
+          <TableContainer sx={{ borderRadius: 2, boxShadow: 1 }}>
+            <Table>
+              <TableHead>
+                <TableRow sx={{ backgroundColor: 'grey.50' }}>
                   {attributeList?.map((attribute) => (
-                    <TableCell key={attribute.name}>
-                      {attribute.data_type === 'file' && dataItem[attribute.name] && (
-                        <a 
-                          href={dataItem[attribute.name]} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          style={{ 
-                            color: 'primary.main',
-                            textDecoration: 'none',
-                            fontWeight: 500
-                          }}
-                        >
-                          click here
-                        </a>
-                      )}
-                      {attribute.data_type === 'long text' && (
-                        <LongTextCell
-                          attribute={attribute}
-                          value={dataItem[attribute.name]}
-                        />
-                      )}
-                      {attribute.data_type !== 'file' && attribute.data_type !== 'long text' && dataItem[attribute.name]}
+                    <TableCell
+                      key={attribute.name}
+                      sx={{
+                        fontWeight: 600,
+                        color: 'text.primary',
+                        textTransform: 'capitalize'
+                      }}
+                    >
+                      {formatTitle(attribute.name)}
                     </TableCell>
                   ))}
-                  <TableCell>
-                    <Box sx={{ display: 'flex', gap: 0.5 }}>
-                      <IconButton 
-                        onClick={() => handleEditClick(dataItem)} 
-                        size="small" 
-                        aria-label="edit"
-                        sx={{ 
-                          color: 'primary.main',
-                          '&:hover': { backgroundColor: 'primary.lighter' }
-                        }}
-                      >
-                        <Edit />
-                      </IconButton>
-                      <IconButton 
-                        onClick={() => handleDelete(dataItem)} 
-                        size="small" 
-                        aria-label="delete"
-                        sx={{ 
-                          color: 'error.main',
-                          '&:hover': { backgroundColor: 'error.lighter' }
-                        }}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Box>
+                  <TableCell
+                    key='actions'
+                    sx={{
+                      fontWeight: 600,
+                      color: 'text.primary'
+                    }}
+                  >
+                    Actions
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {paginatedData?.map((dataItem, index) => (
+                  <TableRow
+                    key={index}
+                    sx={{
+                      '&:hover': { backgroundColor: 'grey.50' },
+                      '&:last-child td, &:last-child th': { border: 0 }
+                    }}
+                  >
+                    {attributeList?.map((attribute) => (
+                      <TableCell key={attribute.name}>
+                        {attribute.data_type === 'file' && dataItem[attribute.name] && (
+                          <a
+                            href={dataItem[attribute.name]}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              color: 'primary.main',
+                              textDecoration: 'none',
+                              fontWeight: 500
+                            }}
+                          >
+                            click here
+                          </a>
+                        )}
+                        {attribute.data_type === 'long text' && (
+                          <LongTextCell
+                            attribute={attribute}
+                            value={dataItem[attribute.name]}
+                          />
+                        )}
+                        {attribute.data_type !== 'file' && attribute.data_type !== 'long text' && dataItem[attribute.name]}
+                      </TableCell>
+                    ))}
+                    <TableCell>
+                      <Box sx={{ display: 'flex', gap: 0.5 }}>
+                        <IconButton
+                          onClick={() => handleEditClick(dataItem)}
+                          size="small"
+                          aria-label="edit"
+                          sx={{
+                            color: 'primary.main',
+                            '&:hover': { backgroundColor: 'primary.lighter' }
+                          }}
+                        >
+                          <Edit />
+                        </IconButton>
+                        <IconButton
+                          onClick={() => handleDelete(dataItem)}
+                          size="small"
+                          aria-label="delete"
+                          sx={{
+                            color: 'error.main',
+                            '&:hover': { backgroundColor: 'error.lighter' }
+                          }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          {/* Pagination */}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mt: 2,
+              px: 2
+            }}
+          >
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ fontWeight: 500 }}
+            >
+              Showing {startIndex + 1} to {Math.min(startIndex + rowsPerPage, entityData.length)} of {entityData.length} entries
+            </Typography>
+            
+            <TablePagination
+              component="div"
+              count={entityData.length}
+              page={page}
+              onPageChange={handleChangePage}
+              rowsPerPage={rowsPerPage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              rowsPerPageOptions={[5, 10, 25, 50]}
+              showFirstButton
+              showLastButton
+              sx={{
+                '& .MuiTablePagination-toolbar': {
+                  minHeight: '52px'
+                },
+                '& .MuiTablePagination-selectLabel': {
+                  fontWeight: 500
+                },
+                '& .MuiTablePagination-displayedRows': {
+                  fontWeight: 500
+                }
+              }}
+            />
+          </Box>
+        </>
       )}
     
       {/* Add New Entity Modal */}
