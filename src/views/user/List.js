@@ -57,7 +57,7 @@ const UserListPage = () => {
       if(entityDataResponse){
         setUserData(entityDataResponse.result);
       }
-      const roles = await fetchEntityData('user_role');
+      const roles = await fetchEntityData(userData, 'user_role');
       setRoleList(roles);
       setLoading(false);
       setReload(false);
