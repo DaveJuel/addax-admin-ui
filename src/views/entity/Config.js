@@ -100,7 +100,8 @@ const EntityConfigPage = () => {
       if (!defaultDataTypes.some(dataType => dataType.value === value)) {
         updatedAttributeList[index]['has_reference'] = true;
         try {
-          const itemDetailsResponse = await fetchEntityProperties(value);
+          const userData = JSON.parse(localStorage.getItem("user"));
+          const itemDetailsResponse = await fetchEntityProperties(userData, value);
           if (itemDetailsResponse && itemDetailsResponse?.attribute_list) {
             updatedAttributeList[index]['display_column_options'] = mapEntityListToDataTypes(itemDetailsResponse.attribute_list);
           }
