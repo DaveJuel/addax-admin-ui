@@ -131,6 +131,7 @@ const EntityPage = () => {
         ...prevData,
         [attribute.name]: fileUrl,
       }));
+      await updateEntityData();
     } catch (error) {
       handleOpenSnackbar(error.message, 'error');
     }finally{
