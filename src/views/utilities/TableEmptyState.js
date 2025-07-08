@@ -29,7 +29,7 @@ const TableEmptyState = () => {
                 color={theme.palette.secondary.dark}
                 align="center"
             >
-                No content available
+                No records at the moment.
             </Typography>
             <Typography
                 variant="body2"
@@ -38,7 +38,7 @@ const TableEmptyState = () => {
                 maxWidth="300px"
                 mt={1}
             >
-                Check back later for updates.
+                Click "Add New", or use "Bulk Import" to add records.
             </Typography>
         </Box>
     );

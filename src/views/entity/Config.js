@@ -236,8 +236,18 @@ const EntityConfigPage = () => {
   };
   return (
     <MainCard tit>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography variant="body2">
+      <Box display="flex" justifyContent="space-between" alignItems="center" sx={{marginBottom:"20px"}}>
+        <Typography
+          variant="h3"
+          component="h2"
+          sx={{
+            fontWeight: 800,
+            color: 'text.primary',
+            letterSpacing: '-0.025em',
+            textTransform: 'capitalize',
+            marginBottom: '10px'
+          }}
+        >
           Entities
         </Typography>
         {(userData.role === 'author' || userData.role === 'sysadmin' || userData.role === 'administrator') &&

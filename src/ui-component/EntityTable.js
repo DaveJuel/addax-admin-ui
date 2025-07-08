@@ -50,11 +50,16 @@ const EntityTable = ({ entityList, handleEdit }) => {
     <>
       <Table>
         <TableHead>
-          <TableRow>
+          <TableRow sx={{ backgroundColor: 'grey.50' }}>
             {entityList.length > 0 &&
               Object.keys(entityList[0]).map((key) =>
                 key !== "uuid" ? (
-                  <TableCell key={key}>
+                  <TableCell key={key} 
+                    sx={{
+                        fontWeight: 600,
+                        color: 'text.primary',
+                        textTransform: 'capitalize'
+                      }}>
                     {formatTitle(key)}
                   </TableCell>
                 ) : null
