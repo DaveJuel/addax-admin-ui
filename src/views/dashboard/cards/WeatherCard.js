@@ -41,7 +41,7 @@ const WeatherCard = ({isLoading, weatherData, loadWeatherData}) => {
                   <Grid item>
                     <Avatar
                       sx={{
-                        backgroundColor: theme.palette.info[800],
+                        backgroundColor: theme.palette.primary.light,
                         width: theme.spacing(7),
                         height: theme.spacing(7),
                       }}

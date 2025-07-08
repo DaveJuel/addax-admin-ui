@@ -16,6 +16,7 @@ import {
   IconButton,
   Snackbar,
   Alert,
+  Divider,
 } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import MainCard from "ui-component/cards/MainCard";
@@ -194,47 +195,125 @@ const EntityPage = () => {
 
   return (
     <MainCard>
-      <Box justifyContent="space-between" gap={3} style={{margin: "20px 0px 10px 0px"}} alignItems="center">
+      <Box justifyContent="space-between" gap={3} alignItems="center">
         {!loading && (
           <>
-            <Typography variant="body2">
-              {formatTitle(name)} entity records.
+            <Typography 
+              variant="h3" 
+              component="h2"
+              sx={{
+                fontWeight: 800,
+                color: 'text.primary',
+                letterSpacing: '-0.025em',
+                textTransform: 'capitalize',
+                marginBottom: '10px'
+              }}
+            >
+              {formatTitle(name)}
             </Typography>
-          
-            <Button variant="contained" color="success" style={{marginRight: "4px"}} onClick={handleExport}>
-              Export
-            </Button>
-            <Button variant="contained" color="secondary" style={{marginRight: "4px"}} onClick={handleImportClick}>
-              Bulk Import
-            </Button>
-            <Button variant="contained" color="primary" onClick={handleAddClick}>
-              Add New
-            </Button>
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <Button 
+                variant="contained" 
+                color="primary" 
+                onClick={handleAddClick}
+                sx={{ 
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontWeight: 500,
+                  px: 3
+                }}
+              >
+                Add New
+              </Button>
+              <Button 
+                variant="contained" 
+                color="secondary" 
+                onClick={handleImportClick}
+                sx={{ 
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontWeight: 500,
+                  px: 3
+                }}
+              >
+                Bulk Import
+              </Button>
+              {entityData?.length > 0 && (
+                <Button 
+                  variant="contained" 
+                  color="success" 
+                  onClick={handleExport}
+                  sx={{ 
+                    borderRadius: 2,
+                    textTransform: 'none',
+                    fontWeight: 500,
+                    px: 3
+                  }}
+                >
+                  Export
+                </Button>
+              )}
+            </Box>
           </>
         )}
       </Box>
+
+      {/* Separator */}
+      <Divider sx={{ my: 2 }} />
+
       {/* Generate table based on attribute_list */}
       {loading && <TableLoadingState />}
       {!loading && entityData?.length === 0 && <TableEmptyState />}
       {!loading && entityData?.length > 0 && (
-        <TableContainer>
+        <TableContainer sx={{ borderRadius: 2, boxShadow: 1 }}>
           <Table>
             <TableHead>
-              <TableRow>
+              <TableRow sx={{ backgroundColor: 'grey.50' }}>
                 {attributeList?.map((attribute) => (
-                  <TableCell key={attribute.name}>{formatTitle(attribute.name)}</TableCell>
+                  <TableCell 
+                    key={attribute.name}
+                    sx={{ 
+                      fontWeight: 600,
+                      color: 'text.primary',
+                      textTransform: 'capitalize'
+                    }}
+                  >
+                    {formatTitle(attribute.name)}
+                  </TableCell>
                 ))}
-                <TableCell key='actions'>Actions
+                <TableCell 
+                  key='actions'
+                  sx={{ 
+                    fontWeight: 600,
+                    color: 'text.primary'
+                  }}
+                >
+                  Actions
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {entityData?.map((dataItem, index) => (
-                <TableRow key={index}>
+                <TableRow 
+                  key={index}
+                  sx={{ 
+                    '&:hover': { backgroundColor: 'grey.50' },
+                    '&:last-child td, &:last-child th': { border: 0 }
+                  }}
+                >
                   {attributeList?.map((attribute) => (
                     <TableCell key={attribute.name}>
                       {attribute.data_type === 'file' && dataItem[attribute.name] && (
-                        <a href={dataItem[attribute.name]} target="_blank" rel="noopener noreferrer">
+                        <a 
+                          href={dataItem[attribute.name]} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          style={{ 
+                            color: 'primary.main',
+                            textDecoration: 'none',
+                            fontWeight: 500
+                          }}
+                        >
                           click here
                         </a>
                       )}
@@ -248,12 +327,30 @@ const EntityPage = () => {
                     </TableCell>
                   ))}
                   <TableCell>
-                    <IconButton onClick={() => handleEditClick(dataItem)} size="small" aria-label="edit">
-                      <Edit />
-                    </IconButton>
-                    <IconButton onClick={() => handleDelete(dataItem)} size="small" aria-label="delete">
-                      <DeleteIcon />
-                    </IconButton>
+                    <Box sx={{ display: 'flex', gap: 0.5 }}>
+                      <IconButton 
+                        onClick={() => handleEditClick(dataItem)} 
+                        size="small" 
+                        aria-label="edit"
+                        sx={{ 
+                          color: 'primary.main',
+                          '&:hover': { backgroundColor: 'primary.lighter' }
+                        }}
+                      >
+                        <Edit />
+                      </IconButton>
+                      <IconButton 
+                        onClick={() => handleDelete(dataItem)} 
+                        size="small" 
+                        aria-label="delete"
+                        sx={{ 
+                          color: 'error.main',
+                          '&:hover': { backgroundColor: 'error.lighter' }
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Box>
                   </TableCell>
                 </TableRow>
               ))}

@@ -48,7 +48,7 @@ const UsersCard = ({ isLoading, userCount }) => {
                   <Grid item>
                     <Avatar
                       sx={{
-                        backgroundColor: theme.palette.secondary[700],
+                        backgroundColor: theme.palette.primary.light,
                         width: theme.spacing(7),
                         height: theme.spacing(7),
                       }}
@@ -112,7 +112,7 @@ const UsersCard = ({ isLoading, userCount }) => {
               <Grid item sx={{ mt: 1 }}>
                 <Typography
                   variant="body2"
-                  sx={{ fontSize: '2rem', fontWeight: 500, color: theme.palette.primary.light }}
+                  sx={{ fontSize: '2rem', fontWeight: 500, color: theme.palette.grey[50] }}
                 >
                   Active Users
                 </Typography>
