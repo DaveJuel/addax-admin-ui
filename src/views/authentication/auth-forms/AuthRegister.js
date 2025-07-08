@@ -246,7 +246,7 @@ const FirebaseRegister = ({ ...others }) => {
               </InputLabel>
               <OutlinedInput
                 id="outlined-adornment-password-register"
-                type={showPassword ? "text" : "confirm password"}
+                type={showPassword ? "text" : "password"}
                 value={values.confirmPassword}
                 name="confirmPassword"
                 label="Confirm Password"
