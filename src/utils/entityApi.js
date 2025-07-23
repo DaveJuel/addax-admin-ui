@@ -186,13 +186,14 @@ export const saveEntityData = async (userData, isActionEdit, entityName, formDat
 };
 
 export const createEntity = async(userData, requestData) => {
+  const apiKey = localStorage.getItem("activeApp") || "";
   const jsonBody = JSON.stringify(requestData);
   const response = await fetch(`${API_ENDPOINT}/entity/create/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "token": userData.login_token,
-      "api_key": activeAppApiKey,
+      "api_key": apiKey,
     },
     body: jsonBody,
   });
