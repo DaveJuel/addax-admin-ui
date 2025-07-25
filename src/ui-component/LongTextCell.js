@@ -24,7 +24,6 @@ export const LongTextCell = ({ attribute, value }) => {
   return (
     <>
       <div
-        dangerouslySetInnerHTML={{ __html: truncatedHTML }}
         style={{ maxWidth: 300, wordBreak: 'break-word' }}
       />
       {isTruncated && (
@@ -34,7 +33,7 @@ export const LongTextCell = ({ attribute, value }) => {
           onClick={() => setOpen(true)}
           style={{ cursor: 'pointer', marginTop: 4 }}
         >
-          Read more
+          Click To Read
         </Typography>
       )}
 
