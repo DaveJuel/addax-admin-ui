@@ -56,6 +56,8 @@ const EntityPage = () => {
   
 
   useEffect(() => {
+    if (!entityName) return;
+    
     const fetchData = async () => {
       const userData = JSON.parse(localStorage.getItem("user"));
       const entityProperties = await fetchEntityProperties(userData,
