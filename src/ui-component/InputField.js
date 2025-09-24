@@ -76,12 +76,17 @@ const renderInputField = (attribute, formData, handleInputChange) => {
           type="number"
         />
       );
+
     case "date":
       return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
-           {...commonProps}
-            renderInput={(params) => <TextField {...params} {...commonProps} />}
+            label={formatTitle(attribute.name)}
+            value={formData[attribute.name] || null}
+            onChange={(newValue) =>
+              handleInputChange({ target: { value: newValue } }, attribute)
+            }
+            renderInput={(params) => <TextField fullWidth {...params} />}
           />
         </LocalizationProvider>
       );
@@ -90,12 +95,15 @@ const renderInputField = (attribute, formData, handleInputChange) => {
       return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DateTimePicker
-            {...commonProps}
-            renderInput={(params) => <TextField {...params} {...commonProps} />}
+            label={formatTitle(attribute.name)}
+            value={formData[attribute.name] || null}
+            onChange={(newValue) =>
+              handleInputChange({ target: { value: newValue } }, attribute)
+            }
+            renderInput={(params) => <TextField fullWidth {...params} />}
           />
         </LocalizationProvider>
       );
-
     case "file":
       return (
         <FormControl fullWidth variant="outlined">
